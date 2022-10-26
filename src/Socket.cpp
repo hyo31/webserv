@@ -1,27 +1,22 @@
-#include "../inc/setupSocket.hpp"
+#include "../inc/Server.hpp"
 
-setupSocket::setupSocket(std::string ipAddr, int port, std::string logFile) :   _ipAddr(ipAddr), _port(port), _socket(),
-                                                                                _socketAddr(), _socketAddrLen(sizeof(_socketAddr)),
-                                                                                _logFile(logFile)
+Server::Socket::Socket(std::string ipAddr, int port, std::string logFile) : _ipAddr(ipAddr), _port(port), _socket(),
+                                                                            _socketAddr(), _socketAddrLen(sizeof(_socketAddr)),
+                                                                            _logFile(logFile)
 {
     std::cout << "Socket started\n";
-    startServer();
+    this->setupSockets();
 }
 
-setupSocket::~setupSocket()
+Server::Socket::~Socket()
 {
     std::cout << "Socket:" << this->_socket << " - bound to port:" << this->_port << " closed\n";
     _logFile.close();
     close(_socket);
 }
 
-int setupSocket::getSocket()
-{
-    return (this->_socket);
-}
-
 //Creates socket, fills in sockaddr_in struct in order to bind socket to address, and makes server listen to this socket
-int setupSocket::startServer()
+int Server::Socket::setupSockets()
 {
     _socket = socket(AF_INET, SOCK_STREAM, 0);
     if (_socket == -1)
@@ -37,15 +32,16 @@ int setupSocket::startServer()
 }
 
 //accepts client requests to server, takes the request and stored it in logfile, responds with response.txt
-int setupSocket::acceptSocket()
+int Server::Socket::acceptSocket()
 {
+    std::cout << this->_port << " " << this->_socket << std::endl;
     std::vector<char> buf(5000);
     _accept = accept(_socket, (struct sockaddr*)&_socketAddr, (socklen_t *)&_socketAddrLen);
     if (_accept == -1)
         return (ft_return("error: accept\n"));
     ssize_t bytesRead = recv(_accept, buf.data(), buf.size(), 0);
     if (bytesRead == -1)
-        return (ft_return("error: recv\n"));
+        return (this->ft_return("error: recv\n"));
     buf[bytesRead] = '\0';
     _logFile <<  buf.data();
     std::ifstream responseFile("response.txt");
@@ -61,7 +57,7 @@ int setupSocket::acceptSocket()
 }
 
 //prints error messages and returns to main
-int setupSocket::ft_return(std::string str)
+int Server::Socket::ft_return(std::string str)
 {
     std::cerr << str << strerror(errno) << std::endl;
     return (errno);

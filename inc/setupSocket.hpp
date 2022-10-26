@@ -21,14 +21,16 @@ class setupSocket
         unsigned int    _socketAddrLen;
         std::ofstream   _logFile;
         
+                        setupSocket(const setupSocket &);
+        setupSocket &   operator=(const setupSocket &);
         int             startServer();
         int             ft_return(std::string str);
 
     public:
-        setupSocket(std::string ipAddr, int port, std::string logFile);
+                        setupSocket(std::string ipAddr, int port, std::string logFile);
+                        ~setupSocket();
         int             getSocket();
         int             acceptSocket();
-        ~setupSocket();
-};
+}; 
 
 #endif
