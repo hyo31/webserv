@@ -26,6 +26,8 @@ class setupSocket
 
     public:
         setupSocket(std::string ipAddr, int port, std::string logFile);
+        int             getSocket();
+        int             acceptSocket();
         ~setupSocket();
 };
 

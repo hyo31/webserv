@@ -4,13 +4,13 @@ setupSocket::setupSocket(std::string ipAddr, int port, std::string logFile) :   
                                                                                 _socketAddr(), _socketAddrLen(sizeof(_socketAddr)),
                                                                                 _logFile(logFile)
 {
-    std::cout << "Server started\n";
+    std::cout << "Socket started\n";
     startServer();
 }
 
 setupSocket::~setupSocket()
 {
-    std::cout << "Server closed\n";
+    std::cout << "Socket closed\n";
     _logFile.close();
     close(_socket);
 }
@@ -27,28 +27,35 @@ int setupSocket::startServer()
         return (ft_return("error: bind\n"));
     if (listen(_socket, 4))
         return (ft_return("error: listen\n"));
-    std::vector<char> buf(5000);
-    while (true)
-    {    
-        _accept = accept(_socket, (struct sockaddr*)&_socketAddr, (socklen_t *)&_socketAddrLen);
-        if (_accept == -1)
-            return (ft_return("error: accept\n"));
-        ssize_t bytesRead = recv(_accept, buf.data(), buf.size(), 0);
-        if (bytesRead == -1)
-            return (ft_return("error: recv\n"));
-        buf[bytesRead] = '\0';
-        std::cout << buf.data();;
-        std::ifstream responseFile("response.txt");
-        if (responseFile.is_open())
-        {
-            char *response = new char[1024];
-            responseFile.read(response, 1024);
-            send(_accept, response, 1024, 0);
-        }
-        close(_accept);
-        responseFile.close();
-    }
     return (0);
+}
+
+int setupSocket::acceptSocket()
+{
+    std::vector<char> buf(5000);
+    _accept = accept(_socket, (struct sockaddr*)&_socketAddr, (socklen_t *)&_socketAddrLen);
+    if (_accept == -1)
+        return (ft_return("error: accept\n"));
+    ssize_t bytesRead = recv(_accept, buf.data(), buf.size(), 0);
+    if (bytesRead == -1)
+        return (ft_return("error: recv\n"));
+    buf[bytesRead] = '\0';
+    std::cout << buf.data();;
+    std::ifstream responseFile("response.txt");
+    if (responseFile.is_open())
+    {
+        char *response = new char[1024];
+        responseFile.read(response, 1024);
+        send(_accept, response, 1024, 0);
+    }
+    close(_accept);
+    responseFile.close();
+    return (0);
+}
+
+int setupSocket::getSocket()
+{
+    return (this->_socket);
 }
 
 int setupSocket::ft_return(std::string str)
