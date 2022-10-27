@@ -1,6 +1,8 @@
 #include "../inc/setupSocket.hpp"
 #include "../inc/Server.hpp"
 
+//to-do
+//catch / throw for errors ?
 
 int main()
 {

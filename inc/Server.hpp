@@ -9,6 +9,9 @@
 # include <iomanip>
 # include <fstream>
 # include <errno.h>
+# include <sys/types.h>
+# include <sys/event.h>
+# include <sys/time.h>
 
 class Server
 {
@@ -26,19 +29,21 @@ class Server
                 int             _accept;
                 sockaddr_in     _socketAddr;
                 unsigned int    _socketAddrLen;
-                std::ofstream   _logFile;
+                std::string     _logFile;
+                std::ofstream   _logfile_ostream;
                                 Socket(std::string ipAddr, int port, std::string logFile);
                                 ~Socket();
                 int             acceptSocket();
                 int             setupSockets();
-                int             ft_return(std::string str);
         };
         std::vector<Socket*>    _sockets;
     public:
                             Server();
                         	~Server();
         int                 startServer();
-        int                 select_fd();
+        int                 monitor_fd();
 
-}; 
+};
+int ft_return(std::string str);
+
 #endif
