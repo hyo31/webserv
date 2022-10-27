@@ -15,14 +15,15 @@ int	Server::monitor_fd()
 	struct  kevent  tevents[3];	 /* Triggered event*/
 
 
-    kq = kqueue();
+    kq = kqueue();  /* creates queue */
     if (kq == -1)
         return ft_return("kqueue failed");
 
-    for (i = 0; i < 3; ++i)
+    for (i = 0; i < 3; ++i) /* initualize kevent events struct - uses EVFILT_READ so it returns when there is data available to read */
         EV_SET(&events[i], this->_sockets[i]->_socket, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
     while(true)
     {
+        std::cout << "--waiting on kevent--\n";
         new_event = kevent(kq, events, 3, tevents, 3, NULL);
         std::cout << "--kevent triggered--\n";
         if (new_event == -1)
@@ -37,7 +38,7 @@ int	Server::monitor_fd()
                 if (tevents[i].flags & EVFILT_READ)
                 {
                     j = 0;
-                    while (tevents[i].ident != (unsigned long)this->_sockets[j]->_socket)
+                    while (tevents[i].ident != (unsigned long)this->_sockets[j]->_socket && j < 3)
                         j++;
                     this->_sockets[j]->acceptSocket();
                 }
