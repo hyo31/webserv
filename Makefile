@@ -7,10 +7,9 @@ CFLAGS = -Wall -Werror -Wextra -std=c++98
 SRC_DIR =	src/
 OBJ_DIR =	obj/
 
-HEADER_FILES =	inc/setupSocket.hpp inc/Server.hpp
+HEADER_FILES = inc/Server.hpp inc/Socket.hpp
 
 SRC =	src/webserv.cpp\
-		src/setupSocket.cpp\
 		src/Socket.cpp\
 		src/Server.cpp
 
