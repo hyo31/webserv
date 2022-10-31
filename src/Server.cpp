@@ -11,36 +11,41 @@ Server::~Server() { std::cout << "Closing server...\n";	}
 int	Server::monitor_fd()
 {
     int             i, j, new_event, kq;
-	struct  kevent  events[3];   /* Events to monitor */
-	struct  kevent  tevents[3];	 /* Triggered event*/
+	struct  kevent  chevents[6];   /* Events to monitor */
+	struct  kevent  tevents[6];	 /* Triggered event*/
 
 
     kq = kqueue();  /* creates queue */
     if (kq == -1)
         return ft_return("kqueue failed");
 
-    for (i = 0; i < 3; ++i) /* initualize kevent events struct - uses EVFILT_READ so it returns when there is data available to read */
-        EV_SET(&events[i], this->_sockets[i]->_socket, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
+//   EV_SET(kev, ident,	filter,	flags, fflags, data, udata);
+    for (i = 0; i < 3; ++i) /* initialize kevent events struct - uses EVFILT_READ so it returns when there is data available to read */
+        EV_SET(&chevents[i], this->_sockets[i]->_socket, EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0, 0);
+    for (j = 3, i = 0; j < 6; ++j, ++i) /* initialize kevent events struct - uses EVFILT_WRITE so it returns when there is data available to write */
+        EV_SET(&chevents[j], this->_sockets[i]->_socket, EVFILT_WRITE, EV_ADD | EV_CLEAR, 0, 0, 0);
     while(true)
     {
-        std::cout << "--waiting on kevent--\n";
-        new_event = kevent(kq, events, 3, tevents, 3, NULL);
-        std::cout << "--kevent triggered--\n";
+        //kevent(kq, *changelist, nchanges, *eventlist, nevents, timespec *timeout);
+        std::cout << "--waiting on connection...--\n";
+        new_event = kevent(kq, chevents, 6, tevents, 6, NULL);
         if (new_event == -1)
             ft_return("kevent failed");
         else if (new_event > 0)
         {
             for (i = 0; i < new_event; ++i)
             {
-                int event_fd = tevents[i].ident;
                 if (tevents[i].flags & EV_EOF)
-                    close(event_fd);
-                if (tevents[i].flags & EVFILT_READ)
+                    close(tevents[i].ident);
+                else if (tevents[i].flags & EVFILT_READ)
                 {
                     j = 0;
                     while (tevents[i].ident != (unsigned long)this->_sockets[j]->_socket && j < 3)
                         j++;
-                    this->_sockets[j]->acceptSocket();
+                    // std::cout << "j:" << j << "  i:" << i  << std::endl;
+                    if (this->_sockets[j]->acceptSocket() == 0)
+                        if (this->_sockets[j]->receive_from_client(kq) == 0)
+                            this->_sockets[j]->respond_to_client();
                 }
             }
         }
@@ -56,6 +61,10 @@ int	Server::startServer()
 	this->_sockets.push_back(new Socket("localhost", 8093, "port8093.log"));
 	this->_sockets.push_back(new Socket("localhost", 8094, "port8094.log"));
 	this->_sockets.push_back(new Socket("localhost", 8095, "port8095.log"));
+	// this->_sockets.push_back(new Socket("localhost", 8096, "port8093.log"));
+	// this->_sockets.push_back(new Socket("localhost", 8097, "port8094.log"));
+	// this->_sockets.push_back(new Socket("localhost", 8098, "port8095.log"));
+
     std::cout << "sockets:" << this->_sockets[0]->_socket << " " << this->_sockets[1]->_socket << " " << this->_sockets[2]->_socket << std::endl;
 	status = this->monitor_fd();
 	if (status == -1)
@@ -66,28 +75,3 @@ int	Server::startServer()
 
 	return 0;
 }
-
-
-//using select() in order to wait for one of the 3 fds to become readable (i.e. client sent a request)
-//then accepts this with socket::acceptSocket()
-// int	Server::select_fd()
-// {
-// 	fd_set	readfds;
-// 	int		status = 1;
-// 	int		maxfd = -1;
-
-// 	FD_ZERO(&readfds);
-// 	for(int i = 0; i < 3; ++i)
-// 	{
-// 		FD_SET(this->_sockets[i]->_socket, &readfds);
-// 		if (this->_sockets[i]->_socket > maxfd)
-// 			maxfd = this->_sockets[i]->_socket;
-// 	}
-// 	status = select(maxfd + 1, &readfds, NULL, NULL, NULL);
-// 	if (status < 0)
-// 		return -1;
-// 	for(int i = 0; i < 3; ++i)
-// 		if (FD_ISSET(this->_sockets[i]->_socket, &readfds))
-// 			return this->_sockets[i]->acceptSocket();
-// 	return -1;
-// }
