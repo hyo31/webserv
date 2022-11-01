@@ -6,7 +6,7 @@
 class Socket
 {
     public:
-                        Socket(std::string ipAddr, int port, std::string logFile);
+                        Socket(std::string ipAddr, int port);
                         ~Socket();
 
         std::string     ipAddr;
@@ -15,7 +15,7 @@ class Socket
         sockaddr_in     socketAddr;
         unsigned int    socketAddrLen;
         std::string     logFile;
-        std::ofstream   logfile_ostream;
+        std::fstream    logfile_fstream;
                         Socket(const Socket &);
         Socket &        operator=(const Socket &);
         int             startServer();

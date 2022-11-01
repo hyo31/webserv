@@ -1,6 +1,7 @@
 #include "../inc/Socket.hpp"
 
-Socket::Socket(std::string ipAddr, int port, std::string logFile) : ipAddr(ipAddr), port(port), logFile(logFile)
+Socket::Socket(std::string ipAddr, int port)
+: ipAddr(ipAddr), port(port), logFile("logs/port" + std::to_string(port) + ".log")
 {
     this->setupSockets();
 }

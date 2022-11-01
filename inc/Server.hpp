@@ -26,7 +26,7 @@ class Server
         Server &    operator=(const Server &);
         std::vector<Socket*>        _sockets;
         std::map<int, int>          _conn_fd;
-        std::string writeResponse();
+        std::string writeResponse(int c_fd);
 
     public:
         Server();
