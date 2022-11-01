@@ -14,19 +14,27 @@
 # include <sys/time.h>
 # include <fcntl.h>
 # include "Socket.hpp"
+# include "Connection.hpp"
 
+class Connection;
 class Socket;
 class Server
 {
     private:
         Server(const Server &);
-        Server &operator=(const Server &);
-        std::vector<Socket*>    _sockets;
+        Server &    operator=(const Server &);
+        std::vector<Socket*>        _sockets;
+        std::vector<Connection*>    _connections;
+        std::string writeResponse();
+
     public:
         Server();
         ~Server();
         int startServer();
         int monitor_fd();
+        int acceptRequest(int);
+        int receiveClientRequest(int);
+        int respondToClient(int);
 
 };
 

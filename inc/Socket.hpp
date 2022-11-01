@@ -11,8 +11,7 @@ class Socket
 
         std::string     ipAddr;
         int             port;
-        int             socket_fd;
-        int             accept_fd;
+        int             fd;
         sockaddr_in     socketAddr;
         unsigned int    socketAddrLen;
         std::string     logFile;
@@ -20,12 +19,7 @@ class Socket
                         Socket(const Socket &);
         Socket &        operator=(const Socket &);
         int             startServer();
-        int             accept_Request();
         int             setupSockets();
-        int             receive_ClientRequest(int);
-        int             respond_to_Client();
-        std::string     writeResponse();
-
-}; 
+};
 
 #endif
