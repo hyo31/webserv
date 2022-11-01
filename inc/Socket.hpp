@@ -24,6 +24,7 @@ class Socket
         int             setupSockets();
         int             receive_ClientRequest(int);
         int             respond_to_Client();
+        std::string     writeResponse();
 
 }; 
 

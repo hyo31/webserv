@@ -90,20 +90,46 @@ int Socket::receive_ClientRequest(int kq)
     return ft_return("didnt flag a read event\n");
 }
 
+std::string Socket::writeResponse()
+{
+    return ("html_files/home.html");
+    return ("html_files/button.html");
+    return ("html_files/404.html");
+}
+
 int Socket::respond_to_Client()
 {
     //RESPOND
-    std::ifstream responseFile("response.txt");
+    int             fileSize;
+    std::fstream    responseFile("response.txt");
     if (responseFile.is_open())
     {
+        std::ifstream htmlFile(this->writeResponse());
+        if (htmlFile.is_open())
+        {
+            htmlFile.seekg(0, std::ios::end);
+            fileSize = htmlFile.tellg();
+            htmlFile.clear();
+            htmlFile.seekg(0);
+        }
+        else
+            return (ft_return("html file doesn't exist"));
+        responseFile << "HTTP/1.1 200 OK" << std::endl;
+        responseFile << "Content-Type: text/html" << std::endl;
+        responseFile << "Connection: keep-alive" << std::endl;
+        responseFile << "Content-Length " << fileSize << std::endl << std::endl;
+        char    html[fileSize];
+        htmlFile.read(html, fileSize);
+        responseFile << html << std::endl;
+        
         responseFile.seekg(0, std::ios::end);
-        int file_size = responseFile.tellg();
+        fileSize = responseFile.tellg();
         responseFile.clear();
         responseFile.seekg(0);
-        char    response[file_size];
-        responseFile.read(response, file_size);
+        char    response[fileSize];
+        responseFile.read(response, fileSize);
         std::cout << "response:\n" << response << std::endl;
-        ssize_t bytesSent = send(accept_fd, response, file_size, MSG_DONTWAIT);
+        ssize_t bytesSent = send(accept_fd, response, fileSize, MSG_DONTWAIT);
         if (bytesSent == -1)
         {
             close(accept_fd);

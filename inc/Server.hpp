@@ -20,8 +20,9 @@ class Server
 {
     private:
         Server(const Server &);
-        Server &            operator=(const Server &);
+        Server &operator=(const Server &);
         std::vector<Socket*>    _sockets;
+    public:
         Server();
         ~Server();
         int startServer();

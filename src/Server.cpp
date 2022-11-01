@@ -58,12 +58,12 @@ int	Server::startServer()
 {
 	int	status = 0;
 
-	// this->_sockets.push_back(new Socket("localhost", 8093, "port8093.log"));
-	// this->_sockets.push_back(new Socket("localhost", 8094, "port8094.log"));
-	// this->_sockets.push_back(new Socket("localhost", 8095, "port8095.log"));
-	this->_sockets.push_back(new Socket("localhost", 8096, "port8093.log"));
-	this->_sockets.push_back(new Socket("localhost", 8097, "port8094.log"));
-	this->_sockets.push_back(new Socket("localhost", 8098, "port8095.log"));
+	this->_sockets.push_back(new Socket("localhost", 8093, "logs/port8093.log"));
+	this->_sockets.push_back(new Socket("localhost", 8094, "logs/port8094.log"));
+	this->_sockets.push_back(new Socket("localhost", 8095, "logs/port8095.log"));
+	//this->_sockets.push_back(new Socket("localhost", 8096, "logs/port8093.log"));
+	//this->_sockets.push_back(new Socket("localhost", 8097, "logs/port8094.log"));
+	//this->_sockets.push_back(new Socket("localhost", 8098, "logs/port8095.log"));
 
     std::cout << "opened sockets:" << this->_sockets[0]->socket_fd << " " << this->_sockets[1]->socket_fd << " " << this->_sockets[2]->socket_fd << std::endl;
     std::cout << "listening to ports:" << this->_sockets[0]->port << " " << this->_sockets[1]->port << " " << this->_sockets[2]->port << std::endl;
@@ -76,7 +76,6 @@ int	Server::startServer()
     delete this->_sockets[0];
     delete this->_sockets[1];
     delete this->_sockets[2];
-
 	return 0;
 }
 
