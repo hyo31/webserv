@@ -35,7 +35,7 @@ int	Server::startServer()
 //then accepts this with socket::acceptSocket() when a client sends a request
 int	Server::monitor_fd()
 {
-    int             i, sock_num, new_event, kq, ret;
+    int             i, sock_num, new_event, kq, conn_fd;
 	struct  kevent  chevent;        /* Events to monitor */
 	struct  kevent  tevents[40];	/* Triggered event*/
 
@@ -63,11 +63,10 @@ int	Server::monitor_fd()
         {
             for (i = 0; i < new_event; i++)
             {
-                //-----//
                 // for (int j = 0; j < new_event; ++j)
                     // std::cout << "events to handle:" << new_event << " fd for event " << j << ":" << tevents[j].ident << std::endl;
-                //-----//
                 int fd = (int)tevents[i].ident;
+                /* EV_EOF is set if the reader on the conn_fd has disconnected */
                 if (tevents[i].flags & EV_EOF)
                 {
                     std::cout << "Disconnecting.." << fd << std::endl;
@@ -80,15 +79,15 @@ int	Server::monitor_fd()
                     sock_num = 0;
                     while (fd != this->_sockets[sock_num]->fd && sock_num < 3)
                         sock_num++;
-                    ret = this->acceptRequest(sock_num);
+                    conn_fd = this->acceptRequest(sock_num);
                     // std::cout << "opened:" << ret << std::endl;
-                    if (ret == -1)
+                    if (conn_fd == -1)
                         return -1;
                     /* waiting for connection to be read/writable */
-                    EV_SET(&chevent, ret, EVFILT_READ, EV_ADD, 0, 0, NULL);
+                    EV_SET(&chevent, conn_fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
                     kevent(kq, &chevent, 1, NULL, 0, NULL);
                     std::cout << "have connection:\n";
-                    EV_SET(&chevent, ret, EVFILT_WRITE, EV_ADD | EV_ONESHOT, 0, 0, NULL);
+                    EV_SET(&chevent, conn_fd, EVFILT_WRITE, EV_ADD | EV_ONESHOT, 0, 0, NULL);
                     kevent(kq, &chevent, 1, NULL, 0, NULL);
                     /* coninueing loop -> new events will be in kq and enter below */
                 }
