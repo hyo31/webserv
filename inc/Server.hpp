@@ -14,7 +14,6 @@
 # include <sys/time.h>
 # include <fcntl.h>
 # include "Socket.hpp"
-# include "Connection.hpp"
 # include <map>
 
 class Connection;
@@ -31,12 +30,13 @@ class Server
     public:
         Server();
         ~Server();
-        int startServer();
-        int monitor_fd();
-        int acceptRequest(int);
-        int receiveClientRequest(int);
-        int respondToClient(int);
-
+        int     startServer();
+        int     monitor_fd();
+        int     acceptRequest(int);
+        int     receiveClientRequest(int);
+        int     respondToClient(int);
+        int     closeConnection(int);
+        bool    open_connection(int);
 };
 
 int ft_return(std::string str);

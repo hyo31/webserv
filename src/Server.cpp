@@ -35,7 +35,7 @@ int	Server::startServer()
 //then accepts this with socket::acceptSocket() when a client sends a request
 int	Server::monitor_fd()
 {
-    int             i, sock_num, new_event, kq, conn_fd;
+    int             i, sock_num, new_event, kq, conn_fd, ret;
 	struct  kevent  chevent;        /* Events to monitor */
 	struct  kevent  tevents[40];	/* Triggered event*/
 
@@ -53,8 +53,8 @@ int	Server::monitor_fd()
     }
     while(true) 
     {
-        /* use kevent to wait for an event */
-        std::cout << "--waiting on connection...--\n";
+        /* use kevent to wait for an event (when a client tries to connect or when a connection has data to read/is open to receive data) */
+        std::cout << "--waiting for events...--\n";
         new_event = kevent(kq, NULL, 0, tevents, 40, NULL);
         if (new_event < 0)
             ft_return("kevent failed:\n");
@@ -63,47 +63,54 @@ int	Server::monitor_fd()
         {
             for (i = 0; i < new_event; i++)
             {
-                for (int j = 0; j < new_event; ++j)
-                    std::cout << "events to handle:" << new_event << " fd for event " << j << ":" << tevents[j].ident << std::endl;
+                // for (int j = 0; j < new_event; ++j)
+                //     std::cout << "events to handle:" << new_event << " fd for event " << j << ":" << tevents[j].ident << std::endl;
                 int fd = (int)tevents[i].ident;
+                std::cout << "handling event:" << i+1 << "/" << new_event <<  " on fd:" << fd << std::endl;
                 /* EV_EOF is set if the reader on the conn_fd has disconnected */
                 if (tevents[i].flags & EV_EOF)
                 {
-                    std::cout << "Disconnecting.." << fd << std::endl;
-                    close(fd);
-                    new_event = 0;
+                    std::cout << "client disconnected..\n";
+                    if (closeConnection(fd) == -1)
+                        return -1;
+                    // new_event = 0;
                 }
                 else if (fd == this->_sockets[0]->fd || fd == this->_sockets[1]->fd || fd == this->_sockets[2]->fd)
                 {
+                    // if (open_connection(fd) == true)
+                    //     continue ;
                     // std::cout << "accepting for: " << fd << std::endl;
                     sock_num = 0;
                     while (fd != this->_sockets[sock_num]->fd && sock_num < 3)
                         sock_num++;
                     conn_fd = this->acceptRequest(sock_num);
-                    // std::cout << "opened:" << ret << std::endl;
+                    std::cout << "OPENED:" << conn_fd << std::endl;
                     if (conn_fd == -1)
                         return -1;
-                    /* waiting for connection to be read/writable */
+                    /* add event to monitor, triggers when server can read request from client */
                     EV_SET(&chevent, conn_fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
                     kevent(kq, &chevent, 1, NULL, 0, NULL);
-                    std::cout << "have connection:\n";
+                    // std::cout << "have connection:\n";
                     /* coninueing loop -> new events will be in kq and enter below */
                 }
                 else if (tevents[i].filter == EVFILT_READ)
                 {
-                    std::cout << "READING\n";
-                    if (this->receiveClientRequest(fd) == -1)
+                    std::cout << "READING from:" << fd << std::endl;
+                    if ((ret = this->receiveClientRequest(fd)) == -1)
                         return -1;
-                    EV_SET(&chevent, tevents[i].ident, EVFILT_WRITE, EV_ADD | EV_ONESHOT, 0, 0, NULL);
-                    kevent(kq, &chevent, 1, NULL, 0, NULL);
+                    else if (ret == 0) /* now that we read the request, we can respond, so now we add an event to monitor that triggers if we can send to client */
+                    {
+                        EV_SET(&chevent, tevents[i].ident, EVFILT_WRITE, EV_ADD | EV_ONESHOT, 0, 0, NULL);
+                        kevent(kq, &chevent, 1, NULL, 0, NULL);
+                    }  
                     // std::cout << "received:\n";
                 }
                 else if (tevents[i].filter == EVFILT_WRITE)
                 {
+                    std::cout << "WRITING to:" << fd << std::endl;
                     if (this->respondToClient(fd) == -1)
                         return -1;
                     // std::cout << "responded:\n";
-                    break ;
                 }
             }
         }
@@ -132,30 +139,28 @@ int Server::receiveClientRequest(int c_fd)
     ssize_t bytesRead = -1;
     char    buf[50000];
 
-    bytesRead = recv(c_fd, buf, 50000, MSG_DONTWAIT);
+    bytesRead = recv(c_fd, buf, 50000, 0);
     // std::cout << "read: " << bytesRead << " bytes\n";
     if (bytesRead == -1)
     {
-        close(c_fd);
+        closeConnection(c_fd);
         return ft_return("recv failed:\n");
     }
     if (bytesRead == 0)
     {
-        close(c_fd);
-        return ft_return("recv read 0:\n");
+        if (closeConnection(c_fd) == -1)
+            return -1;
+        return 1; 
     }
     buf[bytesRead] = '\0';
-
     std::map<int, int>::iterator it;
     it = this->_conn_fd.find(c_fd);
     if (it == this->_conn_fd.end())
-        return ft_return("didn't find connection pair: ");
-    
+        return ft_return("didn't find connection socket_pair: ");
     this->_sockets[it->second]->logfile_ostream.open(this->_sockets[it->second]->logFile);
     this->_sockets[it->second]->logfile_ostream << buf;
     this->_sockets[it->second]->logfile_ostream.close();
-
-    std::cout << "received:\n" << buf << std::endl;
+    // std::cout << "received:\n" << buf << std::endl;
     return 0;
 }
 
@@ -196,23 +201,44 @@ int Server::respondToClient(int c_fd)
         responseFile.seekg(0);
         char    response[fileSize];
         responseFile.read(response, fileSize);
-        ssize_t bytesSent = send(c_fd, response, fileSize, MSG_DONTWAIT);
+        ssize_t bytesSent = send(c_fd, response, fileSize, 0);
         if (bytesSent == -1)
         {
-            close(c_fd);
+            closeConnection(c_fd);
             return ft_return("error: send\n");
         }
-        std::cout << "responded:\n" << response << std::endl;
+        // std::cout << "responded:\n" << response << std::endl;
         responseFile.close();
     }
     else
         return ft_return("could not open response file ");
-    close(c_fd);
+    // closeConnection(c_fd);
     return (0);
+}
+
+int Server::closeConnection(int fd)
+{
+    std::map<int, int>::iterator it;
+    it = this->_conn_fd.find(fd);
+    if (it == this->_conn_fd.end())
+        ft_return("attempted close on unknown socket_pair: ");
+    this->_conn_fd.erase(it);
+    close(fd);
+    std::cout << "disconnected from socket:" << fd << std::endl;
+    return 0;
 }
 
 int ft_return(std::string str)
 {
     std::cerr << str << strerror(errno) << std::endl;
     return (-1);
+}
+
+bool    Server::open_connection(int c_fd)
+{
+    std::map<int,int>::iterator it;
+    it = this->_conn_fd.find(c_fd);
+    if (it == this->_conn_fd.end())
+        return false;
+    return true;
 }
