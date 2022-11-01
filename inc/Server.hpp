@@ -23,7 +23,6 @@ class Server
     private:
         Server(const Server &);
         Server &    operator=(const Server &);
-       
         std::vector<Socket*>        _sockets;
         std::vector<Connection*>    _connections;
 

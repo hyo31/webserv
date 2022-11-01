@@ -61,7 +61,7 @@ int	Server::monitor_fd()
         /* kevent returned with n new events */
         else if (new_event > 0)
         {
-            for (i = 0; i < new_event; ++i)
+            for (i = 0; i < new_event; i++)
             {
                 //-----//
                 // for (int j = 0; j < new_event; ++j)

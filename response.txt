@@ -1,5 +1,13 @@
 HTTP/1.1 200 OK
-Content-Length: 12
-Content-Type: text/plain
+Content-Length: 800
+Content-Type: text/html
+Connection: keep-alive
 
-Hello World!
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <input  type="file"
+            id="image" name="image"
+            accept="image/png, image/jpeg">
+</body>
+</html>
