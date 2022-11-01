@@ -19,9 +19,9 @@ int	Server::monitor_fd()
     if (kq == -1)
         return ft_return("kqueue failed");
 
-    for (i = 0; i < 3; ++i) /* initualize kevent events struct - uses EVFILT_READ so it returns when there is data available to read */
+    for (i = 0; i < 3; i++) /* initualize kevent events struct - uses EVFILT_READ so it returns when there is data available to read */
         EV_SET(&events[i], this->_sockets[i]->_socket, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
-    while(true)
+    while (true)
     {
         std::cout << "--waiting on kevent--\n";
         new_event = kevent(kq, events, 3, tevents, 3, NULL);
@@ -30,7 +30,7 @@ int	Server::monitor_fd()
             ft_return("kevent failed");
         else if (new_event > 0)
         {
-            for (i = 0; i < new_event; ++i)
+            for (i = 0; i < new_event; i++)
             {
                 int event_fd = tevents[i].ident;
                 if (tevents[i].flags & EV_EOF)
@@ -53,9 +53,12 @@ int	Server::startServer()
 {
 	int	status = 0;
 
-	this->_sockets.push_back(new Socket("localhost", 8093, "port8093.log"));
-	this->_sockets.push_back(new Socket("localhost", 8094, "port8094.log"));
-	this->_sockets.push_back(new Socket("localhost", 8095, "port8095.log"));
+	//this->_sockets.push_back(new Socket("localhost", 8093, "port8093.log"));
+	//this->_sockets.push_back(new Socket("localhost", 8094, "port8094.log"));
+	//this->_sockets.push_back(new Socket("localhost", 8095, "port8095.log"));
+    this->_sockets.push_back(new Socket("localhost", 8001, "port8001.log"));
+	this->_sockets.push_back(new Socket("localhost", 8002, "port8002.log"));
+	this->_sockets.push_back(new Socket("localhost", 8003, "port8003.log"));
     std::cout << "sockets:" << this->_sockets[0]->_socket << " " << this->_sockets[1]->_socket << " " << this->_sockets[2]->_socket << std::endl;
 	status = this->monitor_fd();
 	if (status == -1)
@@ -63,31 +66,5 @@ int	Server::startServer()
 	close(this->_sockets[0]->_socket);
 	close(this->_sockets[1]->_socket);
 	close(this->_sockets[2]->_socket);
-
 	return 0;
 }
-
-
-//using select() in order to wait for one of the 3 fds to become readable (i.e. client sent a request)
-//then accepts this with socket::acceptSocket()
-// int	Server::select_fd()
-// {
-// 	fd_set	readfds;
-// 	int		status = 1;
-// 	int		maxfd = -1;
-
-// 	FD_ZERO(&readfds);
-// 	for(int i = 0; i < 3; ++i)
-// 	{
-// 		FD_SET(this->_sockets[i]->_socket, &readfds);
-// 		if (this->_sockets[i]->_socket > maxfd)
-// 			maxfd = this->_sockets[i]->_socket;
-// 	}
-// 	status = select(maxfd + 1, &readfds, NULL, NULL, NULL);
-// 	if (status < 0)
-// 		return -1;
-// 	for(int i = 0; i < 3; ++i)
-// 		if (FD_ISSET(this->_sockets[i]->_socket, &readfds))
-// 			return this->_sockets[i]->acceptSocket();
-// 	return -1;
-// }

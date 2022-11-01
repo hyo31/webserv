@@ -12,6 +12,7 @@
 # include <sys/types.h>
 # include <sys/event.h>
 # include <sys/time.h>
+# include <fcntl.h>
 
 class Server
 {
@@ -30,11 +31,12 @@ class Server
                 sockaddr_in     _socketAddr;
                 unsigned int    _socketAddrLen;
                 std::string     _logFile;
-                std::ofstream   _logfile_ostream;
+                std::fstream    _logfileStream;
                                 Socket(std::string ipAddr, int port, std::string logFile);
                                 ~Socket();
                 int             acceptSocket();
                 int             setupSockets();
+                int             get();
         };
         std::vector<Socket*>    _sockets;
     public:

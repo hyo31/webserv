@@ -20,6 +20,7 @@ int Server::Socket::setupSockets()
     _socket = socket(AF_INET, SOCK_STREAM, 0);
     if (_socket == -1)
         return (ft_return("error: socket\n"));
+    //fcntl(_socket, F_SETFL, O_NONBLOCK);
     _socketAddr.sin_family = AF_INET;
     _socketAddr.sin_addr.s_addr = INADDR_ANY;
     _socketAddr.sin_port = htons(_port);
@@ -42,22 +43,30 @@ int Server::Socket::acceptSocket()
     std::cout << "-- accepted --\n";
     if (_accept == -1)
         return (ft_return("error: accept\n"));
+    //fcntl(_accept, F_SETFL, O_NONBLOCK);
     ssize_t bytesRead = recv(_accept, buf, 5000, 0);
+    std::cout << "=============RECEIVED=============\n";
     if (bytesRead == -1)
         return ft_return("error: recv\n");
     buf[bytesRead] = '\0';
-    _logfile_ostream.open(this->_logFile);
-    _logfile_ostream << buf;
-    _logfile_ostream.close();
-    std::ifstream responseFile("response.txt");
+    bytesRead = 0;
+    _logfileStream.open(this->_logFile);
+    _logfileStream << buf;
+    std::cout << buf << std::endl;
+    std::cout << "==================================\n";
+    std::ifstream responseFile("404.txt");
     if (responseFile.is_open())
     {
-        char *response = new char[1024];
-        responseFile.read(response, 1024);
-        send(_accept, response, 1024, 0);
+        std::string response = std::string((std::istreambuf_iterator<char>(responseFile)), std::istreambuf_iterator<char>());
+        send(_accept, response.c_str(), response.size(), 0);
     }
     close(_accept);
     responseFile.close();
+    return (0);
+}
+
+int Server::Socket::get()
+{
     return (0);
 }
 
