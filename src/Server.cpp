@@ -9,12 +9,12 @@ int	Server::startServer()
 {
 	int	status = 0;
 
-	// this->_sockets.push_back(new Socket("localhost", 8093, "logs/port8093.log"));
-	// this->_sockets.push_back(new Socket("localhost", 8094, "logs/port8094.log"));
-	// this->_sockets.push_back(new Socket("localhost", 8095, "logs/port8095.log"));
-	this->_sockets.push_back(new Socket("localhost", 8096, "logs/port8096.log"));
-	this->_sockets.push_back(new Socket("localhost", 8097, "logs/port8097.log"));
-	this->_sockets.push_back(new Socket("localhost", 8098, "logs/port8098.log"));
+	this->_sockets.push_back(new Socket("localhost", 8093));
+	this->_sockets.push_back(new Socket("localhost", 8094));
+	this->_sockets.push_back(new Socket("localhost", 8095));
+	// this->_sockets.push_back(new Socket("localhost", 8096));
+	// this->_sockets.push_back(new Socket("localhost", 8097));
+	// this->_sockets.push_back(new Socket("localhost", 8098));
 
     std::cout << "opened sockets:" << this->_sockets[0]->fd << " " << this->_sockets[1]->fd << " " << this->_sockets[2]->fd << std::endl;
     std::cout << "listening to ports:" << this->_sockets[0]->port << " " << this->_sockets[1]->port << " " << this->_sockets[2]->port << std::endl;
@@ -156,19 +156,47 @@ int Server::receiveClientRequest(int c_fd)
     std::map<int, int>::iterator it;
     it = this->_conn_fd.find(c_fd);
     if (it == this->_conn_fd.end())
-        return ft_return("didn't find connection socket_pair: ");
-    this->_sockets[it->second]->logfile_ostream.open(this->_sockets[it->second]->logFile);
-    this->_sockets[it->second]->logfile_ostream << buf;
-    this->_sockets[it->second]->logfile_ostream.close();
-    // std::cout << "received:\n" << buf << std::endl;
+        return ft_return("didn't find connection pair: ");
+    
+    this->_sockets[it->second]->logfile_fstream.open(this->_sockets[it->second]->logFile);
+    this->_sockets[it->second]->logfile_fstream.clear();
+    this->_sockets[it->second]->logfile_fstream.seekg(0);
+    this->_sockets[it->second]->logfile_fstream << buf;
+    this->_sockets[it->second]->logfile_fstream.close();
+
+    std::cout << "\n\033[33m\033[1m" << "RECEIVED:\n\033[0m\033[33m" << buf << "\033[0m" << std::endl;
     return 0;
 }
 
-std::string Server::writeResponse()
+std::string Server::writeResponse(int c_fd)
 {
-    return ("htmlFiles/home.html");
+    std::map<int, int>::iterator it;
+    it = this->_conn_fd.find(c_fd);
+    if (it == this->_conn_fd.end())
+    {
+        ft_return("didn't find connection pair: ");
+        return (NULL);
+    }
+    this->_sockets[it->second]->logfile_fstream.open(this->_sockets[it->second]->logFile);
+    if (!this->_sockets[it->second]->logfile_fstream.is_open())
+    {
+        ft_return("could not open logfile: ");
+        return (NULL);
+    }
+    std::vector<std::string> head;
+    std::string line;
+    for (int i = 0; i < 3 && this->_sockets[it->second]->logfile_fstream.peek() != '\n' && this->_sockets[it->second]->logfile_fstream >> line; i++)
+        head.push_back(line);
+    if (head[0] == "GET")
+    {
+        std::cout << head[1] << std::endl;
+        if (head[1] == "/home")
+            return ("htmlFiles/home.html");
+        else
+            return ("htmlFiles/404.html");
+    }
+    head.clear();
     return ("htmlFiles/button.html");
-    return ("htmlFiles/404.html");
 }
 
 int Server::respondToClient(int c_fd)
@@ -177,11 +205,11 @@ int Server::respondToClient(int c_fd)
     std::fstream    responseFile("response.txt");
     if (responseFile.is_open())
     {
-        std::ifstream htmlFile(this->writeResponse());
+        std::ifstream htmlFile(this->writeResponse(c_fd));
         if (htmlFile.is_open())
         {
             htmlFile.seekg(0, std::ios::end);
-            fileSize = htmlFile.tellg(); fileSize--;
+            fileSize = htmlFile.tellg();
             htmlFile.clear();
             htmlFile.seekg(0);
         }
@@ -194,9 +222,8 @@ int Server::respondToClient(int c_fd)
         char    html[fileSize];
         htmlFile.read(html, fileSize);
         responseFile << html << std::endl;
-        
         responseFile.seekg(0, std::ios::end);
-        fileSize = responseFile.tellg(); fileSize--;
+        fileSize = responseFile.tellg();
         responseFile.clear();
         responseFile.seekg(0);
         char    response[fileSize];
@@ -204,15 +231,18 @@ int Server::respondToClient(int c_fd)
         ssize_t bytesSent = send(c_fd, response, fileSize, 0);
         if (bytesSent == -1)
         {
-            closeConnection(c_fd);
+            htmlFile.close();
+            responseFile.close();
+            close(c_fd);
             return ft_return("error: send\n");
         }
-        // std::cout << "responded:\n" << response << std::endl;
+        std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << response << "\033[0m" << std::endl;
+        htmlFile.close();
         responseFile.close();
     }
     else
         return ft_return("could not open response file ");
-    // closeConnection(c_fd);
+    closeConnection(c_fd);
     return (0);
 }
 
