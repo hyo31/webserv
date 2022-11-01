@@ -8,7 +8,8 @@ class Connection
     public:
         Connection(int);
         ~Connection();
-        int  fd;
+        int fd;
+        int ori_sock;
 
     private:
                         Connection(const Connection &);

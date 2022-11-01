@@ -9,12 +9,12 @@ int	Server::startServer()
 {
 	int	status = 0;
 
-	// this->_sockets.push_back(new Socket("localhost", 8093, "port8093.log"));
-	// this->_sockets.push_back(new Socket("localhost", 8094, "port8094.log"));
-	// this->_sockets.push_back(new Socket("localhost", 8095, "port8095.log"));
-	this->_sockets.push_back(new Socket("localhost", 8096, "port8093.log"));
-	this->_sockets.push_back(new Socket("localhost", 8097, "port8094.log"));
-	this->_sockets.push_back(new Socket("localhost", 8098, "port8095.log"));
+	// this->_sockets.push_back(new Socket("localhost", 8093, "logs/port8093.log"));
+	// this->_sockets.push_back(new Socket("localhost", 8094, "logs/port8094.log"));
+	// this->_sockets.push_back(new Socket("localhost", 8095, "logs/port8095.log"));
+	this->_sockets.push_back(new Socket("localhost", 8096, "logs/port8096.log"));
+	this->_sockets.push_back(new Socket("localhost", 8097, "logs/port8097.log"));
+	this->_sockets.push_back(new Socket("localhost", 8098, "logs/port8098.log"));
 
     std::cout << "opened sockets:" << this->_sockets[0]->fd << " " << this->_sockets[1]->fd << " " << this->_sockets[2]->fd << std::endl;
     std::cout << "listening to ports:" << this->_sockets[0]->port << " " << this->_sockets[1]->port << " " << this->_sockets[2]->port << std::endl;
@@ -63,8 +63,8 @@ int	Server::monitor_fd()
         {
             for (i = 0; i < new_event; i++)
             {
-                // for (int j = 0; j < new_event; ++j)
-                    // std::cout << "events to handle:" << new_event << " fd for event " << j << ":" << tevents[j].ident << std::endl;
+                for (int j = 0; j < new_event; ++j)
+                    std::cout << "events to handle:" << new_event << " fd for event " << j << ":" << tevents[j].ident << std::endl;
                 int fd = (int)tevents[i].ident;
                 /* EV_EOF is set if the reader on the conn_fd has disconnected */
                 if (tevents[i].flags & EV_EOF)
@@ -87,15 +87,15 @@ int	Server::monitor_fd()
                     EV_SET(&chevent, conn_fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
                     kevent(kq, &chevent, 1, NULL, 0, NULL);
                     std::cout << "have connection:\n";
-                    EV_SET(&chevent, conn_fd, EVFILT_WRITE, EV_ADD | EV_ONESHOT, 0, 0, NULL);
-                    kevent(kq, &chevent, 1, NULL, 0, NULL);
                     /* coninueing loop -> new events will be in kq and enter below */
                 }
                 else if (tevents[i].filter == EVFILT_READ)
                 {
-                    // std::cout << "READING\n";
+                    std::cout << "READING\n";
                     if (this->receiveClientRequest(fd) == -1)
                         return -1;
+                    EV_SET(&chevent, tevents[i].ident, EVFILT_WRITE, EV_ADD | EV_ONESHOT, 0, 0, NULL);
+                    kevent(kq, &chevent, 1, NULL, 0, NULL);
                     // std::cout << "received:\n";
                 }
                 else if (tevents[i].filter == EVFILT_WRITE)
@@ -120,12 +120,11 @@ int Server::acceptRequest(int sock_num)
                         (socklen_t *)&this->_sockets[sock_num]->socketAddrLen);
     if (newfd == -1)
         return (ft_return("error: accept\n"));
-    Connection *newcon = new Connection(newfd);
-    this->_connections.push_back(newcon);
+    this->_conn_fd.insert(std::make_pair(newfd, sock_num));
     int status = fcntl(newfd, F_SETFL, O_NONBLOCK);	
     if (status == -1)
         ft_return("fcntl failed");
-    return newcon->fd;
+    return newfd;
 }
 
 int Server::receiveClientRequest(int c_fd)
@@ -146,10 +145,17 @@ int Server::receiveClientRequest(int c_fd)
         return ft_return("recv read 0:\n");
     }
     buf[bytesRead] = '\0';
-    // this->_sockets[sock_num]->logfile_ostream.open(this->_sockets[sock_num]->logFile);
-    // this->_sockets[sock_num]->logfile_ostream << buf;
-    // this->_sockets[sock_num]->logfile_ostream.close();
-    // std::cout << "received:\n" << buf << std::endl;
+
+    std::map<int, int>::iterator it;
+    it = this->_conn_fd.find(c_fd);
+    if (it == this->_conn_fd.end())
+        return ft_return("didn't find connection pair: ");
+    
+    this->_sockets[it->second]->logfile_ostream.open(this->_sockets[it->second]->logFile);
+    this->_sockets[it->second]->logfile_ostream << buf;
+    this->_sockets[it->second]->logfile_ostream.close();
+
+    std::cout << "received:\n" << buf << std::endl;
     return 0;
 }
 
@@ -170,7 +176,7 @@ int Server::respondToClient(int c_fd)
         if (htmlFile.is_open())
         {
             htmlFile.seekg(0, std::ios::end);
-            fileSize = htmlFile.tellg();
+            fileSize = htmlFile.tellg(); fileSize--;
             htmlFile.clear();
             htmlFile.seekg(0);
         }
@@ -185,7 +191,7 @@ int Server::respondToClient(int c_fd)
         responseFile << html << std::endl;
         
         responseFile.seekg(0, std::ios::end);
-        fileSize = responseFile.tellg();
+        fileSize = responseFile.tellg(); fileSize--;
         responseFile.clear();
         responseFile.seekg(0);
         char    response[fileSize];
@@ -196,6 +202,7 @@ int Server::respondToClient(int c_fd)
             close(c_fd);
             return ft_return("error: send\n");
         }
+        std::cout << "responded:\n" << response << std::endl;
         responseFile.close();
     }
     else

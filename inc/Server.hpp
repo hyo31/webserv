@@ -15,6 +15,7 @@
 # include <fcntl.h>
 # include "Socket.hpp"
 # include "Connection.hpp"
+# include <map>
 
 class Connection;
 class Socket;
@@ -24,7 +25,7 @@ class Server
         Server(const Server &);
         Server &    operator=(const Server &);
         std::vector<Socket*>        _sockets;
-        std::vector<Connection*>    _connections;
+        std::map<int, int>          _conn_fd;
         std::string writeResponse();
 
     public:
