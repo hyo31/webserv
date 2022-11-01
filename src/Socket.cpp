@@ -1,78 +1,116 @@
-#include "../inc/Server.hpp"
+#include "../inc/Socket.hpp"
 
-Server::Socket::Socket(std::string ipAddr, int port, std::string logFile) : _ipAddr(ipAddr), _port(port), _socket(),
-                                                                            _socketAddr(), _socketAddrLen(sizeof(_socketAddr)),
-                                                                            _logFile(logFile)
+Socket::Socket(std::string ipAddr, int port, std::string logFile) : ipAddr(ipAddr), port(port), logFile(logFile)
 {
-    std::cout << "Socket started\n";
     this->setupSockets();
 }
 
-Server::Socket::~Socket()
+Socket::~Socket()
 {
-    std::cout << "Socket:" << this->_socket << " - bound to port:" << this->_port << " closed\n";
-    close(_socket);
+    std::cout << "Socket:" << this->socket_fd << " - bound to port:" << this->port << " closed\n";
+    close(socket_fd);
 }
 
 //Creates socket, fills in sockaddr_in struct in order to bind socket to address, and makes server listen to this socket
-int Server::Socket::setupSockets()
+int Socket::setupSockets()
 {
-    _socket = socket(AF_INET, SOCK_STREAM, 0);
-    if (_socket == -1)
+    socket_fd = socket(AF_INET, SOCK_STREAM, 0);
+    if (socket_fd == -1)
         return (ft_return("error: socket\n"));
-    //fcntl(_socket, F_SETFL, O_NONBLOCK);
-    _socketAddr.sin_family = AF_INET;
-    _socketAddr.sin_addr.s_addr = INADDR_ANY;
-    _socketAddr.sin_port = htons(_port);
-    if (bind(_socket, (struct sockaddr*)&_socketAddr, _socketAddrLen))
+    int status = fcntl(socket_fd, F_SETFL, O_NONBLOCK);	
+    if (status == -1)
+        ft_return("fcntl failed");
+    memset(&socketAddr, 0, sizeof(socketAddr));
+    socketAddr.sin_family = AF_INET;
+    socketAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    socketAddr.sin_port = htons(port);
+    if (bind(socket_fd, (struct sockaddr*)&socketAddr, sizeof(socketAddr)))
     {
-        close (_socket);
-        return (ft_return("error: bind\n"));
+        close (socket_fd);
+        std::cerr << "bind failed: " << strerror(errno) << std::endl;
+        exit(1);
     }
-    if (listen(_socket, 100))
+    if (listen(socket_fd, 100))
         return (ft_return("error: listen\n"));
     return (0);
 }
 
 //accepts client requests to server, takes the request and stored it in logfile, responds with response.txt
-int Server::Socket::acceptSocket()
+int Socket::accept_Request()
 {
-    std::cout << this->_port << " " << this->_socket << std::endl;
-    char *buf = new char[5000];
-    _accept = accept(_socket, (struct sockaddr*)&_socketAddr, (socklen_t *)&_socketAddrLen);
-    std::cout << "-- accepted --\n";
-    if (_accept == -1)
+    //ACCEPT
+    std::cout << this->port << " " << this->socket_fd << std::endl;
+    accept_fd = accept(socket_fd, (struct sockaddr*)&socketAddr, (socklen_t *)&socketAddrLen);
+    if (accept_fd == -1)
         return (ft_return("error: accept\n"));
-    //fcntl(_accept, F_SETFL, O_NONBLOCK);
-    ssize_t bytesRead = recv(_accept, buf, 5000, 0);
-    std::cout << "=============RECEIVED=============\n";
-    if (bytesRead == -1)
-        return ft_return("error: recv\n");
-    buf[bytesRead] = '\0';
-    bytesRead = 0;
-    _logfileStream.open(this->_logFile);
-    _logfileStream << buf;
-    std::cout << buf << std::endl;
-    std::cout << "==================================\n";
-    std::ifstream responseFile("404.txt");
+    // std::cout << "-- accepted --\n";
+    return 0;
+}
+
+int Socket::receive_ClientRequest(int kq)
+{
+    struct  kevent  chevent;   /* Event to monitor */
+    struct  kevent  tevent;   /* Event triggered */
+
+    EV_SET(&chevent, accept_fd, EVFILT_READ, EV_ADD | EV_CLEAR, 0, 0, 0);
+    int new_event = kevent(kq, &chevent, 1, &tevent, 1, NULL);
+    if (new_event == -1)
+        ft_return("kevent 2 failed");
+    if (tevent.flags & EV_EOF)
+    {
+        close(accept_fd);
+        return -1;
+    }
+    else if (tevent.flags & EVFILT_WRITE && tevent.flags & EVFILT_READ)
+    {
+        ssize_t bytesRead;
+        char    buf[50000];
+    
+        std::cout << "---receiving---\n";
+        for (bytesRead = 0; bytesRead != -1;)
+            bytesRead = recv(accept_fd, buf, 50000, MSG_DONTWAIT);
+        // bytesRead = recv(accept_fd, buf, 50000, MSG_DONTWAIT);
+        // if (bytesRead == -1)
+        // {
+        //     close(accept_fd);
+        //     ft_return("recv failed:\n");
+        // }
+        if (bytesRead == 0)
+        {
+            close(accept_fd);
+            return -1;
+        }
+        buf[bytesRead] = '\0';
+        logfile_ostream.open(this->logFile);
+        logfile_ostream << buf;
+        logfile_ostream.close();
+        std::cout << "received:\n" << buf << std::endl;
+        return 0;
+    }
+    return ft_return("didnt flag a read event\n");
+}
+
+int Socket::respond_to_Client()
+{
+    //RESPOND
+    std::ifstream responseFile("response.txt");
     if (responseFile.is_open())
     {
-        std::string response = std::string((std::istreambuf_iterator<char>(responseFile)), std::istreambuf_iterator<char>());
-        send(_accept, response.c_str(), response.size(), 0);
+        responseFile.seekg(0, std::ios::end);
+        int file_size = responseFile.tellg();
+        responseFile.clear();
+        responseFile.seekg(0);
+        char    response[file_size];
+        responseFile.read(response, file_size);
+        std::cout << "response:\n" << response << std::endl;
+        ssize_t bytesSent = send(accept_fd, response, file_size, MSG_DONTWAIT);
+        if (bytesSent == -1)
+        {
+            close(accept_fd);
+            return ft_return("error: send\n");
+        }
     }
-    close(_accept);
     responseFile.close();
+    close(accept_fd);
     return (0);
-}
-
-int Server::Socket::get()
-{
-    return (0);
-}
-
-//prints error messages and returns to main
-int ft_return(std::string str)
-{
-    std::cerr << str << strerror(errno) << std::endl;
-    return (errno);
 }
