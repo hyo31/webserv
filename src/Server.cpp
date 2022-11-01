@@ -157,7 +157,6 @@ int Server::receiveClientRequest(int c_fd)
     it = this->_conn_fd.find(c_fd);
     if (it == this->_conn_fd.end())
         return ft_return("didn't find connection pair: ");
-    
     this->_sockets[it->second]->logfile_fstream.open(this->_sockets[it->second]->logFile);
     this->_sockets[it->second]->logfile_fstream.clear();
     this->_sockets[it->second]->logfile_fstream.seekg(0);
@@ -202,46 +201,42 @@ std::string Server::writeResponse(int c_fd)
 int Server::respondToClient(int c_fd)
 {
     int             fileSize;
+    std::ofstream   temp("response.txt");
+    temp.close();
     std::fstream    responseFile("response.txt");
-    if (responseFile.is_open())
+    if (!responseFile.is_open())
+        return ft_return("could not open response file ");
+    std::ifstream htmlFile(this->writeResponse(c_fd));
+    if (!htmlFile.is_open())
+        return (ft_return("html file doesn't exist"));
+    htmlFile.seekg(0, std::ios::end);
+    fileSize = htmlFile.tellg();
+    htmlFile.clear();
+    htmlFile.seekg(0);            
+    responseFile << "HTTP/1.1 200 OK" << std::endl;
+    responseFile << "Content-Type: text/html" << std::endl;
+    responseFile << "Connection: keep-alive" << std::endl;
+    responseFile << "Content-Length " << fileSize << std::endl << std::endl;
+    char    html[fileSize];
+    htmlFile.read(html, fileSize);
+    responseFile << html << std::endl;
+    responseFile.seekg(0, std::ios::end);
+    fileSize = responseFile.tellg();
+    responseFile.clear();
+    responseFile.seekg(0);
+    char    response[fileSize];
+    responseFile.read(response, fileSize);
+    ssize_t bytesSent = send(c_fd, response, fileSize, 0);
+    if (bytesSent == -1)
     {
-        std::ifstream htmlFile(this->writeResponse(c_fd));
-        if (htmlFile.is_open())
-        {
-            htmlFile.seekg(0, std::ios::end);
-            fileSize = htmlFile.tellg();
-            htmlFile.clear();
-            htmlFile.seekg(0);
-        }
-        else
-            return (ft_return("html file doesn't exist"));
-        responseFile << "HTTP/1.1 200 OK" << std::endl;
-        responseFile << "Content-Type: text/html" << std::endl;
-        responseFile << "Connection: keep-alive" << std::endl;
-        responseFile << "Content-Length " << fileSize << std::endl << std::endl;
-        char    html[fileSize];
-        htmlFile.read(html, fileSize);
-        responseFile << html << std::endl;
-        responseFile.seekg(0, std::ios::end);
-        fileSize = responseFile.tellg();
-        responseFile.clear();
-        responseFile.seekg(0);
-        char    response[fileSize];
-        responseFile.read(response, fileSize);
-        ssize_t bytesSent = send(c_fd, response, fileSize, 0);
-        if (bytesSent == -1)
-        {
-            htmlFile.close();
-            responseFile.close();
-            close(c_fd);
-            return ft_return("error: send\n");
-        }
-        std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << response << "\033[0m" << std::endl;
         htmlFile.close();
         responseFile.close();
+        close(c_fd);
+        return ft_return("error: send\n");
     }
-    else
-        return ft_return("could not open response file ");
+    std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << response << "\033[0m" << std::endl;
+    htmlFile.close();
+    responseFile.close();
     closeConnection(c_fd);
     return (0);
 }

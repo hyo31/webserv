@@ -1,17 +1,12 @@
 HTTP/1.1 200 OK
 Content-Type: text/html
 Connection: keep-alive
-Content-Length 263
+Content-Length 103
 
 <!DOCTYPE html>
 <html lang="en">
-<style>
-.borderexample {
- border-bottom:solid thin black;
-}
-</style>
 <body>
-    <h1 class="borderexample"; style="text-align:center">404 Not found</h1>
-    <p style="text-align:center;">This page does not exist</p>
+    <h1 style="text-align:center">WEBSERV</h1>
 </body>
 </html>
+
