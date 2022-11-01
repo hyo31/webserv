@@ -9,12 +9,12 @@ int	Server::startServer()
 {
 	int	status = 0;
 
-	this->_sockets.push_back(new Socket("localhost", 8093));
-	this->_sockets.push_back(new Socket("localhost", 8094));
-	this->_sockets.push_back(new Socket("localhost", 8095));
-	// this->_sockets.push_back(new Socket("localhost", 8096));
-	// this->_sockets.push_back(new Socket("localhost", 8097));
-	// this->_sockets.push_back(new Socket("localhost", 8098));
+	// this->_sockets.push_back(new Socket("localhost", 8093));
+	// this->_sockets.push_back(new Socket("localhost", 8094));
+	// this->_sockets.push_back(new Socket("localhost", 8095));
+	this->_sockets.push_back(new Socket("localhost", 8096));
+	this->_sockets.push_back(new Socket("localhost", 8097));
+	this->_sockets.push_back(new Socket("localhost", 8098));
 
     std::cout << "opened sockets:" << this->_sockets[0]->fd << " " << this->_sockets[1]->fd << " " << this->_sockets[2]->fd << std::endl;
     std::cout << "listening to ports:" << this->_sockets[0]->port << " " << this->_sockets[1]->port << " " << this->_sockets[2]->port << std::endl;
@@ -189,10 +189,16 @@ std::string Server::writeResponse(int c_fd)
     if (head[0] == "GET")
     {
         std::cout << head[1] << std::endl;
-        if (head[1] == "/home")
+        if (head[1] == "/home" || head[1] == "/")
+        {
+            responseHeader = "HTTP/1.1 200 OK";
             return ("htmlFiles/home.html");
+        }
         else
+        {
+            responseHeader = "HTTP/1.1 404 OK";
             return ("htmlFiles/404.html");
+        }
     }
     head.clear();
     return ("htmlFiles/button.html");
@@ -213,7 +219,8 @@ int Server::respondToClient(int c_fd)
     fileSize = htmlFile.tellg();
     htmlFile.clear();
     htmlFile.seekg(0);            
-    responseFile << "HTTP/1.1 200 OK" << std::endl;
+    responseFile << responseHeader << std::endl;
+    responseHeader.erase();
     responseFile << "Content-Type: text/html" << std::endl;
     responseFile << "Connection: keep-alive" << std::endl;
     responseFile << "Content-Length " << fileSize << std::endl << std::endl;
