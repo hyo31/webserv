@@ -186,21 +186,23 @@ std::string Server::writeResponse(int c_fd)
     std::string line;
     for (int i = 0; i < 3 && this->_sockets[it->second]->logfile_fstream.peek() != '\n' && this->_sockets[it->second]->logfile_fstream >> line; i++)
         head.push_back(line);
-    if (head[0] == "GET")
+    if (head[0] == "GET" || head[0] == "POST")
     {
         std::cout << head[1] << std::endl;
-        if (head[1] == "/home" || head[1] == "/")
+        std::string ret = this->_sockets[it->second]->getLocationPage(head[1]);
+        if (ret != "")
         {
             responseHeader = "HTTP/1.1 200 OK";
-            return ("htmlFiles/home.html");
+            return (ret);
         }
         else
         {
-            responseHeader = "HTTP/1.1 404 OK";
+            responseHeader = "HTTP/1.1 404 Not Found";
             return ("htmlFiles/404.html");
         }
     }
     head.clear();
+    responseHeader = "HTTP/1.1 200 OK";
     return ("htmlFiles/button.html");
 }
 
@@ -214,13 +216,12 @@ int Server::respondToClient(int c_fd)
         return ft_return("could not open response file ");
     std::ifstream htmlFile(this->writeResponse(c_fd));
     if (!htmlFile.is_open())
-        return (ft_return("html file doesn't exist"));
+        return (ft_return("html file doesn't exist: "));
     htmlFile.seekg(0, std::ios::end);
     fileSize = htmlFile.tellg();
     htmlFile.clear();
     htmlFile.seekg(0);            
     responseFile << responseHeader << std::endl;
-    responseHeader.erase();
     responseFile << "Content-Type: text/html" << std::endl;
     responseFile << "Connection: keep-alive" << std::endl;
     responseFile << "Content-Length " << fileSize << std::endl << std::endl;
@@ -241,7 +242,8 @@ int Server::respondToClient(int c_fd)
         close(c_fd);
         return ft_return("error: send\n");
     }
-    std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << response << "\033[0m" << std::endl;
+    std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << response << "\033[0m" << std::endl;
+    responseHeader.erase();
     htmlFile.close();
     responseFile.close();
     closeConnection(c_fd);
