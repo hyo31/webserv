@@ -9,12 +9,12 @@ int	Server::startServer()
 {
 	int	status = 0;
 
-	this->_sockets.push_back(new Socket("localhost", 8093));
-	this->_sockets.push_back(new Socket("localhost", 8094));
-	this->_sockets.push_back(new Socket("localhost", 8095));
-	// this->_sockets.push_back(new Socket("localhost", 8096));
-	// this->_sockets.push_back(new Socket("localhost", 8097));
-	// this->_sockets.push_back(new Socket("localhost", 8098));
+	// this->_sockets.push_back(new Socket("localhost", 8093));
+	// this->_sockets.push_back(new Socket("localhost", 8094));
+	// this->_sockets.push_back(new Socket("localhost", 8095));
+	this->_sockets.push_back(new Socket("localhost", 8096));
+	this->_sockets.push_back(new Socket("localhost", 8097));
+	this->_sockets.push_back(new Socket("localhost", 8098));
 
     std::cout << "opened sockets:" << this->_sockets[0]->fd << " " << this->_sockets[1]->fd << " " << this->_sockets[2]->fd << std::endl;
     std::cout << "listening to ports:" << this->_sockets[0]->port << " " << this->_sockets[1]->port << " " << this->_sockets[2]->port << std::endl;
@@ -77,12 +77,22 @@ int	Server::monitor_fd()
                 }
                 else if (fd == this->_sockets[0]->fd || fd == this->_sockets[1]->fd || fd == this->_sockets[2]->fd)
                 {
-                    // if (open_connection(fd) == true)
-                    //     continue ;
                     // std::cout << "accepting for: " << fd << std::endl;
                     sock_num = 0;
                     while (fd != this->_sockets[sock_num]->fd && sock_num < 3)
                         sock_num++;
+                    if (open_connection(fd) == true)
+                    {
+                        std::cout << "READING from:" << fd << std::endl;
+                        if ((ret = this->receiveClientRequest(fd)) == -1)
+                            return -1;
+                        else if (ret == 0) /* now that we read the request, we can respond, so now we add an event to monitor that triggers if we can send to client */
+                        {
+                            EV_SET(&chevent, tevents[i].ident, EVFILT_WRITE, EV_ADD | EV_ONESHOT, 0, 0, NULL);
+                            kevent(kq, &chevent, 1, NULL, 0, NULL);
+                        }
+                        continue;
+                    }
                     conn_fd = this->acceptRequest(sock_num);
                     std::cout << "OPENED:" << conn_fd << std::endl;
                     if (conn_fd == -1)
@@ -242,7 +252,7 @@ int Server::respondToClient(int c_fd)
     }
     else
         return ft_return("could not open response file ");
-    closeConnection(c_fd);
+    // closeConnection(c_fd);
     return (0);
 }
 

@@ -22,10 +22,10 @@ class Server
 {
     private:
         Server(const Server &);
-        Server &    operator=(const Server &);
-        std::vector<Socket*>        _sockets;
-        std::map<int, int>          _conn_fd;
-        std::string writeResponse(int c_fd);
+        Server &                operator=(const Server &);
+        std::vector<Socket*>    _sockets;
+        std::map<int,int>       _conn_fd; /* key=fd, value=socket_num*/
+        std::string             writeResponse(int c_fd);
 
     public:
         Server();
