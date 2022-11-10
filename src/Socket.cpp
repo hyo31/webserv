@@ -3,6 +3,12 @@
 Socket::Socket(std::string ipAddr, int port)
 : ipAddr(ipAddr), port(port), logFile("logs/port" + std::to_string(port) + ".log")
 {
+    this->_pages.insert(std::make_pair("/home", "htmlFiles/home.html"));
+    this->_pages.insert(std::make_pair("/", "htmlFiles/home.html"));
+    this->_pages.insert(std::make_pair("/form", "htmlFiles/form.html"));
+    this->_pages.insert(std::make_pair("/uploadfile", "htmlFiles/uploadfile.html"));
+    this->_pages.insert(std::make_pair("/upload.php", "htmlFiles/upload.php"));
+    this->_pages.insert(std::make_pair("/404", "htmlFiles/404.html"));
     this->setupSockets();
 }
 
@@ -34,4 +40,15 @@ int Socket::setupSockets()
     if (listen(this->fd, 100))
         return (ft_return("error: listen\n"));
     return (0);
+}
+
+std::string Socket::getLocationPage(std::string page)
+{
+    std::map<std::string, std::string>::iterator  it;
+    it = this->_pages.find(page);
+    std::cout << "page: " << it->second << std::endl;
+    if (it == this->_pages.end())
+        return ("");
+    return (it->second);
+    
 }

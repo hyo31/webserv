@@ -1,6 +1,7 @@
 #ifndef SOCKET_HPP
 # define SOCKET_HPP
 
+# include <map>
 # include "Server.hpp"
 
 class Socket
@@ -20,6 +21,9 @@ class Socket
         Socket &        operator=(const Socket &);
         int             startServer();
         int             setupSockets();
+        std::string     getLocationPage(std::string page);
+    private:
+        std::map<std::string, std::string>    _pages;
 };
 
 #endif

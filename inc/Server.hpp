@@ -26,6 +26,7 @@ class Server
         std::vector<Socket*>    _sockets;
         std::map<int,int>       _conn_fd; /* key=fd, value=socket_num*/
         std::string             writeResponse(int c_fd);
+        std::string             responseHeader;
 
     public:
         Server();
