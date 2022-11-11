@@ -17,12 +17,17 @@ void Server::set_chlist(std::vector<struct kevent>& change_list, uintptr_t ident
 
 int Server::closeConnection(int fd)
 {
-    std::map<int, int>::iterator it;
-    it = this->_conn_fd.find(fd);
-    if (it == this->_conn_fd.end())
-        ft_return("attempted erase unknown socket_pair: ");
-    else
-        this->_conn_fd.erase(it);
+    std::vector<Client*>::iterator it = this->_clients.begin();
+    std::vector<Client*>::iterator end = this->_clients.end();
+
+    for(; it != end; ++it)
+    {
+        if (fd == (*it)->conn_fd)
+        {
+            delete *it;
+            this->_clients.erase(it);
+        }
+    }
     close(fd);
     std::cout << "disconnected from socket:" << fd << std::endl;
     return 0;
@@ -30,9 +35,41 @@ int Server::closeConnection(int fd)
 
 int    Server::is_connection_open(int c_fd)
 {
-    std::map<int,int>::iterator it;
-    it = this->_conn_fd.find(c_fd);
-    if (it == this->_conn_fd.end())
-        return -1;
-    return true;
+    std::vector<Client*>::iterator it = this->_clients.begin();
+    std::vector<Client*>::iterator end = this->_clients.end();
+
+    for(; it != end; ++it)
+    {
+        if (c_fd == (*it)->conn_fd)
+            return true;
+    }
+    return false;
+}
+
+void    Server::update_client_timestamp(int fd)
+{
+    std::vector<Client*>::iterator it = this->_clients.begin();
+    std::vector<Client*>::iterator end = this->_clients.end();
+
+    for(; it != end; ++it)
+        if (fd == (*it)->conn_fd)
+            break ;
+    if (it != end)
+        (*it)->update_client_timestamp();
+}
+
+void    Server::bounceTimedOutClients()
+{
+    std::vector<Client*>::iterator it = this->_clients.begin();
+    std::vector<Client*>::iterator end = this->_clients.end();
+    time_t current_time = std::time(nullptr);
+
+    for(; it != end; ++it)
+    {
+        if ((*it)->is_connected + TIMEOUT <=  current_time)
+        {
+            std::cout << "Bouncing client from:" << (*it)->conn_fd << std::endl;
+            closeConnection((*it)->conn_fd);
+        }
+    }
 }

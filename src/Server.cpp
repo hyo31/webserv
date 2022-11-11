@@ -25,6 +25,7 @@ int	Server::monitor_fd()
         /* use kevent to wait for an event (when a client tries to connect or when a connection has data to read/is open to receive data) */
         std::cout << "--waiting for events...--\n";
         new_event = kevent(kq, &chlist[0], chlist.size(), tevents, 40, NULL);
+        bounceTimedOutClients();
         chlist.clear();
         if (new_event < 0)
             ft_return("kevent failed:\n");
@@ -38,7 +39,7 @@ int	Server::monitor_fd()
                 /* EV_EOF is set if the reader on the conn_fd has disconnected */
                 if (tevents[i].flags & EV_EOF)
                 {
-                    std::cout << "client disconnected..\n";
+                    std::cout << "Client disconnected..\n";
                     if (closeConnection(fd) == -1)
                         return -1;
                 }

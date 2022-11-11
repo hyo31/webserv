@@ -7,7 +7,8 @@ int Server::acceptRequest(int sock_num)
                         (socklen_t *)&this->_sockets[sock_num]->socketAddrLen);
     if (newfd == -1)
         return (ft_return("error: accept\n"));
-    this->_conn_fd.insert(std::make_pair(newfd, sock_num));
+    Client *newclient = new Client(newfd, sock_num);
+    this->_clients.push_back(newclient);
     int status = fcntl(newfd, F_SETFL, O_NONBLOCK);	
     if (status == -1)
         ft_return("fcntl failed");
@@ -20,6 +21,7 @@ int Server::receiveClientRequest(int c_fd)
     char    buf[50000];
 
     bytesRead = recv(c_fd, buf, 50000, 0);
+    update_client_timestamp(c_fd);
     if (bytesRead == -1)
     {
         closeConnection(c_fd);
@@ -32,15 +34,19 @@ int Server::receiveClientRequest(int c_fd)
         return 1; 
     }
     buf[bytesRead] = '\0';
-    std::map<int, int>::iterator it;
-    it = this->_conn_fd.find(c_fd);
-    if (it == this->_conn_fd.end())
+
+    std::vector<Client*>::iterator it = this->_clients.begin();
+    std::vector<Client*>::iterator end = this->_clients.end();
+    for(; it != end; ++it)
+        if (c_fd == (*it)->conn_fd)
+            break ;
+    if (it == end)
         return ft_return("didn't find connection pair: ");
-    this->_sockets[it->second]->logfile_fstream.open(this->_sockets[it->second]->logFile);
-    this->_sockets[it->second]->logfile_fstream.clear();
-    this->_sockets[it->second]->logfile_fstream.seekg(0);
-    this->_sockets[it->second]->logfile_fstream << buf;
-    this->_sockets[it->second]->logfile_fstream.close();
+    this->_sockets[(*it)->port]->logfile_fstream.open(this->_sockets[(*it)->port]->logFile);
+    this->_sockets[(*it)->port]->logfile_fstream.clear();
+    this->_sockets[(*it)->port]->logfile_fstream.seekg(0);
+    this->_sockets[(*it)->port]->logfile_fstream << buf;
+    this->_sockets[(*it)->port]->logfile_fstream.close();
 
     std::cout << "\n\033[33m\033[1m" << "RECEIVED:\n\033[0m\033[33m" << buf << "\033[0m" << std::endl;
     return 0;
@@ -48,27 +54,30 @@ int Server::receiveClientRequest(int c_fd)
 
 std::string Server::buildResponse(int c_fd)
 {
-    std::map<int, int>::iterator it;
-    it = this->_conn_fd.find(c_fd);
-    if (it == this->_conn_fd.end())
+    std::vector<Client*>::iterator it = this->_clients.begin();
+    std::vector<Client*>::iterator end = this->_clients.end();
+    for(; it != end; ++it)
+        if (c_fd == (*it)->conn_fd)
+            break ;
+    if (it == end)
     {
         ft_return("didn't find connection pair: ");
         return (NULL);
     }
-    this->_sockets[it->second]->logfile_fstream.open(this->_sockets[it->second]->logFile);
-    if (!this->_sockets[it->second]->logfile_fstream.is_open())
+    this->_sockets[(*it)->port]->logfile_fstream.open(this->_sockets[(*it)->port]->logFile);
+    if (!this->_sockets[(*it)->port]->logfile_fstream.is_open())
     {
         ft_return("could not open logfile: ");
         return (NULL);
     }
     std::vector<std::string> head;
     std::string line;
-    for (int i = 0; i < 3 && this->_sockets[it->second]->logfile_fstream.peek() != '\n' && this->_sockets[it->second]->logfile_fstream >> line; i++)
+    for (int i = 0; i < 3 && this->_sockets[(*it)->port]->logfile_fstream.peek() != '\n' && this->_sockets[(*it)->port]->logfile_fstream >> line; i++)
         head.push_back(line);
     if (head[0] == "GET" || head[0] == "POST")
     {
         // std::cout << head[1] << std::endl;
-        std::string ret = this->_sockets[it->second]->getLocationPage(head[1]);
+        std::string ret = this->_sockets[(*it)->port]->getLocationPage(head[1]);
         if (ret != "")
         {
             responseHeader = "HTTP/1.1 200 OK";
@@ -120,6 +129,7 @@ int Server::sendResponseToClient(int c_fd)
         close(c_fd);
         return ft_return("error: send\n");
     }
+    update_client_timestamp(c_fd);
     std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << response << "\033[0m" << std::endl;
     responseHeader.erase();
     htmlFile.close();

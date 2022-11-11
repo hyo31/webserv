@@ -7,13 +7,14 @@ CFLAGS = -Wall -Werror -Wextra -std=c++98
 SRC_DIR =	src/
 OBJ_DIR =	obj/
 
-HEADER_FILES = inc/Server.hpp inc/Socket.hpp
+HEADER_FILES = inc/Server.hpp inc/Socket.hpp inc/Client.hpp
 
 SRC =	src/webserv.cpp\
 		src/Socket.cpp\
 		src/Server.cpp\
 		src/HandleEvents.cpp\
 		src/utils.cpp\
+		src/Client.cpp\
 
 OBJ = $(SRC:$(SRC_DIR)%.cpp=$(OBJ_DIR)%.o)
 

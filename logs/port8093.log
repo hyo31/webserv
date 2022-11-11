@@ -1,4 +1,4 @@
-GET /favicon.ico HTTP/1.1
+GET /images/favicon.ico HTTP/1.1
 Host: localhost:8093
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
@@ -13,8 +13,7 @@ Referer: http://localhost:8093/
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
-1
-Sec-Fetch-Dest: document
+Fetch-Dest: document
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
