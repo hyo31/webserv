@@ -12,6 +12,8 @@ HEADER_FILES = inc/Server.hpp inc/Socket.hpp
 SRC =	src/webserv.cpp\
 		src/Socket.cpp\
 		src/Server.cpp\
+		src/HandleEvents.cpp\
+		src/utils.cpp\
 
 OBJ = $(SRC:$(SRC_DIR)%.cpp=$(OBJ_DIR)%.o)
 
