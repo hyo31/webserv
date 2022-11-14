@@ -13,7 +13,7 @@ class Client
         void    update_client_timestamp();
 
         int         conn_fd;
-        std::time_t is_connected;
+        std::time_t timestamp;
         int         port;
 
     private:

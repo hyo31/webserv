@@ -66,7 +66,7 @@ void    Server::bounceTimedOutClients()
 
     for(; it != end; ++it)
     {
-        if ((*it)->is_connected + TIMEOUT <=  current_time)
+        if ((*it)->timestamp + TIMEOUT <=  current_time)
         {
             std::cout << "Bouncing client from:" << (*it)->conn_fd << std::endl;
             closeConnection((*it)->conn_fd);

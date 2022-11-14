@@ -3,7 +3,7 @@
 
 Client::Client(int fd, int port) : conn_fd(fd), port(port)
 { 
-    is_connected = std::time(nullptr);
+    this->timestamp = std::time(nullptr);
 }
 Client::~Client() { std::cout << "Client removed\n"; }
 
@@ -15,12 +15,12 @@ Client::Client(const Client& src)
 Client & Client::operator=(const Client& src)
 {
     this->conn_fd = src.conn_fd;
-    this->is_connected = src.is_connected;
+    this->timestamp = src.timestamp;
     this->port = src.port;
     return *this;
 }
 
 void    Client::update_client_timestamp()
 {
-    this->is_connected = std::time(nullptr);
+    this->timestamp = std::time(nullptr);
 }
