@@ -29,7 +29,7 @@ class Server
         Server &                operator=(const Server &);
         
         std::string findHtmlFile(int c_fd);
-        int         monitor_fd();
+        int         monitor_ports();
         int         acceptRequest(int);
         int         receiveClientRequest(int);
         int         sendResponseToClient(int);

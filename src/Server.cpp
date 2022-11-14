@@ -3,9 +3,9 @@
 Server::Server() {}
 Server::~Server() { std::cout << "Closing server...\n";	}
 
-//using kqueue() in order to monitor the 3 fds
+//using kqueue() in order to monitor the 3 ports
 //then accepts this with socket::acceptSocket() when a client sends a request
-int	Server::monitor_fd()
+int	Server::monitor_ports()
 {
     int i, sock_num, new_event, kq, conn_fd, ret;
 	std::vector<struct  kevent> chlist;         /* list of events to monitor */
@@ -103,7 +103,7 @@ int	Server::startServer()
     }
     std::cout << "opened sockets:" << this->_sockets[0]->fd << " " << this->_sockets[1]->fd << " " << this->_sockets[2]->fd << std::endl;
     std::cout << "listening to ports:" << this->_sockets[0]->port << " " << this->_sockets[1]->port << " " << this->_sockets[2]->port << std::endl;
-	status = this->monitor_fd();
+	status = this->monitor_ports();
 	if (status == -1)
 		return ft_return("monitor failed:\n");
 	close(this->_sockets[0]->fd);
