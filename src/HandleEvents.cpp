@@ -52,7 +52,7 @@ int Server::receiveClientRequest(int c_fd)
     return 0;
 }
 
-std::string Server::buildResponse(int c_fd)
+std::string Server::findHtmlFile(int c_fd)
 {
     std::vector<Client*>::iterator it = this->_clients.begin();
     std::vector<Client*>::iterator end = this->_clients.end();
@@ -80,45 +80,58 @@ std::string Server::buildResponse(int c_fd)
         std::string ret = this->_sockets[(*it)->port]->getLocationPage(head[1]);
         if (ret != "")
         {
-            responseHeader = "HTTP/1.1 200 OK";
+            _responseHeader = "HTTP/1.1 200 OK";
             return (ret);
         }
         else
         {
-            responseHeader = "HTTP/1.1 404 Not Found";
+            _responseHeader = "HTTP/1.1 404 Not Found";
             return ("htmlFiles/404.html");
         }
     }
     head.clear();
-    responseHeader = "HTTP/1.1 200 OK";
+    _responseHeader = "HTTP/1.1 200 OK";
     return ("htmlFiles/button.html");
 }
 
 int Server::sendResponseToClient(int c_fd)
 {
     int             fileSize;
-    std::ofstream   temp("response.txt");
-    temp.close();
-    std::fstream    responseFile("response.txt");
+    std::ifstream   htmlFile;
+    std::fstream    responseFile;
+
+    //open streamfiles
+    responseFile.open("response.txt", std::ios::in | std::ios::out | std::ios::binary);
     if (!responseFile.is_open())
         return ft_return("could not open response file ");
-    std::ifstream htmlFile(this->buildResponse(c_fd));
+    htmlFile.open(this->findHtmlFile(c_fd), std::ios::in | std::ios::binary);
     if (!htmlFile.is_open())
         return (ft_return("html file doesn't exist: "));
+    
+
+    //get length of htmlFile
     htmlFile.seekg(0, std::ios::end);
     fileSize = htmlFile.tellg();
     htmlFile.clear();
-    htmlFile.seekg(0);            
-    responseFile << responseHeader << std::endl;
+    htmlFile.seekg(0, std::ios::beg);   
+
+    //read correct headers (first one set in 'findHtmlFile') into responseFile
+    responseFile << this->_responseHeader << std::endl;
     responseFile << "Content-Type: text/html" << std::endl;
-    responseFile << "Content-Length " << fileSize << std::endl << std::endl;
+    responseFile << "Content-Length: " << fileSize << "\r\n\r\n"; //std::endl << std::endl;
+    
+    //create char string to read html into, which is then read into responseFile         
     char    html[fileSize];
     htmlFile.read(html, fileSize);
     responseFile << html << std::endl;
+
+    //get length of full responseFile
     responseFile.seekg(0, std::ios::end);
     fileSize = responseFile.tellg();
     responseFile.clear();
-    responseFile.seekg(0);
+    responseFile.seekg(0, std::ios::beg);
+
+    //create respone which is sent back to client
     char    response[fileSize];
     responseFile.read(response, fileSize);
     ssize_t bytesSent = send(c_fd, response, fileSize, 0);
@@ -130,9 +143,11 @@ int Server::sendResponseToClient(int c_fd)
         return ft_return("error: send\n");
     }
     update_client_timestamp(c_fd);
-    std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << response << "\033[0m" << std::endl;
-    responseHeader.erase();
+    std::cout   << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << "[" << response << "]\033[0m" << std::endl;
+    this->_responseHeader.erase();
     htmlFile.close();
     responseFile.close();
     return (0);
 }
+
+
