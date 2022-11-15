@@ -8,6 +8,7 @@
 # include <vector>
 # include <iomanip>
 # include <fstream>
+# include <limits>
 # include <errno.h>
 # include <sys/types.h>
 # include <sys/event.h>
@@ -15,29 +16,38 @@
 # include <fcntl.h>
 # include "Socket.hpp"
 # include <map>
+# include "Client.hpp"
 
-class Connection;
+#define TIMEOUT 60 
+
+class Client;
 class Socket;
 class Server
 {
     private:
         Server(const Server &);
-        Server &    operator=(const Server &);
-        std::vector<Socket*>        _sockets;
-        std::map<int, int>          _conn_fd;
-        std::string writeResponse(int c_fd);
-        std::string responseHeader;
+        Server &                operator=(const Server &);
+        
+        std::string findHtmlFile(int c_fd);
+        int         monitor_ports();
+        int         acceptRequest(int);
+        int         receiveClientRequest(int);
+        int         sendResponseToClient(int);
+        int         closeConnection(int);
+        int         is_connection_open(int);
+        void        set_chlist(std::vector<struct kevent>&, uintptr_t, int16_t, uint16_t, uint32_t, intptr_t, void *);
+        void        update_client_timestamp(int);
+        void        bounceTimedOutClients();
+
+        std::vector<Socket*>    _sockets;
+        std::vector<Client*>    _clients;
+        std::string             _responseHeader;
 
     public:
-        Server();
-        ~Server();
+                Server();
+                ~Server();
         int     startServer();
-        int     monitor_fd();
-        int     acceptRequest(int);
-        int     receiveClientRequest(int);
-        int     respondToClient(int);
-        int     closeConnection(int);
-        bool    open_connection(int);
+
 };
 
 int ft_return(std::string str);

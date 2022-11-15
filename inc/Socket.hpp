@@ -23,7 +23,7 @@ class Socket
         int             setupSockets();
         std::string     getLocationPage(std::string page);
     private:
-        std::map<std::string, std::string>    _pages;
+        std::map<std::string, std::string>    _pages; /* name - location */
 };
 
 #endif

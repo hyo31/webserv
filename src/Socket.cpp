@@ -33,9 +33,12 @@ int Socket::setupSockets()
     socketAddr.sin_port = htons(port);
     if (bind(this->fd, (struct sockaddr*)&socketAddr, sizeof(socketAddr)))
     {
-        close (this->fd);
         std::cerr << "bind failed: " << strerror(errno) << std::endl;
-        exit(1);
+        close (this->fd);
+        errno = -4;
+        return 0;
+        // std::cerr << "bind failed: " << strerror(errno) << std::endl;
+        // exit(1);
     }
     if (listen(this->fd, 100))
         return (ft_return("error: listen\n"));
@@ -46,7 +49,7 @@ std::string Socket::getLocationPage(std::string page)
 {
     std::map<std::string, std::string>::iterator  it;
     it = this->_pages.find(page);
-    std::cout << "page: " << it->second << std::endl;
+    // std::cout << "page: " << it->second << std::endl;
     if (it == this->_pages.end())
         return ("");
     return (it->second);
