@@ -27,7 +27,7 @@ int	Server::monitor_ports()
         new_event = kevent(kq, &chlist[0], chlist.size(), tevents, 40, NULL);
         chlist.clear();
         if (new_event < 0)
-            ft_return("kevent failed:\n");
+            ft_return("kevent failed: \n");
         /* kevent returned with n new events */
         else if (new_event > 0)
         {

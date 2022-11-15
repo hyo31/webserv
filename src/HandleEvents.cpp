@@ -41,14 +41,15 @@ int Server::receiveClientRequest(int c_fd)
         return 1; 
     }
     buf[bytesRead] = '\0';
-    // std::vector<Client*>::iterator it = this->_clients.begin();
-    // std::vector<Client*>::iterator end = this->_clients.end();
-    // for(; it != end; ++it)
-    //     if (c_fd == (*it)->conn_fd)
-    //         break ;
-    // if (it == end)
-    //     return ft_return("didn't find connection pair: ");
-    this->_sockets[(*it)->port]->logfile_fstream.open(this->_sockets[(*it)->port]->logFile);
+
+    std::vector<Client*>::iterator it = this->_clients.begin();
+    std::vector<Client*>::iterator end = this->_clients.end();
+    for(; it != end; ++it)
+        if (c_fd == (*it)->conn_fd)
+            break ;
+    if (it == end)
+        return ft_return("didn't find connection pair: ");
+    this->_sockets[(*it)->port]->logfile_fstream.open(this->_sockets[(*it)->port]->logFile, std::fstream::out);
     this->_sockets[(*it)->port]->logfile_fstream.clear();
     this->_sockets[(*it)->port]->logfile_fstream.seekg(0);
     this->_sockets[(*it)->port]->logfile_fstream << buf;
@@ -113,7 +114,11 @@ int Server::sendResponseToClient(int c_fd)
     htmlFile.open(this->findHtmlFile(c_fd), std::ios::in | std::ios::binary);
     if (!htmlFile.is_open())
         return (ft_return("html file doesn't exist: "));
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> fcf16d19ec460c31edde0e1ab211f083c4b7aa16
     //get length of htmlFile
     htmlFile.seekg(0, std::ios::end);
     fileSize = htmlFile.tellg();
@@ -148,11 +153,9 @@ int Server::sendResponseToClient(int c_fd)
         return ft_return("error: send\n");
     }
     update_client_timestamp(c_fd);
-    std::cout   << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << "[" << response << "]\033[0m" << std::endl;
+    std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << "[" << response << "]\033[0m" << std::endl;
     this->_responseHeader.erase();
     htmlFile.close();
     responseFile.close();
     return (0);
 }
-
-
