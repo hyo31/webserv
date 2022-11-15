@@ -114,11 +114,7 @@ int Server::sendResponseToClient(int c_fd)
     htmlFile.open(this->findHtmlFile(c_fd), std::ios::in | std::ios::binary);
     if (!htmlFile.is_open())
         return (ft_return("html file doesn't exist: "));
-<<<<<<< HEAD
-
-=======
     
->>>>>>> fcf16d19ec460c31edde0e1ab211f083c4b7aa16
     //get length of htmlFile
     htmlFile.seekg(0, std::ios::end);
     fileSize = htmlFile.tellg();
