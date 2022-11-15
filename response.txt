@@ -27,7 +27,8 @@ Content-Length: 539
     <button class="button button1">One</button>
     <button class="button button1">Two</button>
 </body>
-</html>
+</html>
+
 5, 255, 255);font-size: 26px;"><a href="/uploadfile" style="text-decoration: none;color: white">Upload a File</a></h2><br>
         <h2 style="text-align:center;color:rgb(255, 255, 255);font-size: 26px;"><a href="/doesntexist" style="text-decoration: none;color: white">test3</a></h2>
 </body>

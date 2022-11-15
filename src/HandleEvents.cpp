@@ -21,6 +21,12 @@ int Server::receiveClientRequest(int c_fd)
     char    buf[50000];
 
     bytesRead = recv(c_fd, buf, 50000, 0);
+    /* check if request is full*/
+    if (bytesRead > 0)
+    {
+        chunkedRequest(buf);
+    }
+
     update_client_timestamp(c_fd);
     if (bytesRead == -1)
     {
@@ -29,19 +35,19 @@ int Server::receiveClientRequest(int c_fd)
     }
     if (bytesRead == 0)
     {
+        std::cout << "0 bytes read/stream socket peer shutdown (eof)\n";
         if (closeConnection(c_fd) == -1)
             return -1;
         return 1; 
     }
     buf[bytesRead] = '\0';
-
-    std::vector<Client*>::iterator it = this->_clients.begin();
-    std::vector<Client*>::iterator end = this->_clients.end();
-    for(; it != end; ++it)
-        if (c_fd == (*it)->conn_fd)
-            break ;
-    if (it == end)
-        return ft_return("didn't find connection pair: ");
+    // std::vector<Client*>::iterator it = this->_clients.begin();
+    // std::vector<Client*>::iterator end = this->_clients.end();
+    // for(; it != end; ++it)
+    //     if (c_fd == (*it)->conn_fd)
+    //         break ;
+    // if (it == end)
+    //     return ft_return("didn't find connection pair: ");
     this->_sockets[(*it)->port]->logfile_fstream.open(this->_sockets[(*it)->port]->logFile);
     this->_sockets[(*it)->port]->logfile_fstream.clear();
     this->_sockets[(*it)->port]->logfile_fstream.seekg(0);
@@ -107,7 +113,6 @@ int Server::sendResponseToClient(int c_fd)
     htmlFile.open(this->findHtmlFile(c_fd), std::ios::in | std::ios::binary);
     if (!htmlFile.is_open())
         return (ft_return("html file doesn't exist: "));
-    
 
     //get length of htmlFile
     htmlFile.seekg(0, std::ios::end);

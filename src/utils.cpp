@@ -73,3 +73,8 @@ void    Server::bounceTimedOutClients()
         }
     }
 }
+
+bool    Server::chunkedRequest(char *buf)
+{
+    
+}
