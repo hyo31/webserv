@@ -1,5 +1,43 @@
 #include "../inc/Socket.hpp"
 
+Socket::Socket(std::string config)
+{
+    std::size_t pos;
+    std::size_t pos2;
+    std::string page;
+    std::string location;
+    pos = config.find("listen");
+    if (pos == std::string::npos)
+        exit (ft_return("No port set: "));
+    try
+    {
+        port = std::stoi(config.substr(pos + 7, 4));
+        logFile = "logs/port" + config.substr(pos + 7, 4) + ".log";
+        ipAddr = "localhost";
+    }
+    catch(std::invalid_argument const& ex)
+    {
+        std::cout << "std::invalid_argument::what(): " << ex.what() << '\n';
+        exit (ft_return("Error reading config file"));
+    }
+    pos = config.find("page");
+    if (pos == std::string::npos)
+        exit (ft_return("No pages set: "));
+    while (pos != std::string::npos)
+    {
+        pos2 = config.find("location", config.find("{", pos));
+        if (pos2 == std::string::npos || pos2 > config.find("}", pos))
+            exit (ft_return("No location set: "));
+        page = config.substr(pos + 5, config.find_first_of(' ', pos + 5) - (pos + 5));
+        location = config.substr(pos2 + 9, config.find_first_of(';', pos2 + 9) - (pos2 + 9));
+        this->_pages.insert(std::make_pair(page, location));
+        pos = config.find("page", pos + 1);
+    }
+    this->_pages.insert(std::make_pair("/upload.php", "htmlFiles/upload.php"));
+    this->_pages.insert(std::make_pair("/404", "htmlFiles/404.html"));
+    this->setupSockets();
+}
+
 Socket::Socket(std::string ipAddr, int port)
 : ipAddr(ipAddr), port(port), logFile("logs/port" + std::to_string(port) + ".log")
 {

@@ -24,7 +24,7 @@ int Server::receiveClientRequest(int c_fd)
     /* check if request is full*/
     if (bytesRead > 0)
     {
-        chunkedRequest(buf);
+        //chunkedRequest(buf);
     }
 
     update_client_timestamp(c_fd);

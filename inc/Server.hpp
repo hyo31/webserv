@@ -41,7 +41,6 @@ class Server
         void        update_client_timestamp(int);
         void        bounceTimedOutClients();
         int         Configuration(std::string configFilePath);
-        bool        chunkedRequest(char *);
 
         std::vector<Socket*>    _sockets;
         std::vector<Client*>    _clients;

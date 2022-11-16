@@ -84,62 +84,41 @@ int	Server::startServer(std::string configFilePath)
 	int	status = 0;
     if (Configuration(configFilePath) == -1)
         return (ft_return(""));
-	// this->_sockets.push_back(new Socket("localhost", 8093));
-	// this->_sockets.push_back(new Socket("localhost", 8094));
-	// this->_sockets.push_back(new Socket("localhost", 8095));
-    // if (errno == -4)
-    // {
-    //     close(this->_sockets[0]->fd);
-    //     close(this->_sockets[1]->fd);
-    //     close(this->_sockets[2]->fd);
-    //     this->_sockets.pop_back();
-    //     this->_sockets.pop_back();
-    //     this->_sockets.pop_back();
-    //     delete this->_sockets[0];
-    //     delete this->_sockets[1];
-    //     delete this->_sockets[2];
-    //     this->_sockets.push_back(new Socket("localhost", 8096));
-	//     this->_sockets.push_back(new Socket("localhost", 8097));
-	//     this->_sockets.push_back(new Socket("localhost", 8098));
-    // }
+    std::cout << this->_sockets[0]->port << ", " << this->_sockets[0]->logFile << std::endl;
+    std::cout << this->_sockets[1]->port << ", " << this->_sockets[1]->logFile << std::endl;
+    std::cout << this->_sockets[2]->port << ", " << this->_sockets[2]->logFile << std::endl;
     std::cout << "opened sockets:" << this->_sockets[0]->fd << " " << this->_sockets[1]->fd << " " << this->_sockets[2]->fd << std::endl;
     std::cout << "listening to ports:" << this->_sockets[0]->port << " " << this->_sockets[1]->port << " " << this->_sockets[2]->port << std::endl;
 	status = this->monitor_ports();
 	if (status == -1)
 		return ft_return("monitor failed:\n");
-	close(this->_sockets[0]->fd);
-	close(this->_sockets[1]->fd);
-	close(this->_sockets[2]->fd);
     delete this->_sockets[0];
     delete this->_sockets[1];
     delete this->_sockets[2];
-
 	return 0;
 }
 
 int Server::Configuration(std::string configFilePath)
 {
-    std::ifstream configFile;
+    std::ifstream               configFile;
+    std::string                 line;
+    std::string                 socketConfig;
     configFile.open(configFilePath);
     if (!configFile.is_open())
         return (ft_return("Error opening config file: "));
-    this->_sockets.push_back(new Socket("localhost", 8093));
-	this->_sockets.push_back(new Socket("localhost", 8094));
-	this->_sockets.push_back(new Socket("localhost", 8095));
-    if (errno == -4)
+    while (std::getline(configFile, line))
     {
-        close(this->_sockets[0]->fd);
-        close(this->_sockets[1]->fd);
-        close(this->_sockets[2]->fd);
-        this->_sockets.pop_back();
-        this->_sockets.pop_back();
-        this->_sockets.pop_back();
-        delete this->_sockets[0];
-        delete this->_sockets[1];
-        delete this->_sockets[2];
-        this->_sockets.push_back(new Socket("localhost", 8096));
-	    this->_sockets.push_back(new Socket("localhost", 8097));
-	    this->_sockets.push_back(new Socket("localhost", 8098));
+        if (!line.compare("{"))
+        {
+            while (std::getline(configFile, line))
+            {
+                if (!line.compare("}"))
+                    break;
+                socketConfig = socketConfig + line + "\n";
+            }
+            this->_sockets.push_back(new Socket(socketConfig));
+            socketConfig.erase(socketConfig.begin(), socketConfig.end());
+        }
     }
     configFile.close(); 
     return (0);
