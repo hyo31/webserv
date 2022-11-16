@@ -14,7 +14,7 @@ Content-Length: 841
         <h2 style="text-align:center;color:rgb(255, 255, 255);font-size: 26px;"><a href="/uploadfile" style="text-decoration: none;color: white">Upload a File</a></h2><br>
         <h2 style="text-align:center;color:rgb(255, 255, 255);font-size: 26px;"><a href="/doesntexist" style="text-decoration: none;color: white">test3</a></h2>
 </body>
-</html>”
+</html>Dæ
 <label style="color: white" for="message">Message (max 256 characters):</label><br>
         <textarea id="message" name="message" rows="4" cols="50"></textarea><br>
         <input type="submit" value="Submit">

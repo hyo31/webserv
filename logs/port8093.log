@@ -1,17 +1,50 @@
-GET / HTTP/1.1
-Host: localhost:8093
-Connection: keep-alive
-sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
-sec-ch-ua-mobile: ?0
-sec-ch-ua-platform: "macOS"
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Purpose: prefetch
-Sec-Fetch-Site: none
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
+------WebKitFormBoundaryeWAOjjog9kN3ZGAg
+Content-Disposition: form-data; name="fileToUpload"; filename="Makefile"
+Content-Type: application/octet-stream
 
+NAME = webserver
+
+CC = g++
+
+CFLAGS = -Wall -Werror -Wextra -std=c++98
+
+SRC_DIR =	src/
+OBJ_DIR =	obj/
+
+HEADER_FILES = inc/Server.hpp inc/Socket.hpp inc/Client.hpp
+
+SRC =	src/webserv.cpp\
+		src/Socket.cpp\
+		src/Server.cpp\
+		src/HandleEvents.cpp\
+		src/utils.cpp\
+		src/Client.cpp\
+
+OBJ = $(SRC:$(SRC_DIR)%.cpp=$(OBJ_DIR)%.o)
+
+all: $(OBJ_DIR) $(NAME)
+
+$(NAME): $(OBJ)
+	$(CC) $(OBJ) $(CFLAGS) -o $(NAME)
+
+$(OBJ): $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp $(HEADER_FILES)
+	@$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
+
+$(OBJ_DIR):
+	mkdir obj
+
+clean:
+	@rm -f $(OBJ)
+
+fclean: clean
+	@rm -f $(NAME)
+
+re: fclean all
+
+.PHONY: all clean fclean re
+
+------WebKitFormBoundaryeWAOjjog9kN3ZGAg
+Content-Disposition: form-data; name="submit"
+
+Upload File
+------WebKitFormBoundaryeWAOjjog9kN3ZGAg--
