@@ -21,6 +21,12 @@ int Server::receiveClientRequest(int c_fd)
     char    buf[50000];
 
     bytesRead = recv(c_fd, buf, 50000, 0);
+    /* check if request is full*/
+    if (bytesRead > 0)
+    {
+        chunkedRequest(buf);
+    }
+
     update_client_timestamp(c_fd);
     if (bytesRead == -1)
     {
@@ -29,6 +35,7 @@ int Server::receiveClientRequest(int c_fd)
     }
     if (bytesRead == 0)
     {
+        std::cout << "0 bytes read/stream socket peer shutdown (eof)\n";
         if (closeConnection(c_fd) == -1)
             return -1;
         return 1; 
