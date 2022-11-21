@@ -4,8 +4,9 @@
 Client::Client(int fd, int port) : conn_fd(fd), port(port)
 { 
     this->timestamp = std::time(nullptr);
-    this->request_is_read = false;
+    this->request_is_read = true;
     this->request_content_length = -1;
+    this->chunk_number = 0;
 }
 Client::~Client() { std::cout << "Client removed\n"; }
 

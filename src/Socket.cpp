@@ -73,10 +73,8 @@ int Socket::setupSockets()
     {
         std::cerr << "bind failed: " << strerror(errno) << std::endl;
         close (this->fd);
-        errno = -4;
-        return 0;
-        // std::cerr << "bind failed: " << strerror(errno) << std::endl;
-        // exit(1);
+        std::cerr << "bind failed: " << strerror(errno) << std::endl;
+        exit(1);
     }
     if (listen(this->fd, 100))
         return (ft_return("error: listen\n"));

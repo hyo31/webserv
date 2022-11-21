@@ -110,21 +110,29 @@ static int  ft_atoi(std::string str)
 	return (n * j);
 }
 
-void    Server::chunkedRequest(char *buf, std::vector<Client*>::iterator it)
+static std::string readFileIntoString(const std::string & path)
+{
+    std::ifstream input_file(path);
+    if (!input_file.is_open())
+    {
+        ft_return("couldnt open file:");
+        return "";
+    }
+    return std::string((std::istreambuf_iterator<char>(input_file)), std::istreambuf_iterator<char>());
+}
+
+void    Server::chunkedRequest(std::string path, std::vector<Client*>::iterator it)
 {
     //check if all headers read (end /r/n/r/n)
     // if not ; return
-    std::string str=buf;
-    std::string::size_type ret;
-    std::string::iterator str_it;
-    std::string::iterator str_it2;
     (*it)->request_is_read = false;
+    std::string str = readFileIntoString(path);
+    std::string::size_type  ret;
+    std::string::iterator   str_it;
+    std::string::iterator   str_it2;
 
-    if (str.find("\r\n\r\n") == std::string::npos)
-    {
-        std::cout << "ret 1\n";
-        return ;
-    }
+    if (str.find("\r\n\r\n") == std::string::npos) {
+        std::cout << "incomplete req\n"; return ; }
     //check header for either content length: or Transfer-Encoding: chunked
     if ((ret = str.find("Content Length:")) != std::string::npos)
     {
@@ -139,19 +147,14 @@ void    Server::chunkedRequest(char *buf, std::vector<Client*>::iterator it)
         start = ret + 4;
         for (end = 0; str[end] != '\0'; ++end);
         end--;
-        if ((int)(start - end) != (*it)->request_content_length)
-        {
-            std::cout << "ret 2\n";
-            return ;
-        }
+        if ((int)(start - end) != (*it)->request_content_length) {
+            std::cout << "didnt read full content len\n"; return ; }
     }
     //then check if all is read or not. 
-
-
     //if not ; return
     //->true (or 'set client as 'ready to respond') ; return
 
     (*it)->request_is_read = true;
-    std::cout << "ret 3\n";
+    std::cout << "full request:\n" << str << std::endl;
     return ;
 }

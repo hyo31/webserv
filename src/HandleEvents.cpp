@@ -30,15 +30,6 @@ int Server::receiveClientRequest(int c_fd)
     bytesRead = recv(c_fd, buf, 50000, 0);
     buf[bytesRead] = '\0';
     update_client_timestamp(c_fd);
-    /* check if request is full*/
-    if (bytesRead > 0)
-    {
-        chunkedRequest(buf, it);
-        if ((*it)->request_is_read == true)
-            std::cout << "read all"  << std::endl;
-        else
-            std::cout << "did not read all"  << std::endl;
-    }
     if (bytesRead == -1)
     {
         closeConnection(c_fd);
@@ -51,15 +42,27 @@ int Server::receiveClientRequest(int c_fd)
             return -1;
         return 1; 
     }
-
-    this->_sockets[(*it)->port]->logfile_fstream.open(this->_sockets[(*it)->port]->logFile, std::fstream::out);
-    this->_sockets[(*it)->port]->logfile_fstream.clear();
-    this->_sockets[(*it)->port]->logfile_fstream.seekg(0);
+    if ((*it)->request_is_read == true)
+    {
+        std::cout << "clearing content\n";
+        std::ofstream ofs;
+        ofs.open(this->_sockets[(*it)->port]->logFile, std::ofstream::out | std::ofstream::trunc);
+        ofs.seekp(0);
+        ofs.clear();
+        ofs.close();
+    }
+    this->_sockets[(*it)->port]->logfile_fstream.open(this->_sockets[(*it)->port]->logFile, std::fstream::out | std::fstream::app);
     this->_sockets[(*it)->port]->logfile_fstream << buf;
+    // std::ofstream asd;
+    // asd.open("logs/check", std::fstream::out | std::fstream::app);
+    // asd << buf;
     this->_sockets[(*it)->port]->logfile_fstream.close();
-
+    /* check if request is full*/
+    chunkedRequest(this->_sockets[(*it)->port]->logFile, it);
     std::cout << "\n\033[33m\033[1m" << "RECEIVED:\n\033[0m\033[33m" << buf << "\033[0m" << std::endl;
-    return 0;
+    if ((*it)->request_is_read == true)
+        return 0;
+    return 1;
 }
 
 std::string Server::findHtmlFile(int c_fd)

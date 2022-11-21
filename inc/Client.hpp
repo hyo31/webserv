@@ -17,6 +17,7 @@ class Client
         int         port;
         bool        request_is_read;
         int         request_content_length;
+        int         chunk_number;
 
     private:
         Client();
