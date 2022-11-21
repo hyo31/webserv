@@ -15,6 +15,8 @@ class Client
         int         conn_fd;
         std::time_t timestamp;
         int         port;
+        bool        request_is_read;
+        int         request_content_length;
 
     private:
         Client();

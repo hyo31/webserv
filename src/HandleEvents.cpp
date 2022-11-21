@@ -20,14 +20,25 @@ int Server::receiveClientRequest(int c_fd)
     ssize_t bytesRead = -1;
     char    buf[50000];
 
+    std::vector<Client*>::iterator it = this->_clients.begin();
+    std::vector<Client*>::iterator end = this->_clients.end();
+    for(; it != end; ++it)
+        if (c_fd == (*it)->conn_fd)
+            break ;
+    if (it == end)
+        return ft_return("didn't find connection pair: ");
     bytesRead = recv(c_fd, buf, 50000, 0);
+    buf[bytesRead] = '\0';
+    update_client_timestamp(c_fd);
     /* check if request is full*/
     if (bytesRead > 0)
     {
-        chunkedRequest(buf);
+        chunkedRequest(buf, it);
+        if ((*it)->request_is_read == true)
+            std::cout << "read all"  << std::endl;
+        else
+            std::cout << "did not read all"  << std::endl;
     }
-
-    update_client_timestamp(c_fd);
     if (bytesRead == -1)
     {
         closeConnection(c_fd);
@@ -40,15 +51,7 @@ int Server::receiveClientRequest(int c_fd)
             return -1;
         return 1; 
     }
-    buf[bytesRead] = '\0';
 
-    std::vector<Client*>::iterator it = this->_clients.begin();
-    std::vector<Client*>::iterator end = this->_clients.end();
-    for(; it != end; ++it)
-        if (c_fd == (*it)->conn_fd)
-            break ;
-    if (it == end)
-        return ft_return("didn't find connection pair: ");
     this->_sockets[(*it)->port]->logfile_fstream.open(this->_sockets[(*it)->port]->logFile, std::fstream::out);
     this->_sockets[(*it)->port]->logfile_fstream.clear();
     this->_sockets[(*it)->port]->logfile_fstream.seekg(0);

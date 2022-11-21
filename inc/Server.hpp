@@ -38,7 +38,7 @@ class Server
         void        set_chlist(std::vector<struct kevent>&, uintptr_t, int16_t, uint16_t, uint32_t, intptr_t, void *);
         void        update_client_timestamp(int);
         void        bounceTimedOutClients();
-        bool        chunkedRequest(char *);
+        void        chunkedRequest(char *, std::vector<Client*>::iterator);
 
         std::vector<Socket*>    _sockets;
         std::vector<Client*>    _clients;
