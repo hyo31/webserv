@@ -18,7 +18,9 @@
 # include <map>
 # include "Client.hpp"
 
-#define TIMEOUT 60 
+# ifndef TIMEOUT
+#  define TIMEOUT 60 
+# endif
 
 class Client;
 class Socket;
@@ -39,6 +41,7 @@ class Server
         void        update_client_timestamp(int);
         void        bounceTimedOutClients();
         void        chunkedRequest(char *, std::vector<Client*>::iterator);
+        int         Configuration(std::string configFilePath);
 
         std::vector<Socket*>    _sockets;
         std::vector<Client*>    _clients;
@@ -47,10 +50,9 @@ class Server
     public:
                 Server();
                 ~Server();
-        int     startServer();
+        int     startServer(std::string configFilePath);
 
 };
 
 int ft_return(std::string str);
-
 #endif

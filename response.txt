@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 Content-Type: text/html
-Content-Length: 539
+Content-Length: 841
 
 <!DOCTYPE html>
 <html lang="en">
@@ -31,10 +31,14 @@ Content-Length: 539
 5, 255, 255);font-size: 26px;"><a href="/uploadfile" style="text-decoration: none;color: white">Upload a File</a></h2><br>
         <h2 style="text-align:center;color:rgb(255, 255, 255);font-size: 26px;"><a href="/doesntexist" style="text-decoration: none;color: white">test3</a></h2>
 </body>
-</html>—Ü
-
+</html>ï¿½a
 <label style="color: white" for="message">Message (max 256 characters):</label><br>
         <textarea id="message" name="message" rows="4" cols="50"></textarea><br>
+        <input type="submit" value="Submit">
+      </form>
+</body>
+</html>
+ea><br>
         <input type="submit" value="Submit">
       </form>
 </body>
