@@ -48,6 +48,9 @@ int Server::receiveClientRequest(int c_fd)
         std::ofstream ofs;
         ofs.open(this->_sockets[(*it)->port]->logFile, std::ofstream::out | std::ofstream::trunc);
         ofs.close();
+		(*it)->headerSet = false;
+		(*it)->requestBody = "";
+		(*it)->requestHeader = "";
     }
     std::ofstream ofs;
     ofs.open(this->_sockets[(*it)->port]->logFile, std::fstream::out | std::fstream::app);
@@ -86,7 +89,6 @@ std::string Server::findHtmlFile(int c_fd)
     std::string line;
     for (int i = 0; i < 3 && fstr.peek() != '\n' && fstr >> line; i++)
         head.push_back(line);
-    std::cout << head[0] << std::endl;
     if (head[0] == "GET" || head[0] == "POST")
     {
         // std::cout << head[1] << std::endl;
