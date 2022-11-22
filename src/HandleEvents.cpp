@@ -47,19 +47,17 @@ int Server::receiveClientRequest(int c_fd)
         std::cout << "clearing content\n";
         std::ofstream ofs;
         ofs.open(this->_sockets[(*it)->port]->logFile, std::ofstream::out | std::ofstream::trunc);
-        ofs.seekp(0);
-        ofs.clear();
         ofs.close();
     }
-    this->_sockets[(*it)->port]->logfile_fstream.open(this->_sockets[(*it)->port]->logFile, std::fstream::out | std::fstream::app);
-    this->_sockets[(*it)->port]->logfile_fstream << buf;
-    // std::ofstream asd;
-    // asd.open("logs/check", std::fstream::out | std::fstream::app);
-    // asd << buf;
-    this->_sockets[(*it)->port]->logfile_fstream.close();
+    std::ofstream ofs;
+    ofs.open(this->_sockets[(*it)->port]->logFile, std::fstream::out | std::fstream::app);
+    ofs << buf;
+    ofs.close();
+    std::ofstream asd;
+    asd.open("logs/check", std::fstream::out | std::fstream::app);
+    asd << buf;
     /* check if request is full*/
     chunkedRequest(this->_sockets[(*it)->port]->logFile, it);
-    std::cout << "\n\033[33m\033[1m" << "RECEIVED:\n\033[0m\033[33m" << buf << "\033[0m" << std::endl;
     if ((*it)->request_is_read == true)
         return 0;
     return 1;
@@ -77,16 +75,18 @@ std::string Server::findHtmlFile(int c_fd)
         ft_return("didn't find connection pair: ");
         return (NULL);
     }
-    this->_sockets[(*it)->port]->logfile_fstream.open(this->_sockets[(*it)->port]->logFile);
-    if (!this->_sockets[(*it)->port]->logfile_fstream.is_open())
+    std::fstream fstr;
+    fstr.open(this->_sockets[(*it)->port]->logFile);
+    if (!fstr.is_open())
     {
         ft_return("could not open logfile: ");
         return (NULL);
     }
     std::vector<std::string> head;
     std::string line;
-    for (int i = 0; i < 3 && this->_sockets[(*it)->port]->logfile_fstream.peek() != '\n' && this->_sockets[(*it)->port]->logfile_fstream >> line; i++)
+    for (int i = 0; i < 3 && fstr.peek() != '\n' && fstr >> line; i++)
         head.push_back(line);
+    std::cout << head[0] << std::endl;
     if (head[0] == "GET" || head[0] == "POST")
     {
         // std::cout << head[1] << std::endl;
@@ -120,7 +120,6 @@ int Server::sendResponseToClient(int c_fd)
     htmlFile.open(this->findHtmlFile(c_fd), std::ios::in | std::ios::binary);
     if (!htmlFile.is_open())
         return (ft_return("html file doesn't exist: "));
-    
     //get length of htmlFile
     htmlFile.seekg(0, std::ios::end);
     fileSize = htmlFile.tellg();

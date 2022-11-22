@@ -17,6 +17,7 @@
 # include "Socket.hpp"
 # include <map>
 # include "Client.hpp"
+# include <sstream>
 
 # ifndef TIMEOUT
 #  define TIMEOUT 60 

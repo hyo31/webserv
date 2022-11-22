@@ -112,13 +112,11 @@ static int  ft_atoi(std::string str)
 
 static std::string readFileIntoString(const std::string & path)
 {
-    std::ifstream input_file(path);
-    if (!input_file.is_open())
-    {
-        ft_return("couldnt open file:");
-        return "";
-    }
-    return std::string((std::istreambuf_iterator<char>(input_file)), std::istreambuf_iterator<char>());
+    std::ifstream str(path);
+    std::stringstream buff;
+    buff << str.rdbuf();
+    str.close();
+    return buff.str();
 }
 
 void    Server::chunkedRequest(std::string path, std::vector<Client*>::iterator it)
@@ -131,8 +129,11 @@ void    Server::chunkedRequest(std::string path, std::vector<Client*>::iterator 
     std::string::iterator   str_it;
     std::string::iterator   str_it2;
 
-    if (str.find("\r\n\r\n") == std::string::npos) {
-        std::cout << "incomplete req\n"; return ; }
+    if (str.find("\r\n\r\n") == std::string::npos)
+    {
+        std::cout << "incomplete req\n" << std::endl;
+        return ;
+    }
     //check header for either content length: or Transfer-Encoding: chunked
     if ((ret = str.find("Content Length:")) != std::string::npos)
     {
@@ -147,14 +148,17 @@ void    Server::chunkedRequest(std::string path, std::vector<Client*>::iterator 
         start = ret + 4;
         for (end = 0; str[end] != '\0'; ++end);
         end--;
-        if ((int)(start - end) != (*it)->request_content_length) {
-            std::cout << "didnt read full content len\n"; return ; }
+        if ((int)(start - end) != (*it)->request_content_length)
+        {
+            std::cout << "didnt read full content len\nCont len:" << (*it)->request_content_length << "\nCharacters read:" << start - end << std::endl;
+            return ;
+        }
     }
     //then check if all is read or not. 
     //if not ; return
     //->true (or 'set client as 'ready to respond') ; return
 
     (*it)->request_is_read = true;
-    std::cout << "full request:\n" << str << std::endl;
+    std::cout << "\n\033[33m\033[1m" << "RECEIVED:\n\033[0m\033[33m" << str << "\033[0m" << std::endl;
     return ;
 }
