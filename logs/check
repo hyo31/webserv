@@ -261,4 +261,32 @@ Referer: http://localhost:8001/form
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
-fname=asd&lname=asd&message=asdasd
+fname=asd&lname=asd&message=asdasdPOST / HTTP/1.1
+Host: localhost:8004
+User-Agent: Go-http-client/1.1
+Transfer-Encoding: chunked
+Content-Type: test/file
+Accept-Encoding: gzip
+
+a
+ten chara.
+15
+12345
+
+POST / HTTP/1.1
+Host: localhost:8004
+User-Agent: Go-http-client/1.1
+Transfer-Encoding: chunked
+Content-Type: test/file
+Accept-Encoding: gzip
+
+a
+ten chara.
+15
+12345
+
+GET / HTTP/1.1
+Host: localhost:8001
+User-Agent: curl/7.54.0
+Accept: */*
+
