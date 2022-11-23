@@ -1,6 +1,11 @@
 #include "../inc/Server.hpp"
 
-Server::Server() {}
+Server::Server()
+{
+	this->_timeout.tv_sec = TIMEOUT;
+	this->_timeout.tv_nsec = 0;
+}
+
 Server::~Server() { std::cout << "Closing server...\n";	}
 
 //using kqueue() in order to monitor the 3 ports
@@ -24,7 +29,7 @@ int	Server::monitor_ports()
     {
         /* use kevent to wait for an event (when a client tries to connect or when a connection has data to read/is open to receive data) */
         std::cout << "\033[1m--waiting for events...--\n\033[0m";
-        new_event = kevent(kq, &chlist[0], chlist.size(), tevents, 40, NULL);
+        new_event = kevent(kq, &chlist[0], chlist.size(), tevents, 40, &this->_timeout);
         chlist.clear();
         if (new_event < 0)
             return ft_return("kevent failed: \n");
@@ -42,11 +47,10 @@ int	Server::monitor_ports()
                     if (closeConnection(fd) == -1)
                         return -1;
                 }
-                else if (findAcceptedFD(fd) != -1)
+                else if ((sock_num = findSocket(fd))!= -1)
                 {
                     std::cout << "accepting for: " << fd << std::endl;
-                    sock_num = findAcceptedFD(fd);
-                    conn_fd = this->acceptRequest(sock_num);
+                    conn_fd = acceptRequest(sock_num);
                     std::cout << "OPENED:" << conn_fd << std::endl;
                     if (conn_fd == -1)
                         return -1;
@@ -70,9 +74,9 @@ int	Server::monitor_ports()
                     if (this->sendResponseToClient(fd) == -1)
                         return -1;
                 }
-                bounceTimedOutClients();
             }
         }
+		bounceTimedOutClients();
     }
 	return -1;
 }
@@ -126,7 +130,7 @@ int Server::configuration(std::string configFilePath)
     return (0);
 }
 
-int Server::findAcceptedFD(int fd)
+int Server::findSocket(int fd)
 {
     for (size_t i = 0; i < this->_sockets.size(); i++)
         if (fd == this->_sockets[i]->fd)

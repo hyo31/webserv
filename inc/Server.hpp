@@ -38,19 +38,21 @@ class Server
         int		sendResponseToClient(int);
         int		closeConnection(int);
         int		is_connection_open(int);
-        void		set_chlist(std::vector<struct kevent>&, uintptr_t, int16_t, uint16_t, uint32_t, intptr_t, void *);
-        void		update_client_timestamp(int);
-        void		bounceTimedOutClients();
-        void		chunkedRequest(std::string, std::vector<Client*>::iterator);
+        void	set_chlist(std::vector<struct kevent>&, uintptr_t, int16_t, uint16_t, uint32_t, intptr_t, void *);
+        void	update_client_timestamp(int);
+        void	bounceTimedOutClients();
+        void	chunkedRequest(std::string, std::vector<Client*>::iterator);
         int		Configuration(std::string configFilePath);
-	void		unchunk(std::string, std::string::size_type, std::vector<Client*>::iterator);
-	void		buildBodyForContentLength(std::string, std::string::size_type, std::vector<Client*>::iterator);
-        int             configuration(std::string configFilePath);
-        int             findAcceptedFD(int fd);
+		void	unchunk(std::string, std::string::size_type, std::vector<Client*>::iterator);
+		void	buildBodyForContentLength(std::string, std::string::size_type, std::vector<Client*>::iterator);
+        int		configuration(std::string configFilePath);
+        int		findSocket(int fd);
 
         std::vector<Socket*>	_sockets;
         std::vector<Client*>	_clients;
-        std::string		_responseHeader;
+        std::string				_responseHeader;
+		struct timespec			_timeout;
+
 
     public:
 			Server();
