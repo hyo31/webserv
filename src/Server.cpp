@@ -59,7 +59,8 @@ int	Server::monitor_ports()
                     if ((ret = this->receiveClientRequest(fd)) == -1)
                         return -1;
                     /* now that we read the request, we can respond, so now we add an event to monitor that triggers if we can send to client */
-                    set_chlist(chlist, fd, EVFILT_WRITE, EV_ADD | EV_ONESHOT, 0, 0, NULL);
+                    if (ret == 0)
+                        set_chlist(chlist, fd, EVFILT_WRITE, EV_ADD | EV_ONESHOT, 0, 0, NULL);
                 }
                 else if (tevents[i].filter == EVFILT_WRITE)
                 {
@@ -103,6 +104,7 @@ int Server::configuration(std::string configFilePath)
     std::ifstream               configFile;
     std::string                 line;
     std::string                 socketConfig;
+
     configFile.open(configFilePath);
     if (!configFile.is_open())
         return (ft_return("Error opening config file: "));

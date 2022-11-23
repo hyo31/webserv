@@ -20,13 +20,15 @@ int Server::receiveClientRequest(int c_fd)
     ssize_t bytesRead = -1;
     char    buf[50000];
 
+    std::vector<Client*>::iterator it = this->_clients.begin();
+    std::vector<Client*>::iterator end = this->_clients.end();
+    for(; it != end; ++it)
+        if (c_fd == (*it)->conn_fd)
+            break ;
+    if (it == end)
+        return ft_return("didn't find connection pair: ");
     bytesRead = recv(c_fd, buf, 50000, 0);
-    /* check if request is full*/
-    if (bytesRead > 0)
-    {
-        //chunkedRequest(buf);
-    }
-
+    buf[bytesRead] = '\0';
     update_client_timestamp(c_fd);
     if (bytesRead == -1)
     {
@@ -40,23 +42,28 @@ int Server::receiveClientRequest(int c_fd)
             return -1;
         return 1; 
     }
-    buf[bytesRead] = '\0';
-
-    std::vector<Client*>::iterator it = this->_clients.begin();
-    std::vector<Client*>::iterator end = this->_clients.end();
-    for(; it != end; ++it)
-        if (c_fd == (*it)->conn_fd)
-            break ;
-    if (it == end)
-        return ft_return("didn't find connection pair: ");
-    this->_sockets[(*it)->port]->logfile_fstream.open(this->_sockets[(*it)->port]->logFile, std::fstream::out);
-    this->_sockets[(*it)->port]->logfile_fstream.clear();
-    this->_sockets[(*it)->port]->logfile_fstream.seekg(0);
-    this->_sockets[(*it)->port]->logfile_fstream << buf;
-    this->_sockets[(*it)->port]->logfile_fstream.close();
-
-    std::cout << "\n\033[33m\033[1m" << "RECEIVED:\n\033[0m\033[33m" << buf << "\033[0m" << std::endl;
-    return 0;
+    if ((*it)->request_is_read == true)
+    {
+        std::cout << "clearing content\n";
+        std::ofstream ofs;
+        ofs.open(this->_sockets[(*it)->port]->logFile, std::ofstream::out | std::ofstream::trunc);
+        ofs.close();
+		(*it)->headerSet = false;
+		(*it)->requestBody = "";
+		(*it)->requestHeader = "";
+    }
+    std::ofstream ofs;
+    ofs.open(this->_sockets[(*it)->port]->logFile, std::fstream::out | std::fstream::app);
+    ofs << buf;
+    ofs.close();
+    std::ofstream asd;
+    asd.open("logs/check", std::fstream::out | std::fstream::app);
+    asd << buf;
+    /* check if request is full*/
+    chunkedRequest(this->_sockets[(*it)->port]->logFile, it);
+    if ((*it)->request_is_read == true)
+        return 0;
+    return 1;
 }
 
 std::string Server::findHtmlFile(int c_fd)
@@ -71,15 +78,16 @@ std::string Server::findHtmlFile(int c_fd)
         ft_return("didn't find connection pair: ");
         return (NULL);
     }
-    this->_sockets[(*it)->port]->logfile_fstream.open(this->_sockets[(*it)->port]->logFile);
-    if (!this->_sockets[(*it)->port]->logfile_fstream.is_open())
+    std::fstream fstr;
+    fstr.open(this->_sockets[(*it)->port]->logFile);
+    if (!fstr.is_open())
     {
         ft_return("could not open logfile: ");
         return (NULL);
     }
     std::vector<std::string> head;
     std::string line;
-    for (int i = 0; i < 3 && this->_sockets[(*it)->port]->logfile_fstream.peek() != '\n' && this->_sockets[(*it)->port]->logfile_fstream >> line; i++)
+    for (int i = 0; i < 3 && fstr.peek() != '\n' && fstr >> line; i++)
         head.push_back(line);
     if (head[0] == "GET" || head[0] == "POST")
     {

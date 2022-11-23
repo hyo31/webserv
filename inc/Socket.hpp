@@ -17,7 +17,6 @@ class Socket
         sockaddr_in     socketAddr;
         unsigned int    socketAddrLen;
         std::string     logFile;
-        std::fstream    logfile_fstream;
                         Socket(const Socket &);
         Socket &        operator=(const Socket &);
         int             startServer();

@@ -15,10 +15,12 @@ SRC =	src/webserv.cpp\
 		src/HandleEvents.cpp\
 		src/utils.cpp\
 		src/Client.cpp\
+		src/ParseRequests.cpp\
 
 OBJ = $(SRC:$(SRC_DIR)%.cpp=$(OBJ_DIR)%.o)
 
-all: $(OBJ_DIR) $(NAME)
+all:
+	@$(MAKE) $(OBJ_DIR) $(NAME) -j4
 
 $(NAME): $(OBJ)
 	$(CC) $(OBJ) $(CFLAGS) -o $(NAME)
