@@ -1,8 +1,12 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>My first PHP page</h1>
+
 <?php
-$myfile = fopen("test.txt", "w") or die("Unable to open file!");
-$txt = "test123\n";
-fwrite($myfile, $txt);
-fclose($myfile);
-header('Location:'.$_POST['goback']);
-exit();
-?>
+echo "Hello World!";
+?> 
+
+</body>
+</html>
