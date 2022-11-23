@@ -1,27 +1,23 @@
 HTTP/1.1 200 OK
 Content-Type: text/html
-Content-Length: 841
+Content-Length: 1084
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Webserv</title>
+    <title>Webserv/form</title>
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
 </head>
 <body style="background-color:rgb(67, 67, 67);">
-    <h1 style="text-align:center;font-size: 52px"><a href="/home" style="text-decoration: none;color: white">WEBSERV</a></h1><br><br>
-        <h2 style="text-align:center;color:rgb(255, 255, 255);font-size: 26px;"><a href="/form" style="text-decoration: none;color: white">Submit a Form</a></h2><br>
-        <h2 style="text-align:center;color:rgb(255, 255, 255);font-size: 26px;"><a href="/uploadfile" style="text-decoration: none;color: white">Upload a File</a></h2><br>
-        <h2 style="text-align:center;color:rgb(255, 255, 255);font-size: 26px;"><a href="/doesntexist" style="text-decoration: none;color: white">test3</a></h2>
-</body>
-</html>¹Þ	
-<label style="color: white" for="message">Message (max 256 characters):</label><br>
+    <h1 style="text-align:center;font-size: 52px"><a href="/home" style="text-decoration: none;color: white">WEBSERV</a></h1>
+        <h2 style="text-align:center;color:rgb(255, 255, 255);font-size: 39px;">Form</h2><br>
+    <form style="text-align:center;" action="home" method="post">
+        <label style="color: white" for="fname">First name (max 15 characters):</label><br>
+        <input type="text" id="fname" name="fname" maxlength="15" size="20"><br><br>
+        <label style="color: white" for="lname">Last name (max 15 characters):</label><br>
+        <input type="text" id="lname" name="lname" maxlength="15" size="20"><br><br>
+        <label style="color: white" for="message">Message (max 256 characters):</label><br>
         <textarea id="message" name="message" rows="4" cols="50"></textarea><br>
-        <input type="submit" value="Submit">
-      </form>
-</body>
-</html>
-ea><br>
         <input type="submit" value="Submit">
       </form>
 </body>

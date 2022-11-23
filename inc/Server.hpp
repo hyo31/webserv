@@ -32,28 +32,30 @@ class Server
         Server &	operator=(const Server &);
         
         std::string	findHtmlFile(int c_fd);
-        int			monitor_ports();
-        int			acceptRequest(int);
-        int			receiveClientRequest(int);
-        int			sendResponseToClient(int);
-        int			closeConnection(int);
-        int			is_connection_open(int);
+        int		monitor_ports();
+        int		acceptRequest(int);
+        int		receiveClientRequest(int);
+        int		sendResponseToClient(int);
+        int		closeConnection(int);
+        int		is_connection_open(int);
         void		set_chlist(std::vector<struct kevent>&, uintptr_t, int16_t, uint16_t, uint32_t, intptr_t, void *);
         void		update_client_timestamp(int);
         void		bounceTimedOutClients();
         void		chunkedRequest(std::string, std::vector<Client*>::iterator);
-        int			Configuration(std::string configFilePath);
-		void		unchunk(std::string, std::string::size_type, std::vector<Client*>::iterator);
-		void		buildBodyForContentLength(std::string, std::string::size_type, std::vector<Client*>::iterator);
+        int		Configuration(std::string configFilePath);
+	void		unchunk(std::string, std::string::size_type, std::vector<Client*>::iterator);
+	void		buildBodyForContentLength(std::string, std::string::size_type, std::vector<Client*>::iterator);
+        int             configuration(std::string configFilePath);
+        int             findAcceptedFD(int fd);
 
         std::vector<Socket*>	_sockets;
         std::vector<Client*>	_clients;
-        std::string				_responseHeader;
+        std::string		_responseHeader;
 
     public:
-				Server();
-				~Server();
-		int		startServer(std::string configFilePath);
+			Server();
+			~Server();
+	int		startServer(std::string configFilePath);
 
 };
 

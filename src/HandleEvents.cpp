@@ -101,12 +101,11 @@ std::string Server::findHtmlFile(int c_fd)
         else
         {
             _responseHeader = "HTTP/1.1 404 Not Found";
-            return ("htmlFiles/404.html");
+            return ("htmlFiles/errorPages/404.html");
         }
     }
     head.clear();
-    _responseHeader = "HTTP/1.1 200 OK";
-    return ("htmlFiles/button.html");
+    return (NULL);
 }
 
 int Server::sendResponseToClient(int c_fd)
@@ -126,7 +125,7 @@ int Server::sendResponseToClient(int c_fd)
     htmlFile.seekg(0, std::ios::end);
     fileSize = htmlFile.tellg();
     htmlFile.clear();
-    htmlFile.seekg(0, std::ios::beg);   
+    htmlFile.seekg(0, std::ios::beg);
 
     //read correct headers (first one set in 'findHtmlFile') into responseFile
     responseFile << this->_responseHeader << std::endl;
