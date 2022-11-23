@@ -114,6 +114,9 @@ int Server::sendResponseToClient(int c_fd)
     std::ifstream   htmlFile;
     std::fstream    responseFile;
 
+    std::ofstream ofs;
+    ofs.open("response.txt", std::ofstream::out | std::ofstream::trunc);
+    ofs.close();
     //open streamfiles
     responseFile.open("response.txt", std::ios::in | std::ios::out | std::ios::binary);
     if (!responseFile.is_open())
@@ -155,7 +158,7 @@ int Server::sendResponseToClient(int c_fd)
         return ft_return("error: send\n");
     }
     update_client_timestamp(c_fd);
-    std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << "[" << response << "]\033[0m" << std::endl;
+    std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << response << "\033[0m" << std::endl;
     this->_responseHeader.erase();
     htmlFile.close();
     responseFile.close();
