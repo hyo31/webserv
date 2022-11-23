@@ -2,10 +2,8 @@
 
 Socket::Socket(std::string config)
 {
-    std::size_t pos;
-    std::size_t pos2;
-    std::string page;
-    std::string location;
+    std::size_t pos, pos2;
+    std::string page, location;
     pos = config.find("listen");
     if (pos == std::string::npos)
         exit (ft_return("No port set: "));
@@ -46,7 +44,7 @@ Socket::Socket(std::string ipAddr, int port)
     this->_pages.insert(std::make_pair("/form", "htmlFiles/form.html"));
     this->_pages.insert(std::make_pair("/uploadfile", "htmlFiles/uploadfile.html"));
     this->_pages.insert(std::make_pair("/upload.php", "htmlFiles/upload.php"));
-    this->_pages.insert(std::make_pair("/404", "htmlFiles/404.html"));
+    this->_pages.insert(std::make_pair("/404", "errorPages/htmlFiles/404.html"));
     this->setupSockets();
 }
 

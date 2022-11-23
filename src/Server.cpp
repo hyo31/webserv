@@ -16,18 +16,18 @@ int	Server::monitor_ports()
     kq = kqueue();  
     if (kq == -1)
         return ft_return("kqueue failed");
-    for (i = 0; i < 3; ++i)
-        set_chlist(chlist, this->_sockets[i]->fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
+    for (size_t j = 0; j < this->_sockets.size(); ++j)
+        set_chlist(chlist, this->_sockets[j]->fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
 
     /* enter run loop */
     while(true) 
     {
         /* use kevent to wait for an event (when a client tries to connect or when a connection has data to read/is open to receive data) */
-        std::cout << "--waiting for events...--\n";
+        std::cout << "\033[1m--waiting for events...--\n\033[0m";
         new_event = kevent(kq, &chlist[0], chlist.size(), tevents, 40, NULL);
         chlist.clear();
         if (new_event < 0)
-            ft_return("kevent failed: \n");
+            return ft_return("kevent failed: \n");
         /* kevent returned with n new events */
         else if (new_event > 0)
         {
@@ -42,12 +42,10 @@ int	Server::monitor_ports()
                     if (closeConnection(fd) == -1)
                         return -1;
                 }
-                else if (fd == this->_sockets[0]->fd || fd == this->_sockets[1]->fd || fd == this->_sockets[2]->fd)
+                else if (findAcceptedFD(fd) != -1)
                 {
                     std::cout << "accepting for: " << fd << std::endl;
-                    sock_num = 0;
-                    while (fd != this->_sockets[sock_num]->fd && sock_num < 3)
-                        sock_num++;
+                    sock_num = findAcceptedFD(fd);
                     conn_fd = this->acceptRequest(sock_num);
                     std::cout << "OPENED:" << conn_fd << std::endl;
                     if (conn_fd == -1)
@@ -82,13 +80,15 @@ int	Server::monitor_ports()
 int	Server::startServer(std::string configFilePath)
 {
 	int	status = 0;
-    if (Configuration(configFilePath) == -1)
+    if (configuration(configFilePath) == -1)
         return (ft_return(""));
-    std::cout << this->_sockets[0]->port << ", " << this->_sockets[0]->logFile << std::endl;
-    std::cout << this->_sockets[1]->port << ", " << this->_sockets[1]->logFile << std::endl;
-    std::cout << this->_sockets[2]->port << ", " << this->_sockets[2]->logFile << std::endl;
-    std::cout << "opened sockets:" << this->_sockets[0]->fd << " " << this->_sockets[1]->fd << " " << this->_sockets[2]->fd << std::endl;
-    std::cout << "listening to ports:" << this->_sockets[0]->port << " " << this->_sockets[1]->port << " " << this->_sockets[2]->port << std::endl;
+    std::cout << "\033[1mOpened sockets: \033[0m";
+    for (size_t i = 0; i < this->_sockets.size(); i++)
+        std::cout << this->_sockets[i]->fd << " ";
+    std::cout << "\n\033[1mListening to ports: \033[0m";
+    for (size_t i = 0; i < this->_sockets.size(); i++)
+        std::cout << this->_sockets[i]->port << " ";
+    std::cout << std::endl << std::endl;;
 	status = this->monitor_ports();
 	if (status == -1)
 		return ft_return("monitor failed:\n");
@@ -98,7 +98,7 @@ int	Server::startServer(std::string configFilePath)
 	return 0;
 }
 
-int Server::Configuration(std::string configFilePath)
+int Server::configuration(std::string configFilePath)
 {
     std::ifstream               configFile;
     std::string                 line;
@@ -122,4 +122,12 @@ int Server::Configuration(std::string configFilePath)
     }
     configFile.close(); 
     return (0);
+}
+
+int Server::findAcceptedFD(int fd)
+{
+    for (size_t i = 0; i < this->_sockets.size(); i++)
+        if (fd == this->_sockets[i]->fd)
+            return i;
+    return -1;
 }

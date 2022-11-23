@@ -9,8 +9,8 @@ int main(int argc, char **argv)
     if (argc < 1 || argc > 2)
         return (ft_return("Wrong number of arguments: "));
     Server webserv;
-    if (argc == 3)
-        webserv.startServer(argv[2]);
+    if (argc == 2)
+        webserv.startServer(argv[1]);
     else
         webserv.startServer("config/default.conf");
     return (0);
