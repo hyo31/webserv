@@ -25,10 +25,10 @@ int	Server::monitor_ports()
         set_chlist(chlist, this->_sockets[j]->fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
 
     /* enter run loop */
+    std::cout << "\033[1m--waiting for events...--\n\033[0m";
     while(true) 
     {
         /* use kevent to wait for an event (when a client tries to connect or when a connection has data to read/is open to receive data) */
-        std::cout << "\033[1m--waiting for events...--\n\033[0m";
         new_event = kevent(kq, &chlist[0], chlist.size(), tevents, 40, &this->_timeout);
         chlist.clear();
         if (new_event < 0)

@@ -52,24 +52,24 @@ void	Server::buildBodyForContentLength(std::string str, std::string::size_type r
 	std::string				substr;
 
 	//find the number behind Content Length
-	ret = str.find(" ", ret) + 1;
+	// ret = str.find(" ", ret) + 1;
 	start = str.find(" ", ret) + 1;
-	end = str.find("\n", start) - 1;
+	end = str.find("\r\n", start) - 1;
 	substr = str.substr(start, (end - start + 1));
 	(*it)->requestContentLength = ft_atoi(substr);
 	//check if the whole body is read
 	ret = str.find("\r\n\r\n");
 	start = ret + 4;
 	for (end = 0; str[end] != '\0'; ++end);
-	if ((int)(start - end) != (*it)->requestContentLength)
+	if ((int)(end - start) != (*it)->requestContentLength)
 	{
-		if ((int)(start - end) > (*it)->requestContentLength)
+		if ((int)(end - start) > (*it)->requestContentLength)
 		{
 			std::cout << "Content Length in Header is wrong!\n";
 			// set some value so we can return some error page ?
 		}
 		else
-			std::cout << "didnt read full content len\nCont len:" << (*it)->requestContentLength << "\nCharacters read:" << start - end << std::endl;
+			std::cout << "didnt read full content len\nCont len:" << (*it)->requestContentLength << "\nCharacters read:" << (start - end) << std::endl;
 		return ;
 	}
 	substr = str.substr(start, (*it)->requestContentLength);
@@ -145,7 +145,7 @@ void    Server::chunkedRequest(std::string path, std::vector<Client*>::iterator 
 		(*it)->headerSet = true;
 	}
     //check header for either Content Length: or Transfer-Encoding: chunked
-    if ((ret = str.find("Content Length:")) != std::string::npos)
+    if ((ret = str.find("Content-Length:")) != std::string::npos)
 		return buildBodyForContentLength(str, ret, it);
     else if ((ret = str.find("Transfer-Encoding:")) != std::string::npos)
     {
