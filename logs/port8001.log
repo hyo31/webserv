@@ -1,13 +1,9 @@
 POST / HTTP/1.1
-Host: localhost:8004
+Host: localhost:8001
 User-Agent: Go-http-client/1.1
 Transfer-Encoding: chunked
 Content-Type: test/file
 Accept-Encoding: gzip
 
-a
-ten chara.
-15
-12345
 0
 
