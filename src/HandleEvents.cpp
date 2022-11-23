@@ -114,6 +114,9 @@ int Server::sendResponseToClient(int c_fd)
     std::ifstream   htmlFile;
     std::fstream    responseFile;
 
+    std::ofstream ofs;
+    ofs.open("response.txt", std::ofstream::out | std::ofstream::trunc);
+    ofs.close();
     //open streamfiles
     responseFile.open("response.txt", std::ios::in | std::ios::out | std::ios::binary);
     if (!responseFile.is_open())
