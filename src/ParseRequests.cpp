@@ -76,7 +76,7 @@ void	Server::buildBodyForContentLength(std::string str, std::string::size_type r
 	(*it)->requestBody.append(substr);
 	(*it)->request_is_read = true;
     std::cout << "\n\033[33m\033[1m" << "RECEIVED:\n\033[0m\033[33m" << str << "\033[0m" << std::endl;
-	std::cout << "HEADER:\n" << (*it)->requestHeader << "Body:\n" << (*it)->requestBody;
+	// std::cout << "HEADER:\n" << (*it)->requestHeader << "Body:\n" << (*it)->requestBody;
 	return ;
 }
 
@@ -111,7 +111,7 @@ void	Server::unchunk(std::string str, std::string::size_type ret, std::vector<Cl
 		}
 		(*it)->request_is_read = true;
 		std::cout << "\n\033[33m\033[1m" << "RECEIVED:\n\033[0m\033[33m" << str << "\033[0m" << std::endl;
-		std::cout << "HEADER:\n" << (*it)->requestHeader << "Body:\n" << (*it)->requestBody;
+		// std::cout << "HEADER:\n" << (*it)->requestHeader << "Body:\n" << (*it)->requestBody;
 		return ;
 	}
 	catch(const std::exception& e)
@@ -157,6 +157,6 @@ void    Server::chunkedRequest(std::string path, std::vector<Client*>::iterator 
 	}
     (*it)->request_is_read = true;
     std::cout << "\n\033[33m\033[1m" << "RECEIVED:\n\033[0m\033[33m" << str << "\033[0m" << std::endl;
-	std::cout << "HEADER:\n" << (*it)->requestHeader << "Body:\n" << (*it)->requestBody;
+	// std::cout << "HEADER:\n" << (*it)->requestHeader << "Body:\n" << (*it)->requestBody;
     return ;
 }

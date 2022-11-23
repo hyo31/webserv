@@ -19,12 +19,16 @@ int	Server::monitor_ports()
     for (size_t j = 0; j < this->_sockets.size(); ++j)
         set_chlist(chlist, this->_sockets[j]->fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
 
+	struct timespec timeout;
+	timeout.tv_sec = TIMEOUT;
+	timeout.tv_nsec = 0;
+
     /* enter run loop */
     while(true) 
     {
         /* use kevent to wait for an event (when a client tries to connect or when a connection has data to read/is open to receive data) */
         std::cout << "\033[1m--waiting for events...--\n\033[0m";
-        new_event = kevent(kq, &chlist[0], chlist.size(), tevents, 40, NULL);
+        new_event = kevent(kq, &chlist[0], chlist.size(), tevents, 40, &timeout);
         chlist.clear();
         if (new_event < 0)
             return ft_return("kevent failed: \n");
@@ -70,9 +74,9 @@ int	Server::monitor_ports()
                     if (this->sendResponseToClient(fd) == -1)
                         return -1;
                 }
-                bounceTimedOutClients();
             }
         }
+		bounceTimedOutClients();
     }
 	return -1;
 }
