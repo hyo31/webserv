@@ -1,18 +1,18 @@
 #include "../inc/Socket.hpp"
 
-Socket::Socket(std::string config)
+Socket::Socket(std::string config) : config(config)
 {
     std::size_t pos, pos2;
     std::string page, location, line;
 
-    pos = config.find("listen");
+    pos = this->config.find("listen");
     if (pos == std::string::npos)
         exit (ft_return("No port set: "));
     try
     {
-		pos2 = config.find(" ", pos);
-        port = std::stoi(config.substr(pos + 7, (pos2 - pos + 7)));
-        logFile = "logs/port" + config.substr(pos + 7, (pos2 - pos + 7)) + ".log";
+		pos2 = this->config.find(" ", pos);
+        port = std::stoi(this->config.substr(pos + 7, (pos2 - pos + 7)));
+        logFile = "logs/port" + this->config.substr(pos + 7, (pos2 - pos + 7)) + ".log";
         ipAddr = "localhost";
     }
     catch(std::invalid_argument const& ex)
@@ -20,44 +20,44 @@ Socket::Socket(std::string config)
         std::cout << "std::invalid_argument::what(): " << ex.what() << '\n';
         exit (ft_return("Error reading config file"));
     }
-	if ((pos = config.find("clientBodyMaxSize")) != std::string::npos)
+	if ((pos = this->config.find("clientBodyMaxSize")) != std::string::npos)
 	{
-		pos2 = config.find("\n", pos);
-		line = config.substr(pos, (pos2 - pos));
+		pos2 = this->config.find("\n", pos);
+		line = this->config.substr(pos, (pos2 - pos));
 		if ((pos2 = line.find(";")) == std::string::npos | (pos = line.find(" ")) == std::string::npos)
 			exit (ft_return("config error for limit client body size: "));
 		this->maxClientBodySize = std::stoi(line.substr(pos + 1, (pos2 - pos + 1)));
 	}
 	else
 		this->maxClientBodySize = -1;
-    if ((pos = config.find("page")) == std::string::npos)
+    if ((pos = this->config.find("page")) == std::string::npos)
         exit (ft_return("No pages set: "));
     while (pos != std::string::npos)
     {
-        pos2 = config.find("location", config.find("{", pos));
+        pos2 = this->config.find("location", config.find("{", pos));
         if (pos2 == std::string::npos || pos2 > config.find("}", pos))
             exit (ft_return("No location set: "));
-        page = config.substr(pos + 5, config.find_first_of(' ', pos + 5) - (pos + 5));
-        location = config.substr(pos2 + 9, config.find_first_of(';', pos2 + 9) - (pos2 + 9));
+        page = this->config.substr(pos + 5, this->config.find_first_of(' ', pos + 5) - (pos + 5));
+        location = this->config.substr(pos2 + 9, this->config.find_first_of(';', pos2 + 9) - (pos2 + 9));
         this->_pages.insert(std::make_pair(page, location));
-        pos = config.find("page", pos + 1);
+        pos = this->config.find("page", pos + 1);
     }
     this->_pages.insert(std::make_pair("/upload.php", "htmlFiles/upload.php"));
     this->_pages.insert(std::make_pair("/404", "htmlFiles/404.html"));
     this->setupSockets();
 }
 
-Socket::Socket(std::string ipAddr, int port)
-: ipAddr(ipAddr), port(port), logFile("logs/port" + std::to_string(port) + ".log")
-{
-    this->_pages.insert(std::make_pair("/home", "htmlFiles/home.html"));
-    this->_pages.insert(std::make_pair("/", "htmlFiles/home.html"));
-    this->_pages.insert(std::make_pair("/form", "htmlFiles/form.html"));
-    this->_pages.insert(std::make_pair("/uploadfile", "htmlFiles/uploadfile.html"));
-    this->_pages.insert(std::make_pair("/upload.php", "htmlFiles/upload.php"));
-    this->_pages.insert(std::make_pair("/404", "errorPages/htmlFiles/404.html"));
-    this->setupSockets();
-}
+// Socket::Socket(std::string ipAddr, int port)
+// : ipAddr(ipAddr), port(port), logFile("logs/port" + std::to_string(port) + ".log")
+// {
+//     this->_pages.insert(std::make_pair("/home", "htmlFiles/home.html"));
+//     this->_pages.insert(std::make_pair("/", "htmlFiles/home.html"));
+//     this->_pages.insert(std::make_pair("/form", "htmlFiles/form.html"));
+//     this->_pages.insert(std::make_pair("/uploadfile", "htmlFiles/uploadfile.html"));
+//     this->_pages.insert(std::make_pair("/upload.php", "htmlFiles/upload.php"));
+//     this->_pages.insert(std::make_pair("/404", "errorPages/htmlFiles/404.html"));
+//     this->setupSockets();
+// }
 
 Socket::~Socket()
 {

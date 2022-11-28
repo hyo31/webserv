@@ -1,75 +1,5 @@
-GET /uploadfile HTTP/1.1
-Host: localhost:8004
-Connection: keep-alive
-sec-ch-ua: " Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"
-sec-ch-ua-mobile: ?0
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Referer: http://localhost:8004/
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
-
-POST /upload.php HTTP/1.1
-Host: localhost:8004
-Connection: keep-alive
-Content-Length: 1063
-Cache-Control: max-age=0
-sec-ch-ua: " Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"
-sec-ch-ua-mobile: ?0
-Upgrade-Insecure-Requests: 1
-Origin: http://localhost:8004
-Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryRV0OfMIdPQemTApg
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Referer: http://localhost:8004/uploadfile
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
-
-------WebKitFormBoundaryRV0OfMIdPQemTApg
-Content-Disposition: form-data; name="fileToUpload"; filename="Dockerfile"
-Content-Type: application/octet-stream
-
-FROM debian:buster
-
-#update debianbuster && install wget (this is used to get .tar files of phpmyadmin & wordpress)
-RUN apt-get update
-RUN apt-get upgrade -y
-RUN apt-get -y install wget
-
-#install nginx
-RUN apt-get -y install nginx
-
-#install mySQL
-RUN apt-get -y install mariadb-server
-
-#install php
-RUN apt-get -y install php7.3 php-mysql php-fpm php-pdo php-gd php-cli php-mbstring php-xml
-
-
-COPY ./srcs/init.sh ./init.sh
-COPY ./srcs/nginx.conf ./tmp/nginx.conf
-COPY ./srcs/wp-config.php ./tmp/wp-config.php
-COPY ./srcs/phpmyadmin.conf.php ./tmp/phpmyadmin.conf.php
-COPY ./srcs/disable_autoindex.sh ./var/www/html/autoindex/disable_autoindex.sh
-COPY ./srcs/enable_autoindex.sh ./var/www/html/autoindex/enable_autoindex.sh
-EXPOSE 80 443
-CMD bash init.sh
-------WebKitFormBoundaryRV0OfMIdPQemTApg
-Content-Disposition: form-data; name="submit"
-
-Upload File
-------WebKitFormBoundaryRV0OfMIdPQemTApg--
-GET / HTTP/1.1
-Host: localhost:8005
+GET /home HTTP/1.1
+Host: localhost:8001
 Connection: keep-alive
 sec-ch-ua: " Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"
 sec-ch-ua-mobile: ?0
@@ -83,8 +13,8 @@ Sec-Fetch-Dest: document
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
-GET /uploadfile HTTP/1.1
-Host: localhost:8005
+GET /home HTTP/1.1
+Host: localhost:8001
 Connection: keep-alive
 sec-ch-ua: " Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"
 sec-ch-ua-mobile: ?0
@@ -95,120 +25,12 @@ Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
 Sec-Fetch-Dest: document
-Referer: http://localhost:8005/
+Referer: http://localhost:8001/home
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
-POST /upload.php HTTP/1.1
-Host: localhost:8005
-Connection: keep-alive
-Content-Length: 1063
-Cache-Control: max-age=0
-sec-ch-ua: " Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"
-sec-ch-ua-mobile: ?0
-Upgrade-Insecure-Requests: 1
-Origin: http://localhost:8005
-Content-Type: multipart/form-data; boundary=----WebKitFormBoundarymt09QAmkCAiu7Gph
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Referer: http://localhost:8005/uploadfile
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
-
-------WebKitFormBoundarymt09QAmkCAiu7Gph
-Content-Disposition: form-data; name="fileToUpload"; filename="Dockerfile"
-Content-Type: application/octet-stream
-
-FROM debian:buster
-
-#update debianbuster && install wget (this is used to get .tar files of phpmyadmin & wordpress)
-RUN apt-get update
-RUN apt-get upgrade -y
-RUN apt-get -y install wget
-
-#install nginx
-RUN apt-get -y install nginx
-
-#install mySQL
-RUN apt-get -y install mariadb-server
-
-#install php
-RUN apt-get -y install php7.3 php-mysql php-fpm php-pdo php-gd php-cli php-mbstring php-xml
-
-
-COPY ./srcs/init.sh ./init.sh
-COPY ./srcs/nginx.conf ./tmp/nginx.conf
-COPY ./srcs/wp-config.php ./tmp/wp-config.php
-COPY ./srcs/phpmyadmin.conf.php ./tmp/phpmyadmin.conf.php
-COPY ./srcs/disable_autoindex.sh ./var/www/html/autoindex/disable_autoindex.sh
-COPY ./srcs/enable_autoindex.sh ./var/www/html/autoindex/enable_autoindex.sh
-EXPOSE 80 443
-CMD bash init.sh
-------WebKitFormBoundarymt09QAmkCAiu7Gph
-Content-Disposition: form-data; name="submit"
-
-Upload File
-------WebKitFormBoundarymt09QAmkCAiu7Gph--
-POST /upload.php HTTP/1.1
-Host: localhost:8005
-Connection: keep-alive
-Content-Length: 1063
-Cache-Control: max-age=0
-sec-ch-ua: " Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"
-sec-ch-ua-mobile: ?0
-Upgrade-Insecure-Requests: 1
-Origin: http://localhost:8005
-Content-Type: multipart/form-data; boundary=----WebKitFormBoundarycbvf913QkgPrBuBx
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Referer: http://localhost:8005/uploadfile
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
-
-------WebKitFormBoundarycbvf913QkgPrBuBx
-Content-Disposition: form-data; name="fileToUpload"; filename="Dockerfile"
-Content-Type: application/octet-stream
-
-FROM debian:buster
-
-#update debianbuster && install wget (this is used to get .tar files of phpmyadmin & wordpress)
-RUN apt-get update
-RUN apt-get upgrade -y
-RUN apt-get -y install wget
-
-#install nginx
-RUN apt-get -y install nginx
-
-#install mySQL
-RUN apt-get -y install mariadb-server
-
-#install php
-RUN apt-get -y install php7.3 php-mysql php-fpm php-pdo php-gd php-cli php-mbstring php-xml
-
-
-COPY ./srcs/init.sh ./init.sh
-COPY ./srcs/nginx.conf ./tmp/nginx.conf
-COPY ./srcs/wp-config.php ./tmp/wp-config.php
-COPY ./srcs/phpmyadmin.conf.php ./tmp/phpmyadmin.conf.php
-COPY ./srcs/disable_autoindex.sh ./var/www/html/autoindex/disable_autoindex.sh
-COPY ./srcs/enable_autoindex.sh ./var/www/html/autoindex/enable_autoindex.sh
-EXPOSE 80 443
-CMD bash init.sh
-------WebKitFormBoundarycbvf913QkgPrBuBx
-Content-Disposition: form-data; name="submit"
-
-Upload File
-------WebKitFormBoundarycbvf913QkgPrBuBx--
 GET / HTTP/1.1
-Host: localhost:8006
+Host: localhost:8001
 Connection: keep-alive
 sec-ch-ua: " Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"
 sec-ch-ua-mobile: ?0
@@ -222,92 +44,8 @@ Sec-Fetch-Dest: document
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
-GET /uploadfile HTTP/1.1
-Host: localhost:8006
-Connection: keep-alive
-sec-ch-ua: " Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"
-sec-ch-ua-mobile: ?0
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Referer: http://localhost:8006/
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
-
-POST /upload.php HTTP/1.1
-Host: localhost:8006
-Connection: keep-alive
-Content-Length: 1063
-Cache-Control: max-age=0
-sec-ch-ua: " Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"
-sec-ch-ua-mobile: ?0
-Upgrade-Insecure-Requests: 1
-Origin: http://localhost:8006
-Content-Type: multipart/form-data; boundary=----WebKitFormBoundarym0vPJ77bUNsnuOjz
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Referer: http://localhost:8006/uploadfile
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
-
-------WebKitFormBoundarym0vPJ77bUNsnuOjz
-Content-Disposition: form-data; name="fileToUpload"; filename="Dockerfile"
-Content-Type: application/octet-stream
-
-FROM debian:buster
-
-#update debianbuster && install wget (this is used to get .tar files of phpmyadmin & wordpress)
-RUN apt-get update
-RUN apt-get upgrade -y
-RUN apt-get -y install wget
-
-#install nginx
-RUN apt-get -y install nginx
-
-#install mySQL
-RUN apt-get -y install mariadb-server
-
-#install php
-RUN apt-get -y install php7.3 php-mysql php-fpm php-pdo php-gd php-cli php-mbstring php-xml
-
-
-COPY ./srcs/init.sh ./init.sh
-COPY ./srcs/nginx.conf ./tmp/nginx.conf
-COPY ./srcs/wp-config.php ./tmp/wp-config.php
-COPY ./srcs/phpmyadmin.conf.php ./tmp/phpmyadmin.conf.php
-COPY ./srcs/disable_autoindex.sh ./var/www/html/autoindex/disable_autoindex.sh
-COPY ./srcs/enable_autoindex.sh ./var/www/html/autoindex/enable_autoindex.sh
-EXPOSE 80 443
-CMD bash init.sh
-------WebKitFormBoundarym0vPJ77bUNsnuOjz
-Content-Disposition: form-data; name="submit"
-
-Upload File
-------WebKitFormBoundarym0vPJ77bUNsnuOjz--
-GET /favicon.ico HTTP/1.1
-Host: localhost:8006
-Connection: keep-alive
-sec-ch-ua: " Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"
-sec-ch-ua-mobile: ?0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36
-Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: no-cors
-Sec-Fetch-Dest: image
-Referer: http://localhost:8006/upload.php
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
-
-GET /upload.php HTTP/1.1
-Host: localhost:8004
+GET /old-home HTTP/1.1
+Host: localhost:8001
 Connection: keep-alive
 sec-ch-ua: " Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"
 sec-ch-ua-mobile: ?0
@@ -322,7 +60,71 @@ Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
 GET / HTTP/1.1
-Host: localhost:8004
+Host: localhost:8001
+Connection: keep-alive
+Cache-Control: max-age=0
+sec-ch-ua: " Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"
+sec-ch-ua-mobile: ?0
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET / HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+Cache-Control: max-age=0
+sec-ch-ua: " Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"
+sec-ch-ua-mobile: ?0
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /form HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+sec-ch-ua: " Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"
+sec-ch-ua-mobile: ?0
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Referer: http://localhost:8001/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /uploadfile HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+sec-ch-ua: " Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"
+sec-ch-ua-mobile: ?0
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Referer: http://localhost:8001/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /old-home HTTP/1.1
+Host: localhost:8001
 Connection: keep-alive
 sec-ch-ua: " Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"
 sec-ch-ua-mobile: ?0
@@ -336,73 +138,3 @@ Sec-Fetch-Dest: document
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
-GET /uploadfile HTTP/1.1
-Host: localhost:8004
-Connection: keep-alive
-sec-ch-ua: " Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"
-sec-ch-ua-mobile: ?0
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Referer: http://localhost:8004/
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
-
-POST /upload.php HTTP/1.1
-Host: localhost:8004
-Connection: keep-alive
-Content-Length: 1063
-Cache-Control: max-age=0
-sec-ch-ua: " Not;A Brand";v="99", "Google Chrome";v="91", "Chromium";v="91"
-sec-ch-ua-mobile: ?0
-Upgrade-Insecure-Requests: 1
-Origin: http://localhost:8004
-Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryDdOBeaGUldmOE7p7
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Referer: http://localhost:8004/uploadfile
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
-
-------WebKitFormBoundaryDdOBeaGUldmOE7p7
-Content-Disposition: form-data; name="fileToUpload"; filename="Dockerfile"
-Content-Type: application/octet-stream
-
-FROM debian:buster
-
-#update debianbuster && install wget (this is used to get .tar files of phpmyadmin & wordpress)
-RUN apt-get update
-RUN apt-get upgrade -y
-RUN apt-get -y install wget
-
-#install nginx
-RUN apt-get -y install nginx
-
-#install mySQL
-RUN apt-get -y install mariadb-server
-
-#install php
-RUN apt-get -y install php7.3 php-mysql php-fpm php-pdo php-gd php-cli php-mbstring php-xml
-
-
-COPY ./srcs/init.sh ./init.sh
-COPY ./srcs/nginx.conf ./tmp/nginx.conf
-COPY ./srcs/wp-config.php ./tmp/wp-config.php
-COPY ./srcs/phpmyadmin.conf.php ./tmp/phpmyadmin.conf.php
-COPY ./srcs/disable_autoindex.sh ./var/www/html/autoindex/disable_autoindex.sh
-COPY ./srcs/enable_autoindex.sh ./var/www/html/autoindex/enable_autoindex.sh
-EXPOSE 80 443
-CMD bash init.sh
-------WebKitFormBoundaryDdOBeaGUldmOE7p7
-Content-Disposition: form-data; name="submit"
-
-Upload File
-------WebKitFormBoundaryDdOBeaGUldmOE7p7--

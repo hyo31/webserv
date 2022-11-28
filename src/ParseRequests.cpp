@@ -166,7 +166,6 @@ bool	Server::checkMaxClientBodySize(std::vector<Client*>::iterator client)
 	size_t		start;
 	size_t		end;
 	std::string	boundary;
-	std::string	uploadPart;
 
 	if ((start = (*client)->requestHeader.find("Content-Type: multipart/form-data;")) == std::string::npos)
 		return true;
@@ -176,12 +175,6 @@ bool	Server::checkMaxClientBodySize(std::vector<Client*>::iterator client)
 	start = (*client)->requestBody.find("Content-Type: application/octet-stream") + 43;
 	if ((end = (*client)->requestBody.find(boundary, start) - 3) == std::string::npos)
 		std::cout << "couldnt find a boundary :(" << std::endl;
-	std::cout << "size:" << end - start << std::endl;
-
-	// std::cout << "------boundary:-------\n" << boundary << std::endl;
-	// std::cout << "------request body--------:\n" << (*client)->requestBody << std::endl;
-
-	std::cout << "max:" << this->_sockets[(*client)->port]->maxClientBodySize << std::endl;
 	if ((int)(end - start) > this->_sockets[(*client)->port]->maxClientBodySize)
 		return false;
 	return true;
