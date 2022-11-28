@@ -3,14 +3,16 @@
 Socket::Socket(std::string config)
 {
     std::size_t pos, pos2;
-    std::string page, location;
+    std::string page, location, line;
+
     pos = config.find("listen");
     if (pos == std::string::npos)
         exit (ft_return("No port set: "));
     try
     {
-        port = std::stoi(config.substr(pos + 7, 4));
-        logFile = "logs/port" + config.substr(pos + 7, 4) + ".log";
+		pos2 = config.find(" ", pos);
+        port = std::stoi(config.substr(pos + 7, (pos2 - pos + 7)));
+        logFile = "logs/port" + config.substr(pos + 7, (pos2 - pos + 7)) + ".log";
         ipAddr = "localhost";
     }
     catch(std::invalid_argument const& ex)
@@ -18,8 +20,17 @@ Socket::Socket(std::string config)
         std::cout << "std::invalid_argument::what(): " << ex.what() << '\n';
         exit (ft_return("Error reading config file"));
     }
-    pos = config.find("page");
-    if (pos == std::string::npos)
+	if ((pos = config.find("clientBodyMaxSize")) != std::string::npos)
+	{
+		pos2 = config.find("\n", pos);
+		line = config.substr(pos, (pos2 - pos));
+		if ((pos2 = line.find(";")) == std::string::npos | (pos = line.find(" ")) == std::string::npos)
+			exit (ft_return("config error for limit client body size: "));
+		this->maxClientBodySize = std::stoi(line.substr(pos + 1, (pos2 - pos + 1)));
+	}
+	else
+		this->maxClientBodySize = -1;
+    if ((pos = config.find("page")) == std::string::npos)
         exit (ft_return("No pages set: "));
     while (pos != std::string::npos)
     {

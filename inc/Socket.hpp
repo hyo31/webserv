@@ -7,10 +7,11 @@
 class Socket
 {
     public:
-                        Socket(std::string config);
-                        Socket(std::string ipAddr, int port);
-                        ~Socket();
+        Socket(std::string config);
+        Socket(std::string ipAddr, int port);
+        ~Socket();
 
+		int				maxClientBodySize;
         std::string     ipAddr;
         int             port;
         int             fd;

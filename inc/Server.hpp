@@ -31,7 +31,7 @@ class Server
         Server(const Server &);
         Server &	operator=(const Server &);
         
-        std::string	findHtmlFile(int c_fd);
+        std::string	findHtmlFile(int);
         int		monitor_ports();
         int		acceptRequest(int);
         int		receiveClientRequest(int);
@@ -42,17 +42,17 @@ class Server
         void	update_client_timestamp(int);
         void	bounceTimedOutClients();
         void	chunkedRequest(std::string, std::vector<Client*>::iterator);
-        int		Configuration(std::string configFilePath);
+        int		Configuration(std::string);
 		void	unchunk(std::string, std::string::size_type, std::vector<Client*>::iterator);
 		void	buildBodyForContentLength(std::string, std::string::size_type, std::vector<Client*>::iterator);
-        int		configuration(std::string configFilePath);
-        int		findSocket(int fd);
+        int		configuration(std::string);
+        int		findSocket(int);
+		bool	checkMaxClientBodySize(std::vector<Client*>::iterator);
 
         std::vector<Socket*>	_sockets;
         std::vector<Client*>	_clients;
         std::string				_responseHeader;
 		struct timespec			_timeout;
-
 
     public:
 			Server();

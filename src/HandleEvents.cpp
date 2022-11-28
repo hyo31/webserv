@@ -17,9 +17,8 @@ int Server::acceptRequest(int sock_num)
 
 int Server::receiveClientRequest(int c_fd)
 {
+	char	buf[50000];
     ssize_t bytesRead = -1;
-    char    buf[50000];
-
     std::vector<Client*>::iterator it = this->_clients.begin();
     std::vector<Client*>::iterator end = this->_clients.end();
     for(; it != end; ++it)
@@ -35,13 +34,15 @@ int Server::receiveClientRequest(int c_fd)
         closeConnection(c_fd);
         return ft_return("recv failed:\n");
     }
-    if (bytesRead == 0)
+    else if (bytesRead == 0)
     {
         std::cout << "0 bytes read/stream socket peer shutdown (eof)\n";
         if (closeConnection(c_fd) == -1)
             return -1;
         return 1; 
     }
+	else if (bytesRead == 50000)
+		std::cout << "request is too big, didn't read it all\n";
     if ((*it)->request_is_read == true)
     {
         std::cout << "clearing content\n";
@@ -91,6 +92,11 @@ std::string Server::findHtmlFile(int c_fd)
         head.push_back(line);
     if (head[0] == "GET" || head[0] == "POST")
     {
+		if (head[0] == "POST" && checkMaxClientBodySize(it) == false)
+		{
+			_responseHeader = "HTTP/1.1 413 Request Entity Too Large";
+            return ("htmlFiles/errorPages/404.html");
+		}
         // std::cout << head[1] << std::endl;
         std::string ret = this->_sockets[(*it)->port]->getLocationPage(head[1]);
         if (ret != "")
