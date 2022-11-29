@@ -117,8 +117,6 @@ std::string Server::findHtmlFile(int c_fd)
         if (ret != "")
         {
             _responseHeader = "HTTP/1.1 200 OK";
-			if (this->_sockets[(*it)->port]->autoindex == "on")
-				ret = getDirectoryListedPage(ret);
             return (ret);
         }
 		ret = this->_sockets[(*it)->port]->getRedirectPage(head[1]);
