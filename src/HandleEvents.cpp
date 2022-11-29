@@ -104,11 +104,15 @@ std::string Server::findHtmlFile(int c_fd)
             _responseHeader = "HTTP/1.1 200 OK";
             return (ret);
         }
-        else
-        {
-            _responseHeader = "HTTP/1.1 404 Not Found";
-            return ("htmlFiles/errorPages/404.html");
-        }
+		ret = this->_sockets[(*it)->port]->getRedirectPage(head[1]);
+		if (ret != "")
+		{
+			_responseHeader = "HTTP/1.1 301 Moved Permanently\r\nLocation: ";
+			_responseHeader.append(ret);
+			return ("htmlFiles/errorPages/404.html");
+		}
+        _responseHeader = "HTTP/1.1 404 Not Found";
+        return ("htmlFiles/errorPages/404.html");
     }
     head.clear();
     return (NULL);
@@ -130,7 +134,8 @@ int Server::sendResponseToClient(int c_fd)
     htmlFile.open(this->findHtmlFile(c_fd), std::ios::in | std::ios::binary);
     if (!htmlFile.is_open())
         return (ft_return("html file doesn't exist: "));
-    //get length of htmlFile
+
+	//get length of htmlFile
     htmlFile.seekg(0, std::ios::end);
     fileSize = htmlFile.tellg();
     htmlFile.clear();
@@ -152,7 +157,7 @@ int Server::sendResponseToClient(int c_fd)
     responseFile.clear();
     responseFile.seekg(0, std::ios::beg);
 
-    //create respone which is sent back to client
+    //create response which is sent back to client
     char    response[fileSize];
     responseFile.read(response, fileSize);
     ssize_t bytesSent = send(c_fd, response, fileSize, 0);

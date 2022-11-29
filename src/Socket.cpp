@@ -34,12 +34,16 @@ Socket::Socket(std::string config) : config(config)
         exit (ft_return("No pages set: "));
     while (pos != std::string::npos)
     {
-        pos2 = this->config.find("location", config.find("{", pos));
+		pos2 = this->config.find("location", config.find("{", pos));
         if (pos2 == std::string::npos || pos2 > config.find("}", pos))
             exit (ft_return("No location set: "));
-        page = this->config.substr(pos + 5, this->config.find_first_of(' ', pos + 5) - (pos + 5));
         location = this->config.substr(pos2 + 9, this->config.find_first_of(';', pos2 + 9) - (pos2 + 9));
-        this->_pages.insert(std::make_pair(page, location));
+        page = this->config.substr(pos + 5, this->config.find_first_of(' ', pos + 5) - (pos + 5));
+		pos2 = this->config.find("redirect", config.find("{", pos));
+		if (pos2 != std::string::npos && pos2 < config.find("}", pos))
+        	this->_redirects.insert(std::make_pair(page, location));
+		else
+        	this->_pages.insert(std::make_pair(page, location));
         pos = this->config.find("page", pos + 1);
     }
     this->_pages.insert(std::make_pair("/upload.php", "htmlFiles/upload.php"));
@@ -97,5 +101,13 @@ std::string Socket::getLocationPage(std::string page)
     if (it == this->_pages.end())
         return ("");
     return (it->second);
-    
+}
+
+std::string Socket::getRedirectPage(std::string page)
+{
+    std::map<std::string, std::string>::iterator  it;
+    it = this->_redirects.find(page);
+    if (it == this->_redirects.end())
+        return ("");
+    return (it->second);
 }

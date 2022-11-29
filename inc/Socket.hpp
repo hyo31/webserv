@@ -26,9 +26,11 @@ class Socket
         int             			startServer();
         int             			setupSockets();
         std::string     			getLocationPage(std::string page);
+		std::string					getRedirectPage(std::string page);
 
     private:
-        std::map<std::string, std::string>    _pages; /* name - location */
+        std::map<std::string, std::string>	_pages; /* name - location */
+		std::map<std::string, std::string>	_redirects; /* name - redirect_location */
 };
 
 #endif
