@@ -1,16 +1,18 @@
 #include "../inc/Socket.hpp"
 
-Socket::Socket(std::string config)
+Socket::Socket(std::string config) : autoindex("off"), config(config)
 {
     std::size_t pos, pos2;
-    std::string page, location;
-    pos = config.find("listen");
+    std::string page, location, line;
+
+    pos = this->config.find("listen");
     if (pos == std::string::npos)
         exit (ft_return("No port set: "));
     try
     {
-        port = std::stoi(config.substr(pos + 7, 4));
-        logFile = "logs/port" + config.substr(pos + 7, 4) + ".log";
+		pos2 = this->config.find(" ", pos);
+        port = std::stoi(this->config.substr(pos + 7, (pos2 - pos + 7)));
+        logFile = "logs/port" + this->config.substr(pos + 7, (pos2 - pos + 7)) + ".log";
         ipAddr = "localhost";
     }
     catch(std::invalid_argument const& ex)
@@ -18,34 +20,56 @@ Socket::Socket(std::string config)
         std::cout << "std::invalid_argument::what(): " << ex.what() << '\n';
         exit (ft_return("Error reading config file"));
     }
-    pos = config.find("page");
-    if (pos == std::string::npos)
+	if ((pos = this->config.find("clientBodyMaxSize")) != std::string::npos)
+	{
+		pos2 = this->config.find("\n", pos);
+		line = this->config.substr(pos, (pos2 - pos));
+		if ((pos2 = line.find(";")) == std::string::npos | (pos = line.find(" ")) == std::string::npos)
+			exit (ft_return("config error for limit client body size: "));
+		this->maxClientBodySize = std::stoi(line.substr(pos + 1, (pos2 - pos + 1)));
+	}
+	else
+		this->maxClientBodySize = -1;
+	if ((pos = this->config.find("autoindex on;")) != std::string::npos)
+		this->autoindex = "on";
+	if ((pos = this->config.find("directoryRequest")) != std::string::npos)
+	{
+		pos = this->config.find(" ", pos) + 1;
+		pos2 = this->config.find(";", pos);
+		location = this->config.substr(pos, (pos2 - pos));
+		this->_pages.insert(std::make_pair("directoryRequest", location));
+	}
+    if ((pos = this->config.find("page")) == std::string::npos)
         exit (ft_return("No pages set: "));
     while (pos != std::string::npos)
     {
-        pos2 = config.find("location", config.find("{", pos));
+		pos2 = this->config.find("location", config.find("{", pos));
         if (pos2 == std::string::npos || pos2 > config.find("}", pos))
             exit (ft_return("No location set: "));
-        page = config.substr(pos + 5, config.find_first_of(' ', pos + 5) - (pos + 5));
-        location = config.substr(pos2 + 9, config.find_first_of(';', pos2 + 9) - (pos2 + 9));
-        this->_pages.insert(std::make_pair(page, location));
-        pos = config.find("page", pos + 1);
+        location = this->config.substr(pos2 + 9, this->config.find_first_of(';', pos2 + 9) - (pos2 + 9));
+        page = this->config.substr(pos + 5, this->config.find_first_of(' ', pos + 5) - (pos + 5));
+		pos2 = this->config.find("redirect", config.find("{", pos));
+		if (pos2 != std::string::npos && pos2 < config.find("}", pos))
+        	this->_redirects.insert(std::make_pair(page, location));
+		else
+        	this->_pages.insert(std::make_pair(page, location));
+        pos = this->config.find("page", pos + 1);
     }
     this->_pages.insert(std::make_pair("/404", "htmlFiles/404.html"));
     this->setupSockets();
 }
 
-Socket::Socket(std::string ipAddr, int port)
-: ipAddr(ipAddr), port(port), logFile("logs/port" + std::to_string(port) + ".log")
-{
-    this->_pages.insert(std::make_pair("/home", "htmlFiles/home.html"));
-    this->_pages.insert(std::make_pair("/", "htmlFiles/home.html"));
-    this->_pages.insert(std::make_pair("/form", "htmlFiles/form.html"));
-    this->_pages.insert(std::make_pair("/uploadfile", "htmlFiles/uploadfile.html"));
-    this->_pages.insert(std::make_pair("/upload.php", "htmlFiles/upload.php"));
-    this->_pages.insert(std::make_pair("/404", "errorPages/htmlFiles/404.html"));
-    this->setupSockets();
-}
+// Socket::Socket(std::string ipAddr, int port)
+// : ipAddr(ipAddr), port(port), logFile("logs/port" + std::to_string(port) + ".log")
+// {
+//     this->_pages.insert(std::make_pair("/home", "htmlFiles/home.html"));
+//     this->_pages.insert(std::make_pair("/", "htmlFiles/home.html"));
+//     this->_pages.insert(std::make_pair("/form", "htmlFiles/form.html"));
+//     this->_pages.insert(std::make_pair("/uploadfile", "htmlFiles/uploadfile.html"));
+//     this->_pages.insert(std::make_pair("/upload.php", "htmlFiles/upload.php"));
+//     this->_pages.insert(std::make_pair("/404", "errorPages/htmlFiles/404.html"));
+//     this->setupSockets();
+// }
 
 Socket::~Socket()
 {
@@ -70,6 +94,7 @@ int Socket::setupSockets()
     {
         std::cerr << "bind failed: " << strerror(errno) << std::endl;
         close (this->fd);
+		return (0);
         exit(1);
     }
     if (listen(this->fd, 100))
@@ -85,5 +110,28 @@ std::string Socket::getLocationPage(std::string page)
     if (it == this->_pages.end())
         return ("");
     return (it->second);
-    
+}
+
+std::string Socket::getRedirectPage(std::string page)
+{
+    std::map<std::string, std::string>::iterator	it;
+	std::string	root;
+	size_t		end = page.find("/", 1);
+	size_t		start = 0;
+
+	while (end != std::string::npos)
+	{
+		root = page.substr(start, (end - start));
+		it = this->_redirects.find(root);
+    	if (it != this->_redirects.end())
+			page.replace(start, (end - start), it->second);
+		end = page.find("/", end + 1);
+	}
+	it = this->_pages.find(page);
+	if (it != this->_pages.end())
+		return (page);
+    it = this->_redirects.find(page);
+    if (it == this->_redirects.end())
+        return ("");
+    return (it->second);
 }

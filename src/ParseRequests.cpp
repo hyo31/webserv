@@ -160,3 +160,22 @@ void    Server::chunkedRequest(std::string path, std::vector<Client*>::iterator 
 	// std::cout << "HEADER:\n" << (*it)->requestHeader << "Body:\n" << (*it)->requestBody;
     return ;
 }
+
+bool	Server::checkMaxClientBodySize(std::vector<Client*>::iterator client)
+{
+	size_t		start;
+	size_t		end;
+	std::string	boundary;
+
+	if ((start = (*client)->requestHeader.find("Content-Type: multipart/form-data;")) == std::string::npos)
+		return true;
+	start = (*client)->requestHeader.find("=", start);
+	end = (*client)->requestHeader.find("\n", start);
+	boundary = (*client)->requestHeader.substr(start + 1, (end - start));
+	start = (*client)->requestBody.find("Content-Type: application/octet-stream") + 43;
+	if ((end = (*client)->requestBody.find(boundary, start) - 3) == std::string::npos)
+		std::cout << "couldnt find a boundary :(" << std::endl;
+	if ((int)(end - start) > this->_sockets[(*client)->port]->maxClientBodySize)
+		return false;
+	return true;
+}

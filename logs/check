@@ -589,6 +589,7 @@ sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
@@ -633,11 +634,39 @@ Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
 Sec-Fetch-Dest: document
 Referer: http://localhost:8001/
+=======
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/kappa HTTP/1.1
+Host: localhost:8003
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
 GET /images/favicon.ico HTTP/1.1
+<<<<<<< HEAD
 Host: localhost:8001
+=======
+Host: localhost:8003
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
@@ -647,6 +676,7 @@ Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: no-cors
 Sec-Fetch-Dest: image
+<<<<<<< HEAD
 Referer: http://localhost:8001/home
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
@@ -688,12 +718,23 @@ Accept-Language: en-US,en;q=0.9
 GET /uploadfile HTTP/1.1
 Host: localhost:8001
 Connection: keep-alive
+=======
+Referer: http://localhost:8003/home/kappa
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/kappa HTTP/1.1
+Host: localhost:8003
+Connection: keep-alive
+Cache-Control: max-age=0
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -704,6 +745,17 @@ Accept-Language: en-US,en;q=0.9
 
 GET /home HTTP/1.1
 Host: localhost:8001
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/ HTTP/1.1
+Host: localhost:8003
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
@@ -711,6 +763,7 @@ sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -721,6 +774,17 @@ Accept-Language: en-US,en;q=0.9
 
 GET /form HTTP/1.1
 Host: localhost:8001
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET / HTTP/1.1
+Host: localhost:8003
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
@@ -728,15 +792,23 @@ sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
 Sec-Fetch-Dest: document
 Referer: http://localhost:8001/home
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
 GET /home HTTP/1.1
+<<<<<<< HEAD
 Host: localhost:8001
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
@@ -755,6 +827,9 @@ Accept-Language: en-US,en;q=0.9
 
 GET /form HTTP/1.1
 Host: localhost:8001
+=======
+Host: localhost:8003
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
@@ -762,6 +837,7 @@ sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -775,10 +851,23 @@ Host: localhost:8001
 Connection: keep-alive
 Content-Length: 35
 Cache-Control: max-age=0
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/kappa HTTP/1.1
+Host: localhost:8003
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
@@ -797,6 +886,20 @@ Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
+=======
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/kappa HTTP/1.1
+Host: localhost:8003
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
@@ -804,6 +907,7 @@ Sec-Fetch-Site: none
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
 Sec-Fetch-Dest: document
+<<<<<<< HEAD
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
@@ -824,6 +928,16 @@ Accept-Language: en-US,en;q=0.9
 
 GET /form HTTP/1.1
 Host: localhost:8004
+=======
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/subdir/hoi HTTP/1.1
+Host: localhost:8003
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
@@ -831,6 +945,7 @@ sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -844,10 +959,23 @@ Host: localhost:8004
 Connection: keep-alive
 Content-Length: 35
 Cache-Control: max-age=0
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /old-home/subdir/hoi HTTP/1.1
+Host: localhost:8003
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
 Origin: http://localhost:8004
 Content-Type: application/x-www-form-urlencoded
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
@@ -870,10 +998,28 @@ Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
 Purpose: prefetch
+=======
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
 Sec-Fetch-Site: none
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
 Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/subdir/hoi HTTP/1.1
+Host: localhost:8003
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+<<<<<<< HEAD
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
@@ -899,10 +1045,22 @@ Host: localhost:8001
 Connection: keep-alive
 Content-Length: 35
 Cache-Control: max-age=0
+=======
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /old-home/old-subdir/hoi HTTP/1.1
+Host: localhost:8003
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
@@ -921,6 +1079,20 @@ Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
+=======
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/subdir/hoi HTTP/1.1
+Host: localhost:8003
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
@@ -928,6 +1100,7 @@ Sec-Fetch-Site: none
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
 Sec-Fetch-Dest: document
+<<<<<<< HEAD
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
@@ -952,11 +1125,23 @@ POST /upload.php HTTP/1.1
 Host: localhost:8004
 Connection: keep-alive
 Content-Length: 35
+=======
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/subdir/hoi HTTP/1.1
+Host: localhost:8003
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Cache-Control: max-age=0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
 Origin: http://localhost:8004
 Content-Type: application/x-www-form-urlencoded
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
@@ -979,6 +1164,10 @@ Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
 Purpose: prefetch
+=======
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Sec-Fetch-Site: none
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -986,6 +1175,7 @@ Sec-Fetch-Dest: document
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
+<<<<<<< HEAD
 GET /form HTTP/1.1
 Host: localhost:8001
 Connection: keep-alive
@@ -1026,6 +1216,26 @@ Accept-Language: en-US,en;q=0.9
 
 fname=milan&lname=groen&message=123GET / HTTP/1.1
 Host: localhost:8001
+=======
+GET /home/subdir/hoi HTTP/1.1
+Host: localhost:8003
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/old-subdir/hoi HTTP/1.1
+Host: localhost:8003
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
@@ -1033,7 +1243,10 @@ sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Purpose: prefetch
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Sec-Fetch-Site: none
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1041,6 +1254,7 @@ Sec-Fetch-Dest: document
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
+<<<<<<< HEAD
 GET /form HTTP/1.1
 Host: localhost:8001
 Connection: keep-alive
@@ -1081,6 +1295,26 @@ Accept-Language: en-US,en;q=0.9
 
 fname=milan&lname=groen&message=123GET / HTTP/1.1
 Host: localhost:8001
+=======
+GET /home/subdir/hoi HTTP/1.1
+Host: localhost:8003
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/kappa HTTP/1.1
+Host: localhost:8003
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
@@ -1095,6 +1329,7 @@ Sec-Fetch-Dest: document
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
+<<<<<<< HEAD
 GET /form HTTP/1.1
 Host: localhost:8001
 Connection: keep-alive
@@ -1116,11 +1351,17 @@ POST /upload.php HTTP/1.1
 Host: localhost:8001
 Connection: keep-alive
 Content-Length: 35
+=======
+GET /home/kappa HTTP/1.1
+Host: localhost:8003
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Cache-Control: max-age=0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
@@ -1136,12 +1377,28 @@ Accept-Language: en-US,en;q=0.9
 fname=milan&lname=groen&message=123GET /home HTTP/1.1
 Host: localhost:8001
 Connection: keep-alive
+=======
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/kappa HTTP/1.1
+Host: localhost:8003
+Connection: keep-alive
+Cache-Control: max-age=0
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1153,12 +1410,26 @@ Accept-Language: en-US,en;q=0.9
 GET /form HTTP/1.1
 Host: localhost:8001
 Connection: keep-alive
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/kappa HTTP/1.1
+Host: localhost:8003
+Connection: keep-alive
+Cache-Control: max-age=0
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1171,11 +1442,24 @@ POST /upload.php HTTP/1.1
 Host: localhost:8001
 Connection: keep-alive
 Content-Length: 35
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/kappa HTTP/1.1
+Host: localhost:8003
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Cache-Control: max-age=0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
@@ -1192,11 +1476,26 @@ fname=milan&lname=groen&message=123POST /upload.php HTTP/1.1
 Host: localhost:8001
 Connection: keep-alive
 Content-Length: 35
+=======
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/kappa HTTP/1.1
+Host: localhost:8003
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Cache-Control: max-age=0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
@@ -1212,12 +1511,28 @@ Accept-Language: en-US,en;q=0.9
 fname=milan&lname=groen&message=123GET /form HTTP/1.1
 Host: localhost:8001
 Connection: keep-alive
+=======
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/kappa HTTP/1.1
+Host: localhost:8003
+Connection: keep-alive
+Cache-Control: max-age=0
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1229,6 +1544,19 @@ Accept-Language: en-US,en;q=0.9
 GET / HTTP/1.1
 Host: localhost:8004
 Connection: keep-alive
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/kappa HTTP/1.1
+Host: localhost:8003
+Connection: keep-alive
+Cache-Control: max-age=0
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
@@ -1242,8 +1570,13 @@ Sec-Fetch-Dest: document
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
+<<<<<<< HEAD
 GET /form HTTP/1.1
 Host: localhost:8004
+=======
+GET /home/ HTTP/1.1
+Host: localhost:8003
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
@@ -1251,6 +1584,7 @@ sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1263,25 +1597,49 @@ POST /upload.php HTTP/1.1
 Host: localhost:8004
 Connection: keep-alive
 Content-Length: 35
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Cache-Control: max-age=0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
 Origin: http://localhost:8004
 Content-Type: application/x-www-form-urlencoded
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
 Sec-Fetch-Dest: document
+<<<<<<< HEAD
 Referer: http://localhost:8004/form
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
 fname=milan&lname=groen&message=123GET /home HTTP/1.1
 Host: localhost:8004
+=======
+Referer: http://localhost:8001/home
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home HTTP/1.1
+Host: localhost:8003
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
@@ -1289,6 +1647,7 @@ sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1300,13 +1659,7 @@ Accept-Language: en-US,en;q=0.9
 GET / HTTP/1.1
 Host: localhost:8001
 Connection: keep-alive
-sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
-sec-ch-ua-mobile: ?0
-sec-ch-ua-platform: "macOS"
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Purpose: prefetch
+=======
 Sec-Fetch-Site: none
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1314,7 +1667,33 @@ Sec-Fetch-Dest: document
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
+GET /home HTTP/1.1
+Host: localhost:8003
+Connection: keep-alive
+Cache-Control: max-age=0
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
+Purpose: prefetch
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+<<<<<<< HEAD
 GET /form HTTP/1.1
+=======
+GET / HTTP/1.1
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Host: localhost:8001
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
@@ -1323,6 +1702,7 @@ sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1335,11 +1715,24 @@ POST /upload.php HTTP/1.1
 Host: localhost:8001
 Connection: keep-alive
 Content-Length: 35
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET / HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Cache-Control: max-age=0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
@@ -1356,11 +1749,26 @@ fname=milan&lname=groen&message=123POST /upload.php HTTP/1.1
 Host: localhost:8001
 Connection: keep-alive
 Content-Length: 35
+=======
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET / HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Cache-Control: max-age=0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
@@ -1374,6 +1782,18 @@ Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
 fname=milan&lname=groen&message=123GET /form HTTP/1.1
+=======
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home HTTP/1.1
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Host: localhost:8001
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
@@ -1382,6 +1802,7 @@ sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1395,10 +1816,23 @@ Host: localhost:8001
 Connection: keep-alive
 Content-Length: 35
 Cache-Control: max-age=0
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/ HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
@@ -1413,6 +1847,19 @@ Accept-Language: en-US,en;q=0.9
 
 fname=milan&lname=groen&message=123GET / HTTP/1.1
 Host: localhost:8004
+=======
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/ HTTP/1.1
+Host: localhost:8002
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
@@ -1427,8 +1874,13 @@ Sec-Fetch-Dest: document
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
+<<<<<<< HEAD
 GET /form HTTP/1.1
 Host: localhost:8004
+=======
+GET /home/kappa HTTP/1.1
+Host: localhost:8003
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
@@ -1436,6 +1888,7 @@ sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1449,10 +1902,23 @@ Host: localhost:8004
 Connection: keep-alive
 Content-Length: 35
 Cache-Control: max-age=0
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/ HTTP/1.1
+Host: localhost:8003
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
 Origin: http://localhost:8004
 Content-Type: application/x-www-form-urlencoded
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
@@ -1466,6 +1932,18 @@ Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
 fname=milan&lname=groen&message=123GET /home HTTP/1.1
+=======
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/ HTTP/1.1
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Host: localhost:8004
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
@@ -1474,6 +1952,7 @@ sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1483,6 +1962,16 @@ Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
 GET /form HTTP/1.1
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home HTTP/1.1
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Host: localhost:8004
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
@@ -1491,6 +1980,7 @@ sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1500,6 +1990,16 @@ Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
 GET /doesntexist HTTP/1.1
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET / HTTP/1.1
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Host: localhost:8004
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
@@ -1508,6 +2008,7 @@ sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1518,6 +2019,17 @@ Accept-Language: en-US,en;q=0.9
 
 GET /uploadfile HTTP/1.1
 Host: localhost:8004
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET / HTTP/1.1
+Host: localhost:8005
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
@@ -1525,6 +2037,7 @@ sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1553,12 +2066,41 @@ Accept-Language: en-US,en;q=0.9
 GET /home HTTP/1.1
 Host: localhost:8004
 Connection: keep-alive
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /images/favicon.ico HTTP/1.1
+Host: localhost:8005
+Connection: keep-alive
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8005/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET / HTTP/1.1
+Host: localhost:8005
+Connection: keep-alive
+Cache-Control: max-age=0
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1569,6 +2111,17 @@ Accept-Language: en-US,en;q=0.9
 
 GET / HTTP/1.1
 Host: localhost:8001
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/ HTTP/1.1
+Host: localhost:8005
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
@@ -1583,15 +2136,23 @@ Sec-Fetch-Dest: document
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
+<<<<<<< HEAD
 GET /form HTTP/1.1
 Host: localhost:8001
 Connection: keep-alive
+=======
+GET /home/ HTTP/1.1
+Host: localhost:8005
+Connection: keep-alive
+Cache-Control: max-age=0
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1605,10 +2166,204 @@ Host: localhost:8001
 Connection: keep-alive
 Content-Length: 35
 Cache-Control: max-age=0
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home HTTP/1.1
+Host: localhost:8005
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
+Origin: http://localhost:8001
+Content-Type: application/x-www-form-urlencoded
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Referer: http://localhost:8001/form
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+fname=milan&lname=groen&message=123GET / HTTP/1.1
+=======
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET / HTTP/1.1
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Host: localhost:8001
+Connection: keep-alive
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
+Purpose: prefetch
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+<<<<<<< HEAD
+GET /form HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+=======
+GET / HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+Cache-Control: max-age=0
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Referer: http://localhost:8001/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+POST /cgi-bin/uploadForm.cgi HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+Content-Length: 35
+Cache-Control: max-age=0
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/ HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
+Origin: http://localhost:8001
+Content-Type: application/x-www-form-urlencoded
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Referer: http://localhost:8001/form
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+fname=milan&lname=groen&message=123GET / HTTP/1.1
+Host: localhost:8001
+=======
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/ HTTP/1.1
+Host: localhost:8002
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Connection: keep-alive
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
+Purpose: prefetch
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+<<<<<<< HEAD
+GET /form HTTP/1.1
+Host: localhost:8001
+=======
+GET /home/ HTTP/1.1
+Host: localhost:8003
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Connection: keep-alive
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Referer: http://localhost:8001/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+POST /cgi-bin/uploadForm.cgi HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+Content-Length: 35
+Cache-Control: max-age=0
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/ HTTP/1.1
+Host: localhost:8004
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
@@ -1624,13 +2379,9 @@ Accept-Language: en-US,en;q=0.9
 fname=milan&lname=groen&message=123GET / HTTP/1.1
 Host: localhost:8001
 Connection: keep-alive
-sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
-sec-ch-ua-mobile: ?0
-sec-ch-ua-platform: "macOS"
-Upgrade-Insecure-Requests: 1
+=======
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Purpose: prefetch
 Sec-Fetch-Site: none
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1638,15 +2389,45 @@ Sec-Fetch-Dest: document
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
-GET /form HTTP/1.1
-Host: localhost:8001
+GET /home/ HTTP/1.1
+Host: localhost:8004
 Connection: keep-alive
+Cache-Control: max-age=0
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
+Purpose: prefetch
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+<<<<<<< HEAD
+GET /form HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+=======
+GET /home/ HTTP/1.1
+Host: localhost:8004
+Connection: keep-alive
+Cache-Control: max-age=0
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1659,11 +2440,24 @@ POST /cgi-bin/uploadForm.cgi HTTP/1.1
 Host: localhost:8001
 Connection: keep-alive
 Content-Length: 35
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/ HTTP/1.1
+Host: localhost:8004
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Cache-Control: max-age=0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
@@ -1678,14 +2472,9 @@ Accept-Language: en-US,en;q=0.9
 
 fname=milan&lname=groen&message=123GET / HTTP/1.1
 Host: localhost:8001
-Connection: keep-alive
-sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
-sec-ch-ua-mobile: ?0
-sec-ch-ua-platform: "macOS"
-Upgrade-Insecure-Requests: 1
+=======
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Purpose: prefetch
 Sec-Fetch-Site: none
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1693,8 +2482,34 @@ Sec-Fetch-Dest: document
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
+GET /home/ HTTP/1.1
+Host: localhost:8005
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Connection: keep-alive
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
+Purpose: prefetch
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+<<<<<<< HEAD
 GET /form HTTP/1.1
 Host: localhost:8001
+=======
+GET /Hoi HTTP/1.1
+Host: localhost:8005
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
@@ -1706,6 +2521,7 @@ Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
 Sec-Fetch-Dest: document
+<<<<<<< HEAD
 Referer: http://localhost:8001/
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
@@ -1715,128 +2531,31 @@ Host: localhost:8001
 Connection: keep-alive
 Content-Length: 35
 Cache-Control: max-age=0
+=======
+Referer: http://localhost:8005/home/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /Hoi HTTP/1.1
+Host: localhost:8005
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
 Sec-Fetch-Dest: document
-Referer: http://localhost:8001/form
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
-
-fname=milan&lname=groen&message=123GET / HTTP/1.1
-Host: localhost:8001
-Connection: keep-alive
-sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
-sec-ch-ua-mobile: ?0
-sec-ch-ua-platform: "macOS"
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Purpose: prefetch
-Sec-Fetch-Site: none
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
-
-GET /form HTTP/1.1
-Host: localhost:8001
-Connection: keep-alive
-sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
-sec-ch-ua-mobile: ?0
-sec-ch-ua-platform: "macOS"
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Referer: http://localhost:8001/
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
-
-POST /cgi-bin/uploadForm.cgi HTTP/1.1
-Host: localhost:8001
-Connection: keep-alive
-Content-Length: 35
-Cache-Control: max-age=0
-sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
-sec-ch-ua-mobile: ?0
-sec-ch-ua-platform: "macOS"
-Upgrade-Insecure-Requests: 1
-Origin: http://localhost:8001
-Content-Type: application/x-www-form-urlencoded
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Referer: http://localhost:8001/form
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
-
-fname=milan&lname=groen&message=123GET / HTTP/1.1
-Host: localhost:8001
-Connection: keep-alive
-sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
-sec-ch-ua-mobile: ?0
-sec-ch-ua-platform: "macOS"
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Purpose: prefetch
-Sec-Fetch-Site: none
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
-
-GET /form HTTP/1.1
-Host: localhost:8001
-Connection: keep-alive
-sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
-sec-ch-ua-mobile: ?0
-sec-ch-ua-platform: "macOS"
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Referer: http://localhost:8001/
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
-
-POST /cgi-bin/uploadForm.cgi HTTP/1.1
-Host: localhost:8001
-Connection: keep-alive
-Content-Length: 35
-Cache-Control: max-age=0
-sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
-sec-ch-ua-mobile: ?0
-sec-ch-ua-platform: "macOS"
-Upgrade-Insecure-Requests: 1
-Origin: http://localhost:8001
-Content-Type: application/x-www-form-urlencoded
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
+<<<<<<< HEAD
 Referer: http://localhost:8001/form
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
@@ -1846,11 +2565,21 @@ Host: localhost:8001
 Connection: keep-alive
 Content-Length: 35
 Cache-Control: max-age=0
+=======
+Referer: http://localhost:8005/home/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/subdir/hoi HTTP/1.1
+Host: localhost:8005
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
@@ -1865,12 +2594,27 @@ Accept-Language: en-US,en;q=0.9
 fname=milan&lname=groen&message=123GET /form HTTP/1.1
 Host: localhost:8001
 Connection: keep-alive
+=======
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/subdir/hoi HTTP/1.1
+Host: localhost:8005
+Connection: keep-alive
+Cache-Control: max-age=0
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1883,11 +2627,24 @@ POST /cgi-bin/uploadForm.cgi HTTP/1.1
 Host: localhost:8001
 Connection: keep-alive
 Content-Length: 35
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/subdir/hoi HTTP/1.1
+Host: localhost:8005
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Cache-Control: max-age=0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
@@ -1902,14 +2659,9 @@ Accept-Language: en-US,en;q=0.9
 
 fname=milan&lname=groen&message=123GET / HTTP/1.1
 Host: localhost:8001
-Connection: keep-alive
-sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
-sec-ch-ua-mobile: ?0
-sec-ch-ua-platform: "macOS"
-Upgrade-Insecure-Requests: 1
+=======
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Purpose: prefetch
 Sec-Fetch-Site: none
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1917,8 +2669,9 @@ Sec-Fetch-Dest: document
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
-GET /form HTTP/1.1
-Host: localhost:8001
+GET /home/subdir HTTP/1.1
+Host: localhost:8005
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
@@ -1926,6 +2679,32 @@ sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
+Purpose: prefetch
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+<<<<<<< HEAD
+GET /form HTTP/1.1
+Host: localhost:8001
+=======
+GET /home/kappa HTTP/1.1
+Host: localhost:8005
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Connection: keep-alive
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -1939,10 +2718,23 @@ Host: localhost:8001
 Connection: keep-alive
 Content-Length: 35
 Cache-Control: max-age=0
+=======
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/kappa HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
@@ -1960,11 +2752,26 @@ Host: localhost:8001
 Connection: keep-alive
 Content-Length: 35
 Cache-Control: max-age=0
+=======
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/subdir/hoi HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
@@ -1981,11 +2788,161 @@ Host: localhost:8001
 Connection: keep-alive
 Content-Length: 35
 Cache-Control: max-age=0
+=======
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /Hoi HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+<<<<<<< HEAD
+Origin: http://localhost:8001
+Content-Type: application/x-www-form-urlencoded
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+<<<<<<< HEAD
+Referer: http://localhost:8001/form
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+fname=milan&lname=groen&message=123POST /cgi-bin/uploadForm.cgi HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+Content-Length: 35
+=======
+Referer: http://localhost:8001/home/subdir/hoi
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /Hoi HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Cache-Control: max-age=0
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+<<<<<<< HEAD
+Origin: http://localhost:8001
+Content-Type: application/x-www-form-urlencoded
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+<<<<<<< HEAD
+Referer: http://localhost:8001/form
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+fname=milan&lname=groen&message=123POST /cgi-bin/uploadForm.cgi HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+Content-Length: 35
+Cache-Control: max-age=0
+=======
+Referer: http://localhost:8001/home/subdir/hoi
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /Hoi HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+<<<<<<< HEAD
+Origin: http://localhost:8001
+Content-Type: application/x-www-form-urlencoded
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+<<<<<<< HEAD
+Referer: http://localhost:8001/form
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+fname=milan&lname=groen&message=123POST /cgi-bin/uploadForm.cgi HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+Content-Length: 35
+=======
+Referer: http://localhost:8001/home/subdir/hoi
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /Hoi HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Cache-Control: max-age=0
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+<<<<<<< HEAD
+Origin: http://localhost:8001
+Content-Type: application/x-www-form-urlencoded
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+<<<<<<< HEAD
+Referer: http://localhost:8001/form
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+fname=milan&lname=groen&message=123POST /cgi-bin/uploadForm.cgi HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+Content-Length: 35
+Cache-Control: max-age=0
+=======
+Referer: http://localhost:8001/home/subdir/hoi
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/subdir/hoi HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
@@ -2002,18 +2959,35 @@ Host: localhost:8001
 Connection: keep-alive
 Content-Length: 35
 Cache-Control: max-age=0
+=======
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/subdir/hoi HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
 Sec-Fetch-Dest: document
+<<<<<<< HEAD
 Referer: http://localhost:8001/form
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
@@ -2023,18 +2997,31 @@ Host: localhost:8001
 Connection: keep-alive
 Content-Length: 35
 Cache-Control: max-age=0
+=======
+Referer: http://localhost:8001/home/subdir/hoi
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/subdir/hoi HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
 Sec-Fetch-Dest: document
+<<<<<<< HEAD
 Referer: http://localhost:8001/form
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
@@ -2044,18 +3031,31 @@ Host: localhost:8001
 Connection: keep-alive
 Content-Length: 35
 Cache-Control: max-age=0
+=======
+Referer: http://localhost:8001/home/subdir/hoi
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/subdir/hoi HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
 Sec-Fetch-Dest: document
+<<<<<<< HEAD
 Referer: http://localhost:8001/form
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
@@ -2065,18 +3065,31 @@ Host: localhost:8001
 Connection: keep-alive
 Content-Length: 35
 Cache-Control: max-age=0
+=======
+Referer: http://localhost:8001/home/subdir/hoi
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /home/subdir/hoi HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
 Sec-Fetch-Dest: document
+<<<<<<< HEAD
 Referer: http://localhost:8001/form
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
@@ -2086,107 +3099,43 @@ Host: localhost:8001
 Connection: keep-alive
 Content-Length: 35
 Cache-Control: max-age=0
-sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
-sec-ch-ua-mobile: ?0
-sec-ch-ua-platform: "macOS"
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
-Origin: http://localhost:8001
-Content-Type: application/x-www-form-urlencoded
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Referer: http://localhost:8001/form
+=======
+Referer: http://localhost:8001/home/subdir/hoi
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
-fname=milan&lname=groen&message=123POST /cgi-bin/uploadForm.cgi HTTP/1.1
+GET /home/subdir/hoi HTTP/1.1
 Host: localhost:8001
 Connection: keep-alive
-Content-Length: 35
-Cache-Control: max-age=0
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
 Sec-Fetch-Dest: document
-Referer: http://localhost:8001/form
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
-
-fname=milan&lname=groen&message=123POST /cgi-bin/uploadForm.cgi HTTP/1.1
-Host: localhost:8001
-Connection: keep-alive
-Content-Length: 35
-Cache-Control: max-age=0
-sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
-sec-ch-ua-mobile: ?0
-sec-ch-ua-platform: "macOS"
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
-Origin: http://localhost:8001
-Content-Type: application/x-www-form-urlencoded
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Referer: http://localhost:8001/form
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
-
-fname=milan&lname=groen&message=123POST /cgi-bin/uploadForm.cgi HTTP/1.1
-Host: localhost:8001
-Connection: keep-alive
-Content-Length: 35
-Cache-Control: max-age=0
-sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
-sec-ch-ua-mobile: ?0
-sec-ch-ua-platform: "macOS"
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
-Origin: http://localhost:8001
-Content-Type: application/x-www-form-urlencoded
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Referer: http://localhost:8001/form
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
-
-fname=milan&lname=groen&message=123POST /cgi-bin/uploadForm.cgi HTTP/1.1
-Host: localhost:8001
-Connection: keep-alive
-Content-Length: 35
-Cache-Control: max-age=0
-sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
-sec-ch-ua-mobile: ?0
-sec-ch-ua-platform: "macOS"
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
-Origin: http://localhost:8001
-Content-Type: application/x-www-form-urlencoded
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
+<<<<<<< HEAD
 Referer: http://localhost:8001/form
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
 fname=milan&lname=groen&message=123GET / HTTP/1.1
+=======
+Referer: http://localhost:8001/home/subdir/hoi
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET / HTTP/1.1
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Host: localhost:8001
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
@@ -2195,7 +3144,83 @@ sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+<<<<<<< HEAD
 Purpose: prefetch
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+<<<<<<< HEAD
+GET /form HTTP/1.1
+=======
+GET /favicon.ico HTTP/1.1
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Host: localhost:8001
+Connection: keep-alive
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+<<<<<<< HEAD
+sec-ch-ua-platform: "macOS"
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+=======
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Referer: http://localhost:8001/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+<<<<<<< HEAD
+POST /cgi-bin/uploadForm.cgi HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+Content-Length: 35
+=======
+GET / HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
+Cache-Control: max-age=0
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
+Origin: http://localhost:8001
+Content-Type: application/x-www-form-urlencoded
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Referer: http://localhost:8001/form
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+fname=milan&lname=groen&message=123POST /cgi-bin/uploadForm.cgi HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+Content-Length: 35
+Cache-Control: max-age=0
+=======
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
 Sec-Fetch-Site: none
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
@@ -2206,85 +3231,71 @@ Accept-Language: en-US,en;q=0.9
 GET /form HTTP/1.1
 Host: localhost:8001
 Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+<<<<<<< HEAD
+Origin: http://localhost:8001
+Content-Type: application/x-www-form-urlencoded
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
 Sec-Fetch-Dest: document
+<<<<<<< HEAD
+Referer: http://localhost:8001/form
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+fname=milan&lname=groen&message=123POST /cgi-bin/uploadForm.cgi HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+Content-Length: 35
+=======
 Referer: http://localhost:8001/
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
-POST /cgi-bin/uploadForm.cgi HTTP/1.1
+GET /form HTTP/1.1
 Host: localhost:8001
 Connection: keep-alive
-Content-Length: 35
-Cache-Control: max-age=0
-sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
-sec-ch-ua-mobile: ?0
-sec-ch-ua-platform: "macOS"
-Upgrade-Insecure-Requests: 1
-Origin: http://localhost:8001
-Content-Type: application/x-www-form-urlencoded
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Referer: http://localhost:8001/form
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
-
-fname=milan&lname=groen&message=123POST /cgi-bin/uploadForm.cgi HTTP/1.1
-Host: localhost:8001
-Connection: keep-alive
-Content-Length: 35
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Cache-Control: max-age=0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+<<<<<<< HEAD
 Origin: http://localhost:8001
 Content-Type: application/x-www-form-urlencoded
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
 Sec-Fetch-Dest: document
-Referer: http://localhost:8001/form
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
-
-fname=milan&lname=groen&message=123POST /cgi-bin/uploadForm.cgi HTTP/1.1
-Host: localhost:8001
-Connection: keep-alive
-Content-Length: 35
-Cache-Control: max-age=0
-sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
-sec-ch-ua-mobile: ?0
-sec-ch-ua-platform: "macOS"
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
-Origin: http://localhost:8001
-Content-Type: application/x-www-form-urlencoded
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
+<<<<<<< HEAD
 Referer: http://localhost:8001/form
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
 fname=milan&lname=groen&message=123GET / HTTP/1.1
 Host: localhost:8004
+=======
+Referer: http://localhost:8001/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET / HTTP/1.1
+Host: localhost:8001
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
@@ -2300,7 +3311,11 @@ Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
 GET /form HTTP/1.1
+<<<<<<< HEAD
 Host: localhost:8004
+=======
+Host: localhost:8001
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
@@ -2312,6 +3327,7 @@ Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
 Sec-Fetch-Dest: document
+<<<<<<< HEAD
 Referer: http://localhost:8004/
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
@@ -2321,18 +3337,31 @@ Host: localhost:8004
 Connection: keep-alive
 Content-Length: 35
 Cache-Control: max-age=0
+=======
+Referer: http://localhost:8001/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /uploadfile HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
 Origin: http://localhost:8004
 Content-Type: application/x-www-form-urlencoded
+=======
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
 Sec-Fetch-Dest: document
+<<<<<<< HEAD
 Referer: http://localhost:8004/form
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
@@ -2354,6 +3383,14 @@ Accept-Language: en-US,en;q=0.9
 
 GET /form HTTP/1.1
 Host: localhost:8004
+=======
+Referer: http://localhost:8001/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET /doesntexist HTTP/1.1
+Host: localhost:8001
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
@@ -2365,6 +3402,7 @@ Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: navigate
 Sec-Fetch-User: ?1
 Sec-Fetch-Dest: document
+<<<<<<< HEAD
 Referer: http://localhost:8004/cgi-bin/uploadForm.cgi
 Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
@@ -2373,11 +3411,21 @@ POST /cgi-bin/uploadForm.cgi HTTP/1.1
 Host: localhost:8004
 Connection: keep-alive
 Content-Length: 35
+=======
+Referer: http://localhost:8001/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET / HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Cache-Control: max-age=0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
 Origin: http://localhost:8004
 Content-Type: application/x-www-form-urlencoded
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
@@ -2411,11 +3459,26 @@ POST /cgi-bin/uploadForm.cgi HTTP/1.1
 Host: localhost:8004
 Connection: keep-alive
 Content-Length: 35
+=======
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+GET / HTTP/1.1
+Host: localhost:8001
+Connection: keep-alive
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0
 Cache-Control: max-age=0
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0
 sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
+<<<<<<< HEAD
 Origin: http://localhost:8004
 Content-Type: application/x-www-form-urlencoded
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
@@ -2429,3 +3492,14 @@ Accept-Encoding: gzip, deflate, br
 Accept-Language: en-US,en;q=0.9
 
 fname=milan&lname=groen&message=123
+=======
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+
+>>>>>>> a76f9304e85f4086fe65db6ad3b0e3998d38f7c0

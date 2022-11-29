@@ -17,9 +17,8 @@ int Server::acceptRequest(int sock_num)
 
 int Server::receiveClientRequest(int c_fd)
 {
+	char	buf[50000];
     ssize_t bytesRead = -1;
-    char    buf[50000];
-
     std::vector<Client*>::iterator it = this->_clients.begin();
     std::vector<Client*>::iterator end = this->_clients.end();
     for(; it != end; ++it)
@@ -35,13 +34,15 @@ int Server::receiveClientRequest(int c_fd)
         closeConnection(c_fd);
         return ft_return("recv failed:\n");
     }
-    if (bytesRead == 0)
+    else if (bytesRead == 0)
     {
         std::cout << "0 bytes read/stream socket peer shutdown (eof)\n";
         if (closeConnection(c_fd) == -1)
             return -1;
         return 1; 
     }
+	else if (bytesRead == 50000)
+		std::cout << "request is too big, didn't read it all\n";
     if ((*it)->request_is_read == true)
     {
         std::cout << "clearing content\n";
@@ -121,8 +122,11 @@ int    executeCGI(std::string page, Socket *socket)
 
 std::string Server::findHtmlFile(int c_fd)
 {
-    std::vector<Client*>::iterator it = this->_clients.begin();
-    std::vector<Client*>::iterator end = this->_clients.end();
+    std::vector<Client*>::iterator	it = this->_clients.begin();
+    std::vector<Client*>::iterator	end = this->_clients.end();
+	std::string::iterator			strit;
+	std::string						ret;
+
     for(; it != end; ++it)
         if (c_fd == (*it)->conn_fd)
             break ;
@@ -145,24 +149,42 @@ std::string Server::findHtmlFile(int c_fd)
     fstr.close();
     if (head[0] == "GET")
     {
-        std::string ret = this->_sockets[(*it)->port]->getLocationPage(head[1]);
+		/* if request GET = directory */
+		if (head[1].compare("/") && head[0] == "GET")
+		{
+			strit = head[1].end() - 1;
+			if (*strit == '/' && this->_sockets[(*it)->port]->getLocationPage("directoryRequest") != "")
+			{
+				ret = this->_sockets[(*it)->port]->getLocationPage("directoryRequest");
+				_responseHeader = "HTTP/1.1 200 OK";
+				if (this->_sockets[(*it)->port]->autoindex == "on")
+					ret = getDirectoryListedPage(ret);
+				return (ret);
+			}
+		}
+		if (head[0] == "POST" && checkMaxClientBodySize(it) == false)
+		{
+			_responseHeader = "HTTP/1.1 413 Request Entity Too Large";
+            return ("htmlFiles/errorPages/404.html");
+		}
+        ret = this->_sockets[(*it)->port]->getLocationPage(head[1]);
         if (ret != "")
         {
             _responseHeader = "HTTP/1.1 200 OK";
             return (ret);
         }
-        else
-        {
-            _responseHeader = "HTTP/1.1 404 Not Found";
-            return ("htmlFiles/errorPages/404.html");
-        }
+		ret = this->_sockets[(*it)->port]->getRedirectPage(head[1]);
+		if (ret != "")
+		{
+			_responseHeader = "HTTP/1.1 301 Moved Permanently\r\nLocation: ";
+			_responseHeader.append(ret);
+			return ("htmlFiles/errorPages/404.html");
+		}
+        _responseHeader = "HTTP/1.1 404 Not Found";
+        return ("htmlFiles/errorPages/404.html");
     }
-    if (head[0] == "POST")
-    {
-        executeCGI(head[1], this->_sockets[(*it)->port]);
-        _responseHeader = "HTTP/1.1 200 OK";
-        return ("responseCGI.txt");
-    }
+	else
+		std::cout << "ILLEGAL METHOD\n";
     head.clear();
     return (NULL);
 }
@@ -183,7 +205,10 @@ int Server::sendResponseToClient(int c_fd)
     htmlFile.open(this->findHtmlFile(c_fd), std::ios::in | std::ios::binary);
     if (!htmlFile.is_open())
         return (ft_return("html file doesn't exist: "));
-    //get length of htmlFile
+
+	
+
+	//get length of htmlFile
     htmlFile.seekg(0, std::ios::end);
     fileSize = htmlFile.tellg();
     htmlFile.clear();
@@ -199,13 +224,14 @@ int Server::sendResponseToClient(int c_fd)
     htmlFile.read(html, fileSize);
     responseFile << html << std::endl;
 
+
     //get length of full responseFile
     responseFile.seekg(0, std::ios::end);
     fileSize = responseFile.tellg();
     responseFile.clear();
     responseFile.seekg(0, std::ios::beg);
 
-    //create respone which is sent back to client
+    //create response which is sent back to client
     char    response[fileSize];
     responseFile.read(response, fileSize);
     ssize_t bytesSent = send(c_fd, response, fileSize, 0);
