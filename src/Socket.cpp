@@ -55,7 +55,6 @@ Socket::Socket(std::string config) : autoindex("off"), config(config)
         	this->_pages.insert(std::make_pair(page, location));
         pos = this->config.find("page", pos + 1);
     }
-    this->_pages.insert(std::make_pair("/upload.php", "htmlFiles/upload.php"));
     this->_pages.insert(std::make_pair("/404", "htmlFiles/404.html"));
     this->setupSockets();
 }
