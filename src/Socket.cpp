@@ -1,6 +1,6 @@
 #include "../inc/Socket.hpp"
 
-Socket::Socket(std::string config) : config(config)
+Socket::Socket(std::string config) : autoindex("off"), config(config)
 {
     std::size_t pos, pos2;
     std::string page, location, line;
@@ -30,6 +30,15 @@ Socket::Socket(std::string config) : config(config)
 	}
 	else
 		this->maxClientBodySize = -1;
+	if ((pos = this->config.find("autoindex on;")) != std::string::npos)
+		this->autoindex = "on";
+	if ((pos = this->config.find("directoryRequest")) != std::string::npos)
+	{
+		pos = this->config.find(" ", pos) + 1;
+		pos2 = this->config.find(";", pos);
+		location = this->config.substr(pos, (pos2 - pos));
+		this->_pages.insert(std::make_pair("directoryRequest", location));
+	}
     if ((pos = this->config.find("page")) == std::string::npos)
         exit (ft_return("No pages set: "));
     while (pos != std::string::npos)

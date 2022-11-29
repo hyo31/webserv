@@ -11,7 +11,7 @@ class Socket
         Socket(std::string ipAddr, int port);
         ~Socket();
 
-		
+		std::string					autoindex;
 		std::string					config;
 		std::vector<std::string>	methods;
 		int							maxClientBodySize;

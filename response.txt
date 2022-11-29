@@ -1,14 +1,20 @@
-HTTP/1.1 200 OK
+HTTP/1.1 404 Not Found
 Content-Type: text/html
-Content-Length: 341
+Content-Length: 445
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Webserv</title>
+    <title>404 Not Found</title>
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
 </head>
-<body style="background-color:rgb(67, 167, 167);">
-    <h1 style="text-align:center;font-size: 52px"><a href="/Hoi" style="text-decoration: none;color: red">WEBSERV</a></h1><br><br>
+<style>
+.borderexample {
+ border-bottom:solid thin white;
+}
+</style>
+<body style="background-color:rgb(67, 67, 67);">
+    <h1 class="borderexample"; style="text-align:center;color:white">404 Not found</h1>
+    <p style="text-align:center;color:white">This page does not exist</p>
 </body>
-</html>
+</html>

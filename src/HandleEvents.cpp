@@ -69,8 +69,11 @@ int Server::receiveClientRequest(int c_fd)
 
 std::string Server::findHtmlFile(int c_fd)
 {
-    std::vector<Client*>::iterator it = this->_clients.begin();
-    std::vector<Client*>::iterator end = this->_clients.end();
+    std::vector<Client*>::iterator	it = this->_clients.begin();
+    std::vector<Client*>::iterator	end = this->_clients.end();
+	std::string::iterator			strit;
+	std::string						ret;
+
     for(; it != end; ++it)
         if (c_fd == (*it)->conn_fd)
             break ;
@@ -92,16 +95,30 @@ std::string Server::findHtmlFile(int c_fd)
         head.push_back(line);
     if (head[0] == "GET" || head[0] == "POST")
     {
+		/* if request GET = directory */
+		if (head[1].compare("/") && head[0] == "GET")
+		{
+			strit = head[1].end() - 1;
+			if (*strit == '/' && this->_sockets[(*it)->port]->getLocationPage("directoryRequest") != "")
+			{
+				ret = this->_sockets[(*it)->port]->getLocationPage("directoryRequest");
+				_responseHeader = "HTTP/1.1 200 OK";
+				if (this->_sockets[(*it)->port]->autoindex == "on")
+					ret = getDirectoryListedPage(ret);
+				return (ret);
+			}
+		}
 		if (head[0] == "POST" && checkMaxClientBodySize(it) == false)
 		{
 			_responseHeader = "HTTP/1.1 413 Request Entity Too Large";
             return ("htmlFiles/errorPages/404.html");
 		}
-        // std::cout << head[1] << std::endl;
-        std::string ret = this->_sockets[(*it)->port]->getLocationPage(head[1]);
+        ret = this->_sockets[(*it)->port]->getLocationPage(head[1]);
         if (ret != "")
         {
             _responseHeader = "HTTP/1.1 200 OK";
+			if (this->_sockets[(*it)->port]->autoindex == "on")
+				ret = getDirectoryListedPage(ret);
             return (ret);
         }
 		ret = this->_sockets[(*it)->port]->getRedirectPage(head[1]);
@@ -114,6 +131,8 @@ std::string Server::findHtmlFile(int c_fd)
         _responseHeader = "HTTP/1.1 404 Not Found";
         return ("htmlFiles/errorPages/404.html");
     }
+	else
+		std::cout << "ILLEGAL METHOD\n";
     head.clear();
     return (NULL);
 }
@@ -135,6 +154,8 @@ int Server::sendResponseToClient(int c_fd)
     if (!htmlFile.is_open())
         return (ft_return("html file doesn't exist: "));
 
+	
+
 	//get length of htmlFile
     htmlFile.seekg(0, std::ios::end);
     fileSize = htmlFile.tellg();
@@ -150,6 +171,7 @@ int Server::sendResponseToClient(int c_fd)
     char    html[fileSize];
     htmlFile.read(html, fileSize);
     responseFile << html << std::endl;
+
 
     //get length of full responseFile
     responseFile.seekg(0, std::ios::end);
