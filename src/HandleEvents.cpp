@@ -66,6 +66,59 @@ int Server::receiveClientRequest(int c_fd)
     return 1;
 }
 
+char    **setupEnv(std::string page, Socket *socket)
+{
+    std::map<std::string, std::string>  env;
+    std::fstream                        receivedMessage;
+    
+    receivedMessage.open(socket->logFile);
+    if (!receivedMessage.is_open())
+    {
+        ft_return("could not open file: ");
+        return (NULL);
+    }
+    env["HTTP_HOST"] =  "localhost:" + std::to_string(socket->port);
+    env["REQUEST_URI"] = page;
+    env["REMOTE_PORT"] = std::to_string(socket->port);
+    env["REQUEST_METHOD"] = "POST";
+    env["SCRIPT_NAME"] = "upload.php";
+    env["SERVER_PORT"] = std::to_string(socket->port);
+    env["RESPONSE_FILE"] = "responseCGI.txt";
+    char    **c_env = new char*[env.size() + 1];
+    int     i = 0;
+    for (std::map<std::string, std::string>::const_iterator it = env.begin(); it != env.end(); it++)
+    {
+        std::string temp = it->first + "=" + it->second;
+        c_env[i] = new char[temp.size() + 1];
+        strcpy(c_env[i], temp.c_str());
+        i++;
+    }
+    c_env[i] = NULL;
+    receivedMessage.close();
+    return (c_env);
+}
+
+int    executeCGI(std::string page, Socket *socket)
+{
+    pid_t           pid;
+    char            **env;
+
+    env = setupEnv(page, socket);
+    if (!env)
+        return  ft_return("failed setting up the environment");
+    pid = fork();
+    if (pid == -1)
+        return ft_return("fork faield: ");
+    if (!pid)
+    {
+        freopen("responseCGI.txt","w",stdout);
+        execve("/Users/mgroen/Documents/Codam_Core/GitHub/webserv/cgi-bin/uploadForm.cgi", NULL, env);
+        ft_return("execve failed: ");
+    }
+
+    return (0);
+}
+
 std::string Server::findHtmlFile(int c_fd)
 {
     std::vector<Client*>::iterator it = this->_clients.begin();
@@ -89,9 +142,9 @@ std::string Server::findHtmlFile(int c_fd)
     std::string line;
     for (int i = 0; i < 3 && fstr.peek() != '\n' && fstr >> line; i++)
         head.push_back(line);
-    if (head[0] == "GET" || head[0] == "POST")
+    fstr.close();
+    if (head[0] == "GET")
     {
-        // std::cout << head[1] << std::endl;
         std::string ret = this->_sockets[(*it)->port]->getLocationPage(head[1]);
         if (ret != "")
         {
@@ -103,6 +156,12 @@ std::string Server::findHtmlFile(int c_fd)
             _responseHeader = "HTTP/1.1 404 Not Found";
             return ("htmlFiles/errorPages/404.html");
         }
+    }
+    if (head[0] == "POST")
+    {
+        executeCGI(head[1], this->_sockets[(*it)->port]);
+        _responseHeader = "HTTP/1.1 200 OK";
+        return ("responseCGI.txt");
     }
     head.clear();
     return (NULL);

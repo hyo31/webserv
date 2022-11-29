@@ -18,6 +18,7 @@
 # include <map>
 # include "Client.hpp"
 # include <sstream>
+# include <unistd.h>
 
 # ifndef TIMEOUT
 #  define TIMEOUT 5 
