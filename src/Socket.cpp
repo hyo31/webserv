@@ -86,6 +86,7 @@ int Socket::setupSockets()
     {
         std::cerr << "bind failed: " << strerror(errno) << std::endl;
         close (this->fd);
+		return (0);
         exit(1);
     }
     if (listen(this->fd, 100))
@@ -105,7 +106,22 @@ std::string Socket::getLocationPage(std::string page)
 
 std::string Socket::getRedirectPage(std::string page)
 {
-    std::map<std::string, std::string>::iterator  it;
+    std::map<std::string, std::string>::iterator	it;
+	std::string	root;
+	size_t		end = page.find("/", 1);
+	size_t		start = 0;
+
+	while (end != std::string::npos)
+	{
+		root = page.substr(start, (end - start));
+		it = this->_redirects.find(root);
+    	if (it != this->_redirects.end())
+			page.replace(start, (end - start), it->second);
+		end = page.find("/", end + 1);
+	}
+	it = this->_pages.find(page);
+	if (it != this->_pages.end())
+		return (page);
     it = this->_redirects.find(page);
     if (it == this->_redirects.end())
         return ("");
