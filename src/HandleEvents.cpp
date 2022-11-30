@@ -86,6 +86,8 @@ char    **setupEnv(std::string page, Socket *socket, std::string path)
     env["SERVER_PORT"] = std::to_string(socket->port);
     env["RESPONSE_FILE"] = "responseCGI.txt";
     env["PATH"] = path + "/htmlFiles";
+    env["QUERY_STRING"] = "fname=milan&lname=groen&message=123";
+    env["FILE_NAME"] = "logs/form.log";
     char    **c_env = new char*[env.size() + 1];
     int     i = 0;
     for (std::map<std::string, std::string>::const_iterator it = env.begin(); it != env.end(); it++)
