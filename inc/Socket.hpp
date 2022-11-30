@@ -28,9 +28,9 @@ class Socket
         int             			setupSockets();
         std::string     			getLocationPage(std::string page);
 		std::string					getRedirectPage(std::string page);
+        std::string                 _root;
 
     private:
-        std::string                         _root;
         std::map<std::string, std::string>	_pages; /* name - location */
 		std::map<std::string, std::string>	_redirects; /* name - redirect_location */
         int                         addFiles(std::string path, std::string location);

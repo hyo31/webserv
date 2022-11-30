@@ -160,7 +160,8 @@ std::string Server::findHtmlFile(int c_fd)
 			{
 				_responseHeader = "HTTP/1.1 200 OK";
 				if (this->_sockets[(*it)->port]->autoindex)
-					ret = getDirectoryListedPage(ret);
+					ret = this->_sockets[(*it)->port]->_root + head[1] + "index.html";
+				std::cout << "ret:" << ret << std::endl;
 				return (ret);
 			}
 		}
@@ -172,7 +173,7 @@ std::string Server::findHtmlFile(int c_fd)
             return (ret);
         }
 		ret = this->_sockets[(*it)->port]->getRedirectPage(head[1]);
-		if (ret != "")
+		if (ret == "")
 		{
 			_responseHeader = "HTTP/1.1 301 Moved Permanently\r\nLocation: ";
 			_responseHeader.append(ret);
