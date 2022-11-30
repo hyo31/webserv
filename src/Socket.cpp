@@ -45,7 +45,7 @@ Socket::Socket(std::string config, std::string path) : autoindex(false), config(
 		location = this->config.substr(pos, (pos2 - pos));
 		this->_pages.insert(std::make_pair("directoryRequest", location));
 	}
-    this->addFiles(path, "/" + _root);
+    this->addFiles(path + "/" + _root, "");
     for(std::map<std::string, std::string>::iterator it = _pages.begin(); it != _pages.end(); ++it)
     {
         std::cout << it->first << "     " << it->second << "\n";
@@ -136,11 +136,13 @@ int Socket::addFiles(std::string path, std::string root)
         if (page.length() > 5 && page.substr(page.length() - 5, page.length()) == ".html")
         {
             location = pathDir + page;
-            this->_pages.insert(std::make_pair(page, location));
-            this->_pages.insert(std::make_pair(page.substr(0, page.length() - 5), location));
+            this->_pages.insert(std::make_pair(root + page, location));
+            this->_pages.insert(std::make_pair(root + page.substr(0, page.length() - 5), location));
         }
         else if (page != "/." && page != "/..")
-            this->addFiles(pathDir, page);
+        {
+            this->addFiles(path, root + page);
+        }
     }
     closedir (directory);
     return (0);
