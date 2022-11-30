@@ -73,10 +73,3 @@ void    Server::bounceTimedOutClients()
         }
     }
 }
-
-std::string	Server::getDirectoryListedPage(std::string str)
-{
-	size_t pos = str.find(".");
-	str.insert(pos, "_ai");
-	return str;
-}
