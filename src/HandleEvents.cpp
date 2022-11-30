@@ -176,22 +176,22 @@ std::string Server::findHtmlFile(int c_fd)
 		{
 			_responseHeader = "HTTP/1.1 301 Moved Permanently\r\nLocation: ";
 			_responseHeader.append(ret);
-			return ("htmlFiles/errorPages/404.html");
+			return ("htmlFiles/Pages/errorPages/404.html");
 		}
         _responseHeader = "HTTP/1.1 404 Not Found";
-        return ("htmlFiles/errorPages/404.html");
+        return ("htmlFiles/Pages/errorPages/404.html");
     }
     else if (head[0] == "POST")
 	{
         if (checkMaxClientBodySize(it) == false)
         {
 			_responseHeader = "HTTP/1.1 413 Request Entity Too Large";
-            return ("htmlFiles/errorPages/413.html");
+            return ("htmlFiles/Pages/errorPages/413.html");
         }
         if (executeCGI(head[1], this->_sockets[(*it)->port], this->_path))
         {
             _responseHeader = "HTTP/1.1 404 Not Found";
-            return ("htmlFiles/errorPages/404.html");
+            return ("htmlFiles/Pages/errorPages/404.html");
         }
         _responseHeader = "HTTP/1.1 200 OK";
         return ("responseCGI.txt");
