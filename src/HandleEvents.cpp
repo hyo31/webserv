@@ -86,6 +86,8 @@ char    **setupEnv(std::string page, Socket *socket, std::string path)
     env["SERVER_PORT"] = std::to_string(socket->port);
     env["RESPONSE_FILE"] = "responseCGI.txt";
     env["PATH"] = path + "/htmlFiles";
+    env["QUERY_STRING"] = "fname=milan&lname=groen&message=123";
+    env["FILE_NAME"] = "logs/form.log";
     char    **c_env = new char*[env.size() + 1];
     int     i = 0;
     for (std::map<std::string, std::string>::const_iterator it = env.begin(); it != env.end(); it++)
@@ -177,7 +179,7 @@ std::string Server::findHtmlFile(int c_fd)
 		{
 			_responseHeader = "HTTP/1.1 301 Moved Permanently\r\nLocation: ";
 			_responseHeader.append(ret);
-			return ("htmlFiles/Pages/errorPages/404.html");
+			return ("htmlFiles/Pages/errorPages/301.html");
 		}
         _responseHeader = "HTTP/1.1 404 Not Found";
         return ("htmlFiles/Pages/errorPages/404.html");
@@ -218,7 +220,9 @@ int Server::sendResponseToClient(int c_fd)
         return ft_return("could not open response file ");
     htmlFile.open(this->findHtmlFile(c_fd), std::ios::in | std::ios::binary);
     if (!htmlFile.is_open())
-        return (ft_return("html file doesn't exist: "));
+    {
+        return ft_return("html file doesn't exist: ");
+    }
 
 	//get length of htmlFile
     htmlFile.seekg(0, std::ios::end);
