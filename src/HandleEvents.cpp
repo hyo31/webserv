@@ -152,7 +152,7 @@ std::string Server::findHtmlFile(int c_fd)
     if (head[0] == "GET")
     {
 		/* if request GET = directory */
-		if (head[1].compare("/") && head[0] == "GET")
+		if (head[0] == "GET")
 		{
 			strit = head[1].end() - 1;
 			ret = this->_sockets[(*it)->port]->getLocationPage("directoryRequest");
@@ -173,11 +173,11 @@ std::string Server::findHtmlFile(int c_fd)
             return (ret);
         }
 		ret = this->_sockets[(*it)->port]->getRedirectPage(head[1]);
-		if (ret == "")
+		if (ret != "")
 		{
 			_responseHeader = "HTTP/1.1 301 Moved Permanently\r\nLocation: ";
 			_responseHeader.append(ret);
-			return ("htmlFiles/Pages/errorPages/404.html");
+			return ("htmlFiles/Pages/errorPages/301.html");
 		}
         _responseHeader = "HTTP/1.1 404 Not Found";
         return ("htmlFiles/Pages/errorPages/404.html");
@@ -218,7 +218,9 @@ int Server::sendResponseToClient(int c_fd)
         return ft_return("could not open response file ");
     htmlFile.open(this->findHtmlFile(c_fd), std::ios::in | std::ios::binary);
     if (!htmlFile.is_open())
-        return (ft_return("html file doesn't exist: "));
+    {
+        return ft_return("html file doesn't exist: ");
+    }
 
 	//get length of htmlFile
     htmlFile.seekg(0, std::ios::end);

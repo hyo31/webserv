@@ -46,10 +46,10 @@ Socket::Socket(std::string config, std::string path) : autoindex(false), config(
 		this->_pages.insert(std::make_pair("directoryRequest", location));
 	}
     this->addFiles(path + "/" + _root, "");
-    for(std::map<std::string, std::string>::iterator it = _pages.begin(); it != _pages.end(); ++it)
-    {
-        std::cout << it->first << "     " << it->second << "\n";
-    }
+    // for(std::map<std::string, std::string>::iterator it = _pages.begin(); it != _pages.end(); ++it)
+    // {
+    //     std::cout << it->first << "     " << it->second << "\n";
+    // }
     this->setupSockets();
 }
 
