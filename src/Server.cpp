@@ -82,9 +82,10 @@ int	Server::monitor_ports()
 }
 
 //making the server listen to three sockets, bound do three different ports, writing requests to logfiles
-int	Server::startServer(std::string configFilePath)
+int	Server::startServer(std::string configFilePath, std::string path)
 {
 	int	status = 0;
+    this->_path = path;
     if (configuration(configFilePath) == -1)
         return (ft_return(""));
     std::cout << "\033[1mOpened sockets: \033[0m";
@@ -96,7 +97,7 @@ int	Server::startServer(std::string configFilePath)
     std::cout << std::endl << std::endl;;
 	status = this->monitor_ports();
 	if (status == -1)
-		return ft_return("monitor failed:\n");
+		return ft_return("monitor failed: ");
     delete this->_sockets[0];
     delete this->_sockets[1];
     delete this->_sockets[2];
@@ -122,7 +123,7 @@ int Server::configuration(std::string configFilePath)
                     break;
                 socketConfig = socketConfig + line + "\n";
             }
-            this->_sockets.push_back(new Socket(socketConfig));
+            this->_sockets.push_back(new Socket(socketConfig, this->_path));
             socketConfig.erase(socketConfig.begin(), socketConfig.end());
         }
     }

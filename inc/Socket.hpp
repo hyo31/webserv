@@ -1,21 +1,23 @@
 #ifndef SOCKET_HPP
 # define SOCKET_HPP
 
-# include <map>
+#include "map"
 # include "Server.hpp"
+# include "dirent.h"
 
 class Socket
 {
     public:
-        Socket(std::string config);
+        Socket(std::string config, std::string path);
         Socket(std::string ipAddr, int port);
         ~Socket();
 
-		std::string					autoindex;
+		bool    					autoindex;
 		std::string					config;
 		std::vector<std::string>	methods;
 		int							maxClientBodySize;
         std::string					ipAddr;
+        std::string                 root;
         int							port;
         int							fd;
         sockaddr_in					socketAddr;

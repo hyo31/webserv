@@ -19,6 +19,7 @@
 # include "Client.hpp"
 # include <sstream>
 # include <unistd.h>
+# include <sys/wait.h>
 
 # ifndef TIMEOUT
 #  define TIMEOUT 5 
@@ -53,12 +54,13 @@ class Server
         std::vector<Socket*>	_sockets;
         std::vector<Client*>	_clients;
         std::string				_responseHeader;
+        std::string             _path;
 		struct timespec			_timeout;
 
     public:
 			Server();
 			~Server();
-	int		startServer(std::string configFilePath);
+	int		startServer(std::string configFilePath, std::string path);
 
 };
 

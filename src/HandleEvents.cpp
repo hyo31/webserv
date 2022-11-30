@@ -67,7 +67,7 @@ int Server::receiveClientRequest(int c_fd)
     return 1;
 }
 
-char    **setupEnv(std::string page, Socket *socket)
+char    **setupEnv(std::string page, Socket *socket, std::string path)
 {
     std::map<std::string, std::string>  env;
     std::fstream                        receivedMessage;
@@ -85,6 +85,7 @@ char    **setupEnv(std::string page, Socket *socket)
     env["SCRIPT_NAME"] = "upload.php";
     env["SERVER_PORT"] = std::to_string(socket->port);
     env["RESPONSE_FILE"] = "responseCGI.txt";
+    env["PATH"] = path + "/htmlFiles";
     char    **c_env = new char*[env.size() + 1];
     int     i = 0;
     for (std::map<std::string, std::string>::const_iterator it = env.begin(); it != env.end(); it++)
@@ -99,12 +100,13 @@ char    **setupEnv(std::string page, Socket *socket)
     return (c_env);
 }
 
-int    executeCGI(std::string page, Socket *socket)
+int    executeCGI(std::string page, Socket *socket, std::string path)
 {
     pid_t           pid;
     char            **env;
+    int             status;
 
-    env = setupEnv(page, socket);
+    env = setupEnv(page, socket, path);
     if (!env)
         return  ft_return("failed setting up the environment");
     pid = fork();
@@ -114,9 +116,9 @@ int    executeCGI(std::string page, Socket *socket)
     {
         freopen("responseCGI.txt","w",stdout);
         execve("/Users/mgroen/Documents/Codam_Core/GitHub/webserv/cgi-bin/uploadForm.cgi", NULL, env);
-        ft_return("execve failed: ");
+        exit (ft_return("execve failed: "));
     }
-
+    waitpid(pid, &status, 0);
     return (0);
 }
 
@@ -153,24 +155,20 @@ std::string Server::findHtmlFile(int c_fd)
 		if (head[1].compare("/") && head[0] == "GET")
 		{
 			strit = head[1].end() - 1;
-			if (*strit == '/' && this->_sockets[(*it)->port]->getLocationPage("directoryRequest") != "")
+			ret = this->_sockets[(*it)->port]->getLocationPage("directoryRequest");
+			if (*strit == '/' && ret != "")
 			{
-				ret = this->_sockets[(*it)->port]->getLocationPage("directoryRequest");
 				_responseHeader = "HTTP/1.1 200 OK";
-				if (this->_sockets[(*it)->port]->autoindex == "on")
+				if (this->_sockets[(*it)->port]->autoindex)
 					ret = getDirectoryListedPage(ret);
 				return (ret);
 			}
-		}
-		if (head[0] == "POST" && checkMaxClientBodySize(it) == false)
-		{
-			_responseHeader = "HTTP/1.1 413 Request Entity Too Large";
-            return ("htmlFiles/errorPages/404.html");
 		}
         ret = this->_sockets[(*it)->port]->getLocationPage(head[1]);
         if (ret != "")
         {
             _responseHeader = "HTTP/1.1 200 OK";
+            std::cout << ret << std::endl;
             return (ret);
         }
 		ret = this->_sockets[(*it)->port]->getRedirectPage(head[1]);
@@ -183,8 +181,23 @@ std::string Server::findHtmlFile(int c_fd)
         _responseHeader = "HTTP/1.1 404 Not Found";
         return ("htmlFiles/errorPages/404.html");
     }
-	else
-		std::cout << "ILLEGAL METHOD\n";
+    else if (head[0] == "POST")
+	{
+        if (checkMaxClientBodySize(it) == false)
+        {
+			_responseHeader = "HTTP/1.1 413 Request Entity Too Large";
+            return ("htmlFiles/errorPages/413.html");
+        }
+        if (executeCGI(head[1], this->_sockets[(*it)->port], this->_path))
+        {
+            _responseHeader = "HTTP/1.1 404 Not Found";
+            return ("htmlFiles/errorPages/404.html");
+        }
+        _responseHeader = "HTTP/1.1 200 OK";
+        return ("responseCGI.txt");
+
+	}
+	std::cout << "ILLEGAL METHOD\n";
     head.clear();
     return (NULL);
 }
@@ -206,8 +219,6 @@ int Server::sendResponseToClient(int c_fd)
     if (!htmlFile.is_open())
         return (ft_return("html file doesn't exist: "));
 
-	
-
 	//get length of htmlFile
     htmlFile.seekg(0, std::ios::end);
     fileSize = htmlFile.tellg();
@@ -223,7 +234,6 @@ int Server::sendResponseToClient(int c_fd)
     char    html[fileSize];
     htmlFile.read(html, fileSize);
     responseFile << html << std::endl;
-
 
     //get length of full responseFile
     responseFile.seekg(0, std::ios::end);
@@ -247,5 +257,12 @@ int Server::sendResponseToClient(int c_fd)
     this->_responseHeader.erase();
     htmlFile.close();
     responseFile.close();
+    std::remove("response.txt");
+    std::ifstream   ifs("responseCGI.txt");
+    if (ifs.good())
+    {
+        ifs.close();
+        std::remove("responseCGI.txt");
+    }
     return (0);
 }

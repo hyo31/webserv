@@ -1,4 +1,4 @@
-GET /home.html HTTP/1.1
+GET /home.hmtl HTTP/1.1
 Host: localhost:8002
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
