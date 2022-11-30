@@ -1,0 +1,9 @@
+*.log
+**/baszooi
+webserver
+**/.vscode
+webserver
+test.cpp
+**/logs
+response.txt
+a.out
