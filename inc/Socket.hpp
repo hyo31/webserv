@@ -17,7 +17,6 @@ class Socket
 		std::vector<std::string>	methods;
 		int							maxClientBodySize;
         std::string					ipAddr;
-        std::string                 root;
         int							port;
         int							fd;
         sockaddr_in					socketAddr;
@@ -31,8 +30,10 @@ class Socket
 		std::string					getRedirectPage(std::string page);
 
     private:
+        std::string                         _root;
         std::map<std::string, std::string>	_pages; /* name - location */
 		std::map<std::string, std::string>	_redirects; /* name - redirect_location */
+        int                         addFiles(std::string path, std::string location);
 };
 
 #endif
