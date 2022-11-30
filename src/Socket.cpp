@@ -3,9 +3,7 @@
 Socket::Socket(std::string config, std::string path) : autoindex(false), config(config)
 {
     std::size_t     pos, pos2;
-    std::string     page, location, line, pathDir;
-    DIR             *directory;
-    struct dirent   *x;
+    std::string     page, location, line;
 
     pos = this->config.find("root");
     if (pos == std::string::npos)
@@ -21,7 +19,7 @@ Socket::Socket(std::string config, std::string path) : autoindex(false), config(
         ipAddr = "localhost";
         pos = this->config.find("root");
         pos2 = this->config.find(";", pos);
-        root = this->config.substr(pos + 5, (pos2 - pos - 5));
+        _root = this->config.substr(pos + 5, (pos2 - pos - 5));
     }
     catch(std::invalid_argument const& ex)
     {
@@ -47,22 +45,7 @@ Socket::Socket(std::string config, std::string path) : autoindex(false), config(
 		location = this->config.substr(pos, (pos2 - pos));
 		this->_pages.insert(std::make_pair("directoryRequest", location));
 	}
-    pathDir = path + "/" + root;
-    directory = opendir(pathDir.c_str());
-    if (!directory)
-        exit (ft_return("can not open directory: "));
-    while ((x = readdir(directory)))
-    {
-        page = x->d_name;
-        page = "/" + page;
-        if (page.length() > 5 && page.substr(page.length() - 5, page.length()) == ".html")
-        {
-            location = root + page;
-            this->_pages.insert(std::make_pair(page, location));
-            this->_pages.insert(std::make_pair(page.substr(0, page.length() - 5), location));
-        }
-    }
-    closedir (directory);
+    this->addFiles(path, "/" + _root);
     for(std::map<std::string, std::string>::iterator it = _pages.begin(); it != _pages.end(); ++it)
     {
         std::cout << it->first << "     " << it->second << "\n";
@@ -134,4 +117,31 @@ std::string Socket::getRedirectPage(std::string page)
     if (it == this->_redirects.end())
         return ("");
     return (it->second);
+}
+
+int Socket::addFiles(std::string path, std::string root)
+{
+    std::string     pathDir, page, location;
+    DIR             *directory;
+    struct dirent   *x;
+
+    pathDir = path + root;
+    directory = opendir(pathDir.c_str());
+    if (!directory)
+        return ft_return("can not open directory: ");
+    while ((x = readdir(directory)))
+    {
+        page = x->d_name;
+        page = "/" + page;
+        if (page.length() > 5 && page.substr(page.length() - 5, page.length()) == ".html")
+        {
+            location = pathDir + page;
+            this->_pages.insert(std::make_pair(page, location));
+            this->_pages.insert(std::make_pair(page.substr(0, page.length() - 5), location));
+        }
+        else if (page != "/." && page != "/..")
+            this->addFiles(pathDir, page);
+    }
+    closedir (directory);
+    return (0);
 }
