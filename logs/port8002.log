@@ -1,5 +1,5 @@
-GET /home/kappa.html HTTP/1.1
-Host: localhost:8002
+GET / HTTP/1.1
+Host: localhost:8003
 Connection: keep-alive
 sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
 sec-ch-ua-mobile: ?0

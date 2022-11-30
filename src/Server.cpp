@@ -81,27 +81,14 @@ int	Server::monitor_ports()
 	return -1;
 }
 
-//making the server listen to three sockets, bound do three different ports, writing requests to logfiles
-int	Server::startServer(std::string configFilePath, std::string path)
+
+
+int Server::findSocket(int fd)
 {
-	int	status = 0;
-    this->_path = path;
-    if (configuration(configFilePath) == -1)
-        return (ft_return(""));
-    std::cout << "\033[1mOpened sockets: \033[0m";
     for (size_t i = 0; i < this->_sockets.size(); i++)
-        std::cout << this->_sockets[i]->fd << " ";
-    std::cout << "\n\033[1mListening to ports: \033[0m";
-    for (size_t i = 0; i < this->_sockets.size(); i++)
-        std::cout << this->_sockets[i]->port << " ";
-    std::cout << std::endl << std::endl;;
-	status = this->monitor_ports();
-	if (status == -1)
-		return ft_return("monitor failed: ");
-    delete this->_sockets[0];
-    delete this->_sockets[1];
-    delete this->_sockets[2];
-	return 0;
+        if (fd == this->_sockets[i]->fd)
+            return i;
+    return -1;
 }
 
 int Server::configuration(std::string configFilePath)
@@ -131,10 +118,25 @@ int Server::configuration(std::string configFilePath)
     return (0);
 }
 
-int Server::findSocket(int fd)
+//making the server listen to three sockets, bound do three different ports, writing requests to logfiles
+int	Server::startServer(std::string configFilePath, std::string path)
 {
+	int	status = 0;
+    this->_path = path;
+    if (configuration(configFilePath) == -1)
+        return (ft_return(""));
+    std::cout << "\033[1mOpened sockets: \033[0m";
     for (size_t i = 0; i < this->_sockets.size(); i++)
-        if (fd == this->_sockets[i]->fd)
-            return i;
-    return -1;
+        std::cout << this->_sockets[i]->fd << " ";
+    std::cout << "\n\033[1mListening to ports: \033[0m";
+    for (size_t i = 0; i < this->_sockets.size(); i++)
+        std::cout << this->_sockets[i]->port << " ";
+    std::cout << std::endl << std::endl;;
+	status = this->monitor_ports();
+	if (status == -1)
+		return ft_return("monitor failed: ");
+    delete this->_sockets[0];
+    delete this->_sockets[1];
+    delete this->_sockets[2];
+	return 0;
 }

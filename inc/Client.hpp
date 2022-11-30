@@ -20,7 +20,6 @@ class Client
 		std::string	requestHeader;
 		std::string requestBody;
 		bool		headerSet;
-		
 
 	private:
     	Client();
