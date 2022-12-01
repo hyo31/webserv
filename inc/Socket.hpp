@@ -28,13 +28,13 @@ class Socket
         std::string     			getLocationPage(std::string page);
 		std::string					getRedirectPage(std::string page);
         std::string                 _root;
+        std::map<std::string, std::string>	_pages; /* name - location */
+		std::map<std::string, std::string>	_redirects; /* name - redirect_location */
 
     private:
                 	Socket(const Socket &);
         Socket &	operator=(const Socket &);
         int			addFiles(std::string path, std::string location);
-        std::map<std::string, std::string>	_pages; /* name - location */
-		std::map<std::string, std::string>	_redirects; /* name - redirect_location */
 
 };
 

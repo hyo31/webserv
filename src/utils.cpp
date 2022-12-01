@@ -73,3 +73,15 @@ void    Server::bounceTimedOutClients()
         }
     }
 }
+
+void	Server::createAutoIndex(int c_fd, std::ofstream & ofs, std::string dir)
+{
+	std::vector<Client*>::iterator	it = this->_clients.begin();
+    std::vector<Client*>::iterator	end = this->_clients.end();
+    for(; it != end; ++it)
+        if (c_fd == (*it)->conn_fd)
+            break ;
+	std::cout << "dir:" << dir << std::endl;
+
+	ofs.open("autoIndex.html");
+}

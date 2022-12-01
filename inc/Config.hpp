@@ -11,8 +11,6 @@ class Config
         ~Config();
 
     private:
-                	Config(const Config &);
-        Config &	operator=(const Config &);
 
 };
 
