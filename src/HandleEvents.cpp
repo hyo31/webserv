@@ -62,9 +62,10 @@ int Server::receiveClientRequest(int c_fd)
     asd << buf;
     /* check if request is full*/
     chunkedRequest(this->_sockets[(*it)->port]->logFile, it);
-    if ((*it)->request_is_read == true)
-        return 0;
-    return 1;
+    if ((*it)->request_is_read == false)
+        return 1;
+    
+    return 0;
 }
 
 char    **setupEnv(std::string page, Socket *socket, std::string path)
@@ -107,20 +108,25 @@ int    executeCGI(std::string page, Socket *socket, std::string path)
     pid_t           pid;
     char            **env;
     int             status;
+    std::string     pathCGI;
 
     env = setupEnv(page, socket, path);
+    pathCGI = path + "cgi-bin" + page;
     if (!env)
-        return  ft_return("failed setting up the environment");
+        return ft_return("failed setting up the environment");
     pid = fork();
     if (pid == -1)
         return ft_return("fork faield: ");
     if (!pid)
     {
-        freopen("responseCGI.txt","w",stdout);
-        execve("/Users/mgroen/Documents/Codam_Core/GitHub/webserv/cgi-bin/uploadForm.cgi", NULL, env);
+        freopen("responseCGI.html","w",stdout);
+        execve(pathCGI.c_str(), NULL, env);
         exit (ft_return("execve failed: "));
     }
-    waitpid(pid, &status, 0);
+    else
+        waitpid(pid, &status, 0);
+    if (WIFEXITED(status))
+        return (WEXITSTATUS(status));
     return (0);
 }
 
@@ -137,14 +143,14 @@ std::string Server::findHtmlFile(int c_fd)
     if (it == end)
     {
         ft_return("didn't find connection pair: ");
-        return (NULL);
+        return ("");
     }
     std::fstream fstr;
     fstr.open(this->_sockets[(*it)->port]->logFile);
     if (!fstr.is_open())
     {
         ft_return("could not open logfile: ");
-        return (NULL);
+        return ("");
     }
     std::vector<std::string> head;
     std::string line;
@@ -161,19 +167,14 @@ std::string Server::findHtmlFile(int c_fd)
 			if (*strit == '/')
 			{
 				_responseHeader = "HTTP/1.1 200 OK";
-				if (this->_sockets[(*it)->port]->_pages.find(this->_sockets[(*it)->port]->_root + head[1] + "index.html") == this->_sockets[(*it)->port]->_pages.end())
-				{
-					if (this->_sockets[(*it)->port]->autoindex)
-						return (this->_sockets[(*it)->port]->_root + head[1]);
-					else
-					{
-						_responseHeader = "HTTP/1.1 404 Not Found";
-        				return ("htmlFiles/Pages/errorPages/404.html");
-					}
-				}
-				else
-					ret = this->_sockets[(*it)->port]->_root + head[1] + "index.html";
-				return (ret);
+				ret = this->_sockets[(*it)->port]->getLocationPage(this->_sockets[(*it)->port]->_root + head[1] + "index.html");
+				if (ret != "")
+				    return (ret);
+                if (this->_sockets[(*it)->port]->autoindex)
+                    std::cout << "AUTOINDEX" << std::endl;
+                _responseHeader = "HTTP/1.1 403 Forbidden";
+                return ("htmlFiles/Pages/errorPages/403.html");
+                std::cout << "ret:" << ret << std::endl;
 			}
 		}
         ret = this->_sockets[(*it)->port]->getLocationPage(head[1]);
@@ -208,7 +209,7 @@ std::string Server::findHtmlFile(int c_fd)
             return ("htmlFiles/Pages/errorPages/404.html");
         }
         _responseHeader = "HTTP/1.1 200 OK";
-        return ("responseCGI.txt");
+        return ("responseCGI.hmtl");
 
 	}
 	std::cout << "ILLEGAL METHOD\n";
@@ -219,6 +220,7 @@ std::string Server::findHtmlFile(int c_fd)
 int Server::sendResponseToClient(int c_fd)
 {
     int             fileSize;
+    std::string     htmlFileName;
     std::ifstream   htmlFile;
     std::fstream    responseFile;
     std::ofstream 	ofs;
@@ -234,20 +236,15 @@ int Server::sendResponseToClient(int c_fd)
     responseFile.open("response.txt", std::ios::in | std::ios::out | std::ios::binary);
     if (!responseFile.is_open())
         return ft_return("could not open response file ");
-	std::string ret = this->findHtmlFile(c_fd);
-	std::cout << "html ret:" << ret << std::endl;
-    htmlFile.open(ret, std::ios::in | std::ios::binary);	
-    if (!htmlFile.is_open() && this->_sockets[(*it)->port]->autoindex == false)
-        return ft_return("html file doesn't exist: ");
-	else if (!htmlFile.is_open())
-    	createAutoIndex(c_fd, ofs, ret);
-	else
-	{
-		//get length of htmlFile
-		htmlFile.seekg(0, std::ios::end);
-		fileSize = htmlFile.tellg();
-		htmlFile.clear();
-		htmlFile.seekg(0, std::ios::beg);
+    htmlFileName = this->findHtmlFile(c_fd);
+    if (!htmlFileName.size())
+        htmlFileName = "htmlFiles/Pages/errorPages/500.html";
+    htmlFile.open(htmlFileName, std::ios::in | std::ios::binary);
+    if (!htmlFile.is_open())
+    {
+        ft_return("html file doesn't exist: ");
+        htmlFile.open("htmlFiles/Pages/errorPages/403.html", std::ios::in | std::ios::binary);
+    }
 
 		//read correct headers (first one set in 'findHtmlFile') into responseFile
 		responseFile << this->_responseHeader << std::endl;
@@ -290,5 +287,28 @@ int Server::sendResponseToClient(int c_fd)
 		std::remove("responseCGI.txt");
 	}
 
+    //create response which is sent back to client
+    char    response[fileSize];
+    responseFile.read(response, fileSize);
+    ssize_t bytesSent = send(c_fd, response, fileSize, 0);
+    if (bytesSent == -1)
+    {
+        htmlFile.close();
+        responseFile.close();
+        close(c_fd);
+        return ft_return("error: send\n");
+    }
+    update_client_timestamp(c_fd);
+    std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << response << "\033[0m" << std::endl;
+    this->_responseHeader.erase();
+    htmlFile.close();
+    responseFile.close();
+    std::remove("response.txt");
+    std::ifstream   ifs("responseCGI.html");
+    if (ifs.good())
+    {
+        ifs.close();
+        std::remove("responseCGI.html");
+    }
     return (0);
 }
