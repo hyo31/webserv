@@ -20,11 +20,13 @@
 # include <sstream>
 # include <unistd.h>
 # include <sys/wait.h>
+# include "Config.hpp"
 
 # ifndef TIMEOUT
 #  define TIMEOUT 5 
 # endif
 
+class Config;
 class Client;
 class Socket;
 class Server
@@ -51,11 +53,12 @@ class Server
         int			configuration(std::string);
         int			findSocket(int);
 		bool		checkMaxClientBodySize(std::vector<Client*>::iterator);
-        std::vector<Socket*>	_sockets;
-        std::vector<Client*>	_clients;
-        std::string				_responseHeader;
-        std::string             _path;
-		struct timespec			_timeout;
+
+        std::vector<Socket*>		_sockets;
+        std::vector<Client*>		_clients;
+        std::string					_responseHeader;
+        std::string            	 	_path;
+		struct timespec				_timeout;
 
     public:
 			Server();

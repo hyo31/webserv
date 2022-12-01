@@ -1,7 +1,7 @@
 #ifndef SOCKET_HPP
 # define SOCKET_HPP
 
-#include "map"
+# include "map"
 # include "Server.hpp"
 # include "dirent.h"
 
@@ -12,6 +12,7 @@ class Socket
         Socket(std::string ipAddr, int port);
         ~Socket();
 
+		std::map<std::string, std::string>	routeConfig;
 		bool    					autoindex;
 		std::string					config;
 		std::vector<std::string>	methods;
@@ -22,8 +23,6 @@ class Socket
         sockaddr_in					socketAddr;
         unsigned int				socketAddrLen;
         std::string					logFile;
-                        			Socket(const Socket &);
-        Socket &        			operator=(const Socket &);
         int             			startServer();
         int             			setupSockets();
         std::string     			getLocationPage(std::string page);
@@ -31,9 +30,12 @@ class Socket
         std::string                 _root;
 
     private:
+                	Socket(const Socket &);
+        Socket &	operator=(const Socket &);
+        int			addFiles(std::string path, std::string location);
         std::map<std::string, std::string>	_pages; /* name - location */
 		std::map<std::string, std::string>	_redirects; /* name - redirect_location */
-        int                         addFiles(std::string path, std::string location);
+
 };
 
 #endif

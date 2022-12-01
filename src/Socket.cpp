@@ -45,6 +45,17 @@ Socket::Socket(std::string config, std::string path) : autoindex(false), config(
 		location = this->config.substr(pos, (pos2 - pos));
 		this->_pages.insert(std::make_pair("directoryRequest", location));
 	}
+	pos = 0;
+	while ((pos = this->config.find("redirect", pos)) != std::string::npos)
+	{
+		pos = this->config.find(" ", pos) + 1;
+		pos2 = this->config.find(" ", pos);
+		page = this->config.substr(pos, (pos2 - pos));
+		pos = pos2 + 1;
+		pos2 = this->config.find(";", pos);
+		location = this->config.substr(pos, (pos2 - pos));
+		this->_redirects.insert(std::make_pair(page, location));
+	}
     this->addFiles(path + "/" + _root, "");
     // for(std::map<std::string, std::string>::iterator it = _pages.begin(); it != _pages.end(); ++it)
     // {
@@ -89,7 +100,6 @@ std::string Socket::getLocationPage(std::string page)
     std::map<std::string, std::string>::iterator    it;
 
     it = this->_pages.find(page);
-    // std::cout << "page: " << it->second << std::endl;
     if (it == this->_pages.end())
         return ("");
     return (it->second);
