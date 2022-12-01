@@ -167,8 +167,8 @@ std::string Server::findHtmlFile(int c_fd)
 			if (*strit == '/')
 			{
 				_responseHeader = "HTTP/1.1 200 OK";
-				ret = this->_sockets[(*it)->port]->getLocationPage(this->_sockets[(*it)->port]->_root + head[1] + "index.html");
-				std::cout << "ret:" << ret << std::endl;
+                std::cout << head[1] + "index.html" << std::endl;
+				ret = this->_sockets[(*it)->port]->getLocationPage(head[1] + "index.html");
 				if (ret != "")
 				    return (ret);
                 if (this->_sockets[(*it)->port]->autoindex)
