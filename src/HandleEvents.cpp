@@ -177,8 +177,8 @@ std::string Server::findHtmlFile(int c_fd)
 			ret = this->_sockets[(*it)->port]->getLocationPage(head[1] + "index.html");
 			if (ret != "")
 			    return (ret);
-            if (this->_sockets[(*it)->port]->autoindex)
-                return (this->createAutoIndex(this->_sockets[(*it)->port]->_root + head[1], head[1]));
+            if (config->autoindex)
+                return (this->createAutoIndex(config->root + head[1], head[1]));
             _responseHeader = "HTTP/1.1 403 Forbidden";
             return ("htmlFiles/Pages/errorPages/403.html");
             std::cout << "ret:" << ret << std::endl;
