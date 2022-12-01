@@ -232,7 +232,11 @@ void    removeResponseFiles()
     {
         std::string link = std::string(dirEntry->d_name);
         if (link != "." && link != "..")
+        {
+            link = "response/" + link;
+            std::cout << link << std::endl; 
             std::remove(link.c_str());
+        }
     }
 }
 
