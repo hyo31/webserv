@@ -107,16 +107,16 @@ void	Socket::setRouteConfigs(std::string & configfile)
 		end = configfile.find("}", start);
 		route_end = end;
 		route = configfile.substr(start, (end - start));
-		start = 0;
-		if ((start = route.find("redirect", start)) != std::string::npos)
+		start = route.find("redirect");
+		if (start != std::string::npos)
 		{
 			start = route.find(" ", start) + 1;
 			end = route.find(";", start);
 			redirect_page = route.substr(start, (end - start));
 			routeConfig->redirects.insert(std::make_pair(redirect_page, location));
 		}
-		start = 0;
-		if ((start = route.find("autoindex", start)) != std::string::npos)
+		start = route.find("autoindex");
+		if (start != std::string::npos)
 		{
 			start = route.find(" ", start) + 1;
 			end = route.find(";", start);
@@ -126,8 +126,8 @@ void	Socket::setRouteConfigs(std::string & configfile)
 			else
 				routeConfig->autoindex = false;
 		}
-		start = 0;
-		if ((start = route.find("methods", start)) != std::string::npos)
+		start = route.find("methods");
+		if (start != std::string::npos)
 		{
 			start = route.find(" ", start) + 1;
 			end = start;
@@ -143,22 +143,22 @@ void	Socket::setRouteConfigs(std::string & configfile)
 				}
 			}
 		}
-		start = 0;
-		if ((start = route.find("root", start)) != std::string::npos)
+		start = route.find("root");
+		if (start != std::string::npos)
 		{
 			start = route.find(" ", start) + 1;
 			end = route.find(";", start);
 			routeConfig->root = route.substr(start, (end - start));
 		}
-		start = 0;
-		if ((start = route.find("directoryRequest", start)) != std::string::npos)
+		start = route.find("directoryRequest");
+		if (start != std::string::npos)
 		{
 			start = route.find(" ", start) + 1;
 			end = route.find(";", start);
 			routeConfig->directoryRequest = route.substr(start, (end - start));
 		}
-		start = 0;
-		if ((start = route.find("cgi", start)) != std::string::npos)
+		start = route.find("cgi");
+		if (start != std::string::npos)
 		{
 			start = route.find(" ", start) + 1;
 			end = route.find(";", start);
@@ -173,6 +173,7 @@ Config	*Socket::getConfig(std::string &location)
 {
 	std::map<std::string, Config*>::iterator it;
 
+	std::cout << "location:" << location << std::endl;
 	it = routes.find(location);
 	if (it != routes.end())
 		return it->second;

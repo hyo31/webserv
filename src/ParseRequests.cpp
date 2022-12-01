@@ -167,7 +167,8 @@ bool	Server::checkMaxClientBodySize(std::vector<Client*>::iterator client)
 	size_t		end;
 	std::string	boundary;
 
-	if ((start = (*client)->requestHeader.find("Content-Type: multipart/form-data;")) == std::string::npos)
+	start = (*client)->requestHeader.find("Content-Type: multipart/form-data;");
+	if (start == std::string::npos)
 		return true;
 	start = (*client)->requestHeader.find("=", start);
 	end = (*client)->requestHeader.find("\n", start);
