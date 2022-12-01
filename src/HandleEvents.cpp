@@ -148,16 +148,13 @@ std::string Server::findHtmlFile(int c_fd)
     std::vector<Client*>::iterator	end = this->_clients.end();
 	std::string::iterator			strit;
 	std::string						ret;
+	Config							*config;
     std::fstream                    fstr;
 
     for(; it != end; ++it)
         if (c_fd == (*it)->conn_fd)
             break ;
-    if (it == end)
-    {
-        ft_return("didn't find connection pair: ");
-        return ("");
-    }
+	
     fstr.open(this->_sockets[(*it)->port]->logFile);
     if (!fstr.is_open())
     {
@@ -169,6 +166,7 @@ std::string Server::findHtmlFile(int c_fd)
     for (int i = 0; i < 3 && fstr.peek() != '\n' && fstr >> line; i++)
         head.push_back(line);
     fstr.close();
+	config = this->_sockets[(*it)->port]->getConfig(head[1]);
     if (head[0] == "GET")
     {
 		/* if request GET = directory */
@@ -179,8 +177,8 @@ std::string Server::findHtmlFile(int c_fd)
 			ret = this->_sockets[(*it)->port]->getLocationPage(head[1] + "index.html");
 			if (ret != "")
 			    return (ret);
-            if (this->_sockets[(*it)->port]->autoindex)
-                return (this->createAutoIndex(this->_sockets[(*it)->port]->_root + head[1], head[1]));
+            if (config->autoindex)
+                return (this->createAutoIndex(config->root + head[1], head[1]));
             _responseHeader = "HTTP/1.1 403 Forbidden";
             return ("htmlFiles/Pages/errorPages/403.html");
             std::cout << "ret:" << ret << std::endl;
@@ -234,7 +232,6 @@ void    removeResponseFiles()
         if (link != "." && link != "..")
         {
             link = "response/" + link;
-            std::cout << link << std::endl; 
             std::remove(link.c_str());
         }
     }

@@ -5,6 +5,7 @@
 # include "Server.hpp"
 # include "dirent.h"
 
+class Config;
 class Socket
 {
     public:
@@ -12,11 +13,7 @@ class Socket
         Socket(std::string ipAddr, int port);
         ~Socket();
 
-		std::map<std::string, std::string>	routeConfig;
-		bool    					autoindex;
-		std::string					config;
-		std::vector<std::string>	methods;
-		int							maxClientBodySize;
+		Config						*serverConfig;
         std::string					ipAddr;
         int							port;
         int							fd;
@@ -27,9 +24,10 @@ class Socket
         int             			setupSockets();
         std::string     			getLocationPage(std::string page);
 		std::string					getRedirectPage(std::string page);
-        std::string                 _root;
-        std::map<std::string, std::string>	_pages; /* name - location */
-		std::map<std::string, std::string>	_redirects; /* name - redirect_location */
+		void						setRouteConfigs(std::string &);
+		Config						*getConfig(std::string &);
+		
+		std::map<std::string, Config*>	routes; /* location - config */
 
     private:
                 	Socket(const Socket &);

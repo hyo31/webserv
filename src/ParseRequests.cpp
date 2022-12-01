@@ -175,7 +175,7 @@ bool	Server::checkMaxClientBodySize(std::vector<Client*>::iterator client)
 	start = (*client)->requestBody.find("Content-Type: application/octet-stream") + 43;
 	if ((end = (*client)->requestBody.find(boundary, start) - 3) == std::string::npos)
 		std::cout << "couldnt find a boundary :(" << std::endl;
-	if ((int)(end - start) > this->_sockets[(*client)->port]->maxClientBodySize)
+	if ((int)(end - start) > this->_sockets[(*client)->port]->serverConfig->maxClientBodySize)
 		return false;
 	return true;
 }
