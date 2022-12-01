@@ -111,7 +111,7 @@ int    executeCGI(std::string page, Socket *socket, std::string path)
     std::string     pathCGI;
 
     env = setupEnv(page, socket, path);
-    pathCGI = path + "cgi-bin" + page;
+    pathCGI = path + page;
     if (!env)
         return ft_return("failed setting up the environment");
     pid = fork();
@@ -192,8 +192,6 @@ std::string Server::findHtmlFile(int c_fd)
 			_responseHeader.append(ret);
 			return ("htmlFiles/Pages/errorPages/301.html");
 		}
-		if (this->_sockets[(*it)->port]->autoindex == true)
-			return (this->_sockets[(*it)->port]->_root + head[1]);
         _responseHeader = "HTTP/1.1 404 Not Found";
         return ("htmlFiles/Pages/errorPages/404.html");
     }
@@ -210,7 +208,7 @@ std::string Server::findHtmlFile(int c_fd)
             return ("htmlFiles/Pages/errorPages/404.html");
         }
         _responseHeader = "HTTP/1.1 200 OK";
-        return ("responseCGI.hmtl");
+        return ("responseCGI.html");
 
 	}
 	std::cout << "ILLEGAL METHOD\n";
@@ -286,11 +284,11 @@ int Server::sendResponseToClient(int c_fd)
 	htmlFile.close();
 	responseFile.close();
 	std::remove("response.txt");
-	std::ifstream   ifs("responseCGI.txt");
+	std::ifstream   ifs("responseCGI.html");
 	if (ifs.good())
 	{
 		ifs.close();
-		std::remove("responseCGI.txt");
+		std::remove("responseCGI.html");
 	}
     return (0);
 }
