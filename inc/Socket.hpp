@@ -30,6 +30,7 @@ class Socket
         std::string                 _root;
         std::map<std::string, std::string>	_pages; /* name - location */
 		std::map<std::string, std::string>	_redirects; /* name - redirect_location */
+		std::map<std::string, std::string>	_directories; /* name - directory */
 
     private:
                 	Socket(const Socket &);

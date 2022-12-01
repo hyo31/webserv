@@ -192,8 +192,6 @@ std::string Server::findHtmlFile(int c_fd)
 			_responseHeader.append(ret);
 			return ("htmlFiles/Pages/errorPages/301.html");
 		}
-		if (this->_sockets[(*it)->port]->autoindex == true)
-			return (this->_sockets[(*it)->port]->_root + head[1]);
         _responseHeader = "HTTP/1.1 404 Not Found";
         return ("htmlFiles/Pages/errorPages/404.html");
     }

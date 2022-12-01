@@ -148,6 +148,8 @@ int Socket::addFiles(std::string path, std::string root)
             location = pathDir + page;
             this->_pages.insert(std::make_pair(root + page, location));
             this->_pages.insert(std::make_pair(root + page.substr(0, page.length() - 5), location));
+			std::cout << "pages:\n" <<  root + page << "\n" << root + page.substr(0, page.length() - 5) << std::endl;
+			std::cout << "location:\n" << location << std::endl;
         }
         else if (page != "/." && page != "/..")
         {
