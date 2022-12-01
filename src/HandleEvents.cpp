@@ -161,10 +161,14 @@ std::string Server::findHtmlFile(int c_fd)
 			if (*strit == '/' && ret != "")
 			{
 				_responseHeader = "HTTP/1.1 200 OK";
-				if (this->_sockets[(*it)->port]->autoindex)
-					ret = this->_sockets[(*it)->port]->_root + head[1] + "index.html";
-				std::cout << "ret:" << ret << std::endl;
-				return (ret);
+				ret = this->_sockets[(*it)->port]->getLocationPage(this->_sockets[(*it)->port]->_root + head[1] + "index.html");
+				if (ret != "")
+				    return (ret);
+                if (this->_sockets[(*it)->port]->autoindex)
+                    std::cout << "AUTOINDEX" << std::endl;
+                _responseHeader = "HTTP/1.1 403 Forbidden";
+                return ("htmlFiles/Pages/errorPages/403.html");
+                std::cout << "ret:" << ret << std::endl;
 			}
 		}
         ret = this->_sockets[(*it)->port]->getLocationPage(head[1]);
