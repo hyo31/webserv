@@ -98,7 +98,7 @@ char    **setupEnv(std::string page, Socket *socket, std::string path)
     env["REQUEST_METHOD"] = "POST";
     env["SCRIPT_NAME"] = "upload.php";
     env["SERVER_PORT"] = std::to_string(socket->port);
-    env["RESPONSE_FILE"] = "response/responseCGI.txt";
+    env["RESPONSE_FILE"] = "response/responseCGI.html";
     env["PATH"] = path + "/htmlFiles";
     env["FILE_NAME"] = "logs/form.log";
     char    **c_env = new char*[env.size() + 1];
@@ -131,7 +131,6 @@ int    executeCGI(std::string page, Socket *socket, std::string path)
         return ft_return("fork faield: ");
     if (!pid)
     {
-        freopen("response/responseCGI.html","w",stdout);
         execve(pathCGI.c_str(), NULL, env);
         exit (ft_return("execve failed: "));
     }
