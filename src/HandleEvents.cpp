@@ -111,7 +111,7 @@ int    executeCGI(std::string page, Socket *socket, std::string path)
     std::string     pathCGI;
 
     env = setupEnv(page, socket, path);
-    pathCGI = path + "cgi-bin" + page;
+    pathCGI = path + page;
     if (!env)
         return ft_return("failed setting up the environment");
     pid = fork();
@@ -136,15 +136,13 @@ std::string Server::findHtmlFile(int c_fd)
     std::vector<Client*>::iterator	end = this->_clients.end();
 	std::string::iterator			strit;
 	std::string						ret;
+	Config							*config;
 
     for(; it != end; ++it)
         if (c_fd == (*it)->conn_fd)
             break ;
-    if (it == end)
-    {
-        ft_return("didn't find connection pair: ");
-        return ("");
-    }
+
+	
     std::fstream fstr;
     fstr.open(this->_sockets[(*it)->port]->logFile);
     if (!fstr.is_open())
@@ -157,6 +155,7 @@ std::string Server::findHtmlFile(int c_fd)
     for (int i = 0; i < 3 && fstr.peek() != '\n' && fstr >> line; i++)
         head.push_back(line);
     fstr.close();
+	config = this->_sockets[(*it)->port]->getConfig(head[1]);
     if (head[0] == "GET")
     {
 		/* if request GET = directory */
@@ -164,14 +163,14 @@ std::string Server::findHtmlFile(int c_fd)
 		{
 			strit = head[1].end() - 1;
 			ret = this->_sockets[(*it)->port]->getLocationPage("directoryRequest");
-			if (*strit == '/')
+			if (*strit == '/' && ret == "")
 			{
 				_responseHeader = "HTTP/1.1 200 OK";
                 std::cout << head[1] + "index.html" << std::endl;
 				ret = this->_sockets[(*it)->port]->getLocationPage(head[1] + "index.html");
 				if (ret != "")
 				    return (ret);
-                if (this->_sockets[(*it)->port]->autoindex)
+                if (config->autoindex)
                     std::cout << "AUTOINDEX" << std::endl;
                 _responseHeader = "HTTP/1.1 403 Forbidden";
                 return ("htmlFiles/Pages/errorPages/403.html");
@@ -208,7 +207,7 @@ std::string Server::findHtmlFile(int c_fd)
             return ("htmlFiles/Pages/errorPages/404.html");
         }
         _responseHeader = "HTTP/1.1 200 OK";
-        return ("responseCGI.hmtl");
+        return ("responseCGI.html");
 
 	}
 	std::cout << "ILLEGAL METHOD\n";
@@ -284,11 +283,11 @@ int Server::sendResponseToClient(int c_fd)
 	htmlFile.close();
 	responseFile.close();
 	std::remove("response.txt");
-	std::ifstream   ifs("responseCGI.txt");
+	std::ifstream   ifs("responseCGI.html");
 	if (ifs.good())
 	{
 		ifs.close();
-		std::remove("responseCGI.txt");
+		std::remove("responseCGI.html");
 	}
     return (0);
 }
