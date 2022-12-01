@@ -21,6 +21,7 @@
 # include <unistd.h>
 # include <sys/wait.h>
 # include "Config.hpp"
+# include <filesystem>
 
 # ifndef TIMEOUT
 #  define TIMEOUT 5 
@@ -53,7 +54,7 @@ class Server
         int			configuration(std::string);
         int			findSocket(int);
 		bool		checkMaxClientBodySize(std::vector<Client*>::iterator);
-		void		createAutoIndex(int, std::ofstream&, std::string);
+		std::string createAutoIndex(std::string page, std::string folder);
 
         std::vector<Socket*>		_sockets;
         std::vector<Client*>		_clients;

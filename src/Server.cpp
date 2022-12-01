@@ -6,7 +6,10 @@ Server::Server()
 	this->_timeout.tv_nsec = 0;
 }
 
-Server::~Server() { std::cout << "Closing server...\n";	}
+Server::~Server()
+{
+    std::cout << "Closing server...\n";
+}
 
 //using kqueue() in order to monitor the 3 ports
 //then accepts this with socket::acceptSocket() when a client sends a request

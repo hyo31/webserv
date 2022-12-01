@@ -4,7 +4,7 @@ use CGI qw(:standard);
 use diagnostics;
 
 my $outfile = $ENV{'FILE_NAME'};
-open(my $fh, ">>", \$outfile)
+open(my $fh, ">>", "logs/form.log")
     or die "Can not open file: $!";
 my @values = split(/&/,$ENV{'QUERY_STRING'});
 my $datestring = localtime();

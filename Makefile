@@ -17,6 +17,7 @@ SRC =	src/webserv.cpp\
 		src/Client.cpp\
 		src/ParseRequests.cpp\
 		src/Config.cpp\
+		src/AutoIndex.cpp\
 
 OBJ = $(SRC:$(SRC_DIR)%.cpp=$(OBJ_DIR)%.o)
 
