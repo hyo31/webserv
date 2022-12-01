@@ -167,6 +167,7 @@ std::string Server::findHtmlFile(int c_fd)
         head.push_back(line);
     fstr.close();
 	config = this->_sockets[(*it)->port]->getConfig(head[1]);
+	std::cout << "ai:" << config->autoindex << std::endl;
     if (head[0] == "GET")
     {
 		/* if request GET = directory */
