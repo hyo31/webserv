@@ -246,16 +246,21 @@ int Server::sendResponseToClient(int c_fd)
         htmlFile.open("htmlFiles/Pages/errorPages/403.html", std::ios::in | std::ios::binary);
     }
 
-		//read correct headers (first one set in 'findHtmlFile') into responseFile
-		responseFile << this->_responseHeader << std::endl;
-		responseFile << "Content-Type: text/html" << std::endl;
-		responseFile << "Content-Length: " << fileSize << "\r\n\r\n"; //std::endl << std::endl;
-		
-		//create char string to read html into, which is then read into responseFile         
-		char    html[fileSize];
-		htmlFile.read(html, fileSize);
-		responseFile << html << std::endl;
-	}
+	//get length of htmlFile
+	htmlFile.seekg(0, std::ios::end);
+	fileSize = htmlFile.tellg();
+	htmlFile.clear();
+	htmlFile.seekg(0, std::ios::beg);
+
+	//read correct headers (first one set in 'findHtmlFile') into responseFile
+	responseFile << this->_responseHeader << std::endl;
+	responseFile << "Content-Type: text/html" << std::endl;
+	responseFile << "Content-Length: " << fileSize << "\r\n\r\n"; //std::endl << std::endl;
+	
+	//create char string to read html into, which is then read into responseFile         
+	char    html[fileSize];
+	htmlFile.read(html, fileSize);
+	responseFile << html << std::endl;
 
 	//get length of full responseFile
 	responseFile.seekg(0, std::ios::end);
@@ -286,29 +291,5 @@ int Server::sendResponseToClient(int c_fd)
 		ifs.close();
 		std::remove("responseCGI.txt");
 	}
-
-    //create response which is sent back to client
-    char    response[fileSize];
-    responseFile.read(response, fileSize);
-    ssize_t bytesSent = send(c_fd, response, fileSize, 0);
-    if (bytesSent == -1)
-    {
-        htmlFile.close();
-        responseFile.close();
-        close(c_fd);
-        return ft_return("error: send\n");
-    }
-    update_client_timestamp(c_fd);
-    std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << response << "\033[0m" << std::endl;
-    this->_responseHeader.erase();
-    htmlFile.close();
-    responseFile.close();
-    std::remove("response.txt");
-    std::ifstream   ifs("responseCGI.html");
-    if (ifs.good())
-    {
-        ifs.close();
-        std::remove("responseCGI.html");
-    }
     return (0);
 }
