@@ -53,43 +53,6 @@ int Socket::setupSockets()
     return (0);
 }
 
-std::string Socket::getLocationPage(std::string page)
-{
-    std::map<std::string, std::string>::iterator    it;
-	Config	*config = this->getConfig(page);
-
-
-    it = config->pages.find(page);
-    if (it == config->pages.end())
-        return ("");
-    return (it->second);
-}
-
-std::string Socket::getRedirectPage(std::string page)
-{
-    std::map<std::string, std::string>::iterator	it;
-	std::string	root;
-	size_t		end = page.find("/", 1);
-	size_t		start = 0;
-	Config	*config = this->getConfig(page);
-
-	while (end != std::string::npos)
-	{
-		root = page.substr(start, (end - start));
-		it = config->redirects.find(root);
-    	if (it != config->redirects.end())
-			page.replace(start, (end - start), it->second);
-		end = page.find("/", end + 1);
-	}
-	it = config->pages.find(page);
-	if (it != config->pages.end())
-		return (page);
-    it = config->redirects.find(page);
-    if (it == config->redirects.end())
-        return ("");
-    return (it->second);
-}
-
 void	Socket::setRouteConfigs(std::string & configfile)
 {
 	std::string	location, route, redirect_page, autoindex, method;
@@ -113,7 +76,7 @@ void	Socket::setRouteConfigs(std::string & configfile)
 			start = route.find(" ", start) + 1;
 			end = route.find(";", start);
 			redirect_page = route.substr(start, (end - start));
-			routeConfig->redirects.insert(std::make_pair(redirect_page, location));
+			routeConfig->redirects.insert(std::make_pair(location, redirect_page));
 		}
 		start = route.find("autoindex");
 		if (start != std::string::npos)
@@ -173,10 +136,35 @@ Config	*Socket::getConfig(std::string &location)
 {
 	std::map<std::string, Config*>::iterator it;
 
-	std::cout << "location:" << location << std::endl;
 	it = routes.find(location);
 	if (it != routes.end())
 		return it->second;
 	else
 		return this->serverConfig;
+}
+
+std::string Socket::getLocationPage(std::string page)
+{
+    std::map<std::string, std::string>::iterator    it;
+	Config	*config = this->getConfig(page);
+
+
+    it = config->pages.find(page);
+    if (it == config->pages.end())
+        return ("");
+    return (it->second);
+}
+
+std::string Socket::getRedirectPage(std::string page)
+{
+    std::map<std::string, std::string>::iterator	it;
+	Config	*config = this->getConfig(page);
+
+	it = config->pages.find(page);
+	if (it != config->pages.end())
+		return (page);
+    it = config->redirects.find(page);
+    if (it == config->redirects.end())
+        return ("");
+    return (it->second);
 }
