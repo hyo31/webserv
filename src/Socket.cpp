@@ -169,7 +169,7 @@ void	Socket::setRouteConfigs(std::string & configfile)
 	}
 }
 
-Config	*Socket::getConfig(std::string & location)
+Config	*Socket::getConfig(std::string &location)
 {
 	std::map<std::string, Config*>::iterator it;
 
