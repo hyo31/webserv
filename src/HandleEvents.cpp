@@ -72,6 +72,9 @@ char    **setupEnv(std::string page, Socket *socket, std::string path)
 {
     std::map<std::string, std::string>  env;
     std::fstream                        receivedMessage;
+    std::stringstream                   buff;
+    std::string                         request;
+    std::size_t                         pos;
     
     receivedMessage.open(socket->logFile);
     if (!receivedMessage.is_open())
@@ -79,15 +82,24 @@ char    **setupEnv(std::string page, Socket *socket, std::string path)
         ft_return("could not open file: ");
         return (NULL);
     }
+    buff << receivedMessage.rdbuf();
+    receivedMessage.close();
+    request = buff.str();
+    pos = request.find("\r\n\r\n");
+    if (pos == std::string::npos)
+    {
+        ft_return("request has no body: ");
+        return (NULL);
+    }
+    env["QUERY_STRING"] = request.substr(pos + 4, request.length() - pos - 4);
     env["HTTP_HOST"] =  "localhost:" + std::to_string(socket->port);
     env["REQUEST_URI"] = page;
     env["REMOTE_PORT"] = std::to_string(socket->port);
     env["REQUEST_METHOD"] = "POST";
     env["SCRIPT_NAME"] = "upload.php";
     env["SERVER_PORT"] = std::to_string(socket->port);
-    env["RESPONSE_FILE"] = "responseCGI.txt";
+    env["RESPONSE_FILE"] = "response/responseCGI.txt";
     env["PATH"] = path + "/htmlFiles";
-    env["QUERY_STRING"] = "fname=milan&lname=groen&message=123";
     env["FILE_NAME"] = "logs/form.log";
     char    **c_env = new char*[env.size() + 1];
     int     i = 0;
@@ -119,7 +131,7 @@ int    executeCGI(std::string page, Socket *socket, std::string path)
         return ft_return("fork faield: ");
     if (!pid)
     {
-        freopen("responseCGI.html","w",stdout);
+        freopen("response/responseCGI.html","w",stdout);
         execve(pathCGI.c_str(), NULL, env);
         exit (ft_return("execve failed: "));
     }
@@ -136,6 +148,7 @@ std::string Server::findHtmlFile(int c_fd)
     std::vector<Client*>::iterator	end = this->_clients.end();
 	std::string::iterator			strit;
 	std::string						ret;
+    std::fstream                    fstr;
 
     for(; it != end; ++it)
         if (c_fd == (*it)->conn_fd)
@@ -145,7 +158,6 @@ std::string Server::findHtmlFile(int c_fd)
         ft_return("didn't find connection pair: ");
         return ("");
     }
-    std::fstream fstr;
     fstr.open(this->_sockets[(*it)->port]->logFile);
     if (!fstr.is_open())
     {
@@ -160,25 +172,19 @@ std::string Server::findHtmlFile(int c_fd)
     if (head[0] == "GET")
     {
 		/* if request GET = directory */
-		if (head[0] == "GET")
-		{
-			strit = head[1].end() - 1;
-			ret = this->_sockets[(*it)->port]->getLocationPage("directoryRequest");
-			if (*strit == '/')
-			{
-				_responseHeader = "HTTP/1.1 200 OK";
-                std::cout << head[1] + "index.html" << std::endl;
-				ret = this->_sockets[(*it)->port]->getLocationPage(head[1] + "index.html");
-				if (ret != "")
-				    return (ret);
-                if (this->_sockets[(*it)->port]->autoindex)
-                    std::cout << "AUTOINDEX" << std::endl;
-                _responseHeader = "HTTP/1.1 403 Forbidden";
-                return ("htmlFiles/Pages/errorPages/403.html");
-                std::cout << "ret:" << ret << std::endl;
-			}
-		}
         ret = this->_sockets[(*it)->port]->getLocationPage(head[1]);
+		if (ret == "Directory")
+		{
+			_responseHeader = "HTTP/1.1 200 OK";
+			ret = this->_sockets[(*it)->port]->getLocationPage(head[1] + "index.html");
+			if (ret != "")
+			    return (ret);
+            if (this->_sockets[(*it)->port]->autoindex)
+                return (this->createAutoIndex(this->_sockets[(*it)->port]->_root + head[1], head[1]));
+            _responseHeader = "HTTP/1.1 403 Forbidden";
+            return ("htmlFiles/Pages/errorPages/403.html");
+            std::cout << "ret:" << ret << std::endl;
+		}
         if (ret != "")
         {
             _responseHeader = "HTTP/1.1 200 OK";
@@ -208,12 +214,26 @@ std::string Server::findHtmlFile(int c_fd)
             return ("htmlFiles/Pages/errorPages/404.html");
         }
         _responseHeader = "HTTP/1.1 200 OK";
-        return ("responseCGI.html");
+        return ("response/responseCGI.html");
 
 	}
 	std::cout << "ILLEGAL METHOD\n";
     head.clear();
     return (NULL);
+}
+
+void    removeResponseFiles()
+{
+    DIR             *directory;
+    directory = opendir("response");
+    if (!directory)
+        ft_return("can not open directory: ");
+    for (struct dirent *dirEntry = readdir(directory); dirEntry; dirEntry = readdir(directory))
+    {
+        std::string link = std::string(dirEntry->d_name);
+        if (link != "." && link != "..")
+            std::remove(link.c_str());
+    }
 }
 
 int Server::sendResponseToClient(int c_fd)
@@ -229,10 +249,10 @@ int Server::sendResponseToClient(int c_fd)
     for(; it != end; ++it)
         if (c_fd == (*it)->conn_fd)
             break ;
-    ofs.open("response.txt", std::ofstream::out | std::ofstream::trunc);
+    ofs.open("response/response.txt", std::ofstream::out | std::ofstream::trunc);
     ofs.close();
     //open streamfiles
-    responseFile.open("response.txt", std::ios::in | std::ios::out | std::ios::binary);
+    responseFile.open("response/response.txt", std::ios::in | std::ios::out | std::ios::binary);
     if (!responseFile.is_open())
         return ft_return("could not open response file ");
     htmlFileName = this->findHtmlFile(c_fd);
@@ -283,12 +303,9 @@ int Server::sendResponseToClient(int c_fd)
 	this->_responseHeader.erase();
 	htmlFile.close();
 	responseFile.close();
-	std::remove("response.txt");
-	std::ifstream   ifs("responseCGI.html");
+	std::ifstream ifs("response/responseCGI.html");
 	if (ifs.good())
-	{
 		ifs.close();
-		std::remove("responseCGI.html");
-	}
+	removeResponseFiles();
     return (0);
 }
