@@ -15,7 +15,7 @@ foreach my $i (@values) {
 }
 print $fh "\n";
 close($fh);
-open(my $rf, ">>", "response/responseCGI.html")
+open(my $rf, ">>", $ENV{'RESPONSE_FILE'})
     or die "Can not open file: $!";
 print $rf <<ENDTAG;
 <!DOCTYPE html>
@@ -26,7 +26,7 @@ print $rf <<ENDTAG;
 </head>
 <body style="background-color:rgb(67, 67, 67);">
     <h1 style="text-align:center;font-size: 52px"><a href="/index" style="text-decoration: none;color: white">WEBSERV</a></h1><br><br>
-        <h2 style="text-align:center;color:rgb(255, 255, 255);font-size: 26px;">Thanks for submitting a form!</h2><br>
+        <p1 style="color:rgb(255, 255, 255);font-size: 26px;"><center>Thanks for submitting a form!</center></p1><br>
 </body>
 </html>
 ENDTAG

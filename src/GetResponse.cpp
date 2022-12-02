@@ -184,7 +184,7 @@ std::string Server::findHtmlFile(int c_fd)
 			_responseHeader = "HTTP/1.1 413 Request Entity Too Large";
             return ("htmlFiles/Pages/errorPages/413.html");
         }
-        if (executeCGI("/cgi-bin" + head[1], this->_sockets[(*it)->port], this->_path))
+        if (executeCGI("/" + config->cgi + head[1], this->_sockets[(*it)->port], this->_path))
         {
             _responseHeader = "HTTP/1.1 404 Not Found";
             return ("htmlFiles/Pages/errorPages/404.html");

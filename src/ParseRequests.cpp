@@ -1,41 +1,5 @@
 #include "../inc/Server.hpp"
 
-static int	ft_checklong(int j)
-{
-	if (j == -1)
-		return (0);
-	else
-		return (-1);
-}
-
-static int  ft_atoi(std::string str)
-{
-	long long unsigned int	i;
-	int						j;
-	long long unsigned int	n;
-
-	i = 0;
-	j = 1;
-	n = 0;
-	while (str[i] == '\v' || str[i] == '\f' || str[i] == '\t' || str[i] == '\n'
-	|| str[i] == ' ' || str[i] == '\t' || str[i] == '\r')
-		i++;
-	if (str[i] == '-' || str[i] == '+')
-	{
-		if (str[i] == '-')
-			j = -1;
-		i++;
-	}
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		n = n * 10 + str[i] - 48;
-		i++;
-	}
-	if (n > LONG_MAX)
-		return (ft_checklong(j));
-	return (n * j);
-}
-
 static std::string readFileIntoString(const std::string & path)
 {
     std::ifstream str(path);
@@ -56,7 +20,7 @@ void	Server::buildBodyForContentLength(std::string str, std::string::size_type r
 	start = str.find(" ", ret) + 1;
 	end = str.find("\r\n", start) - 1;
 	substr = str.substr(start, (end - start + 1));
-	(*it)->requestContentLength = ft_atoi(substr);
+	(*it)->requestContentLength = std::stoi(substr);
 	//check if the whole body is read
 	ret = str.find("\r\n\r\n");
 	start = ret + 4;

@@ -17,7 +17,7 @@ open(my $fh, ">>", "uploads/".$outfile)
     or die "Can not open file: $!";
 my $content = $ENV{'FILE_BODY'};
 print $fh "$content";
-open(my $rf, ">>", "response/responseCGI.html")
+open(my $rf, ">>", $ENV{'RESPONSE_FILE'})
     or die "Can not open file: $!";
 print $rf <<ENDTAG;
 <!DOCTYPE html>

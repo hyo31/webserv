@@ -34,6 +34,8 @@ Config::Config(std::string configfile, std::string path, bool ai) : configfile(c
 	pos = default_part.find("autoindex on;");
 	if (pos != std::string::npos)
 		this->autoindex = true;
+	pos = default_part.find("cgi ");
+	this->cgi = default_part.substr(pos + 4, default_part.find(";", pos) - (pos + 4));
     this->addFiles(path + "/" + root, "");
     for(std::map<std::string, std::string>::iterator it = pages.begin(); it != pages.end(); ++it)
     {
