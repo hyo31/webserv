@@ -18,6 +18,7 @@ SRC =	src/webserv.cpp\
 		src/ParseRequests.cpp\
 		src/Config.cpp\
 		src/AutoIndex.cpp\
+		src/GetResponse.cpp\
 
 OBJ = $(SRC:$(SRC_DIR)%.cpp=$(OBJ_DIR)%.o)
 
@@ -38,6 +39,8 @@ clean:
 
 fclean: clean
 	@rm -f $(NAME)
+	@rm -f uploads/*
+	@rm -f logs/*
 
 re: fclean all
 

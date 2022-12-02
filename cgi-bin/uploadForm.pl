@@ -1,10 +1,10 @@
-#!/usr/bin/perl -wT
+#!/usr/bin/perl
 use strict;
 use CGI qw(:standard);
 use diagnostics;
 
 my $outfile = $ENV{'FILE_NAME'};
-open(my $fh, ">>", "logs/form.log")
+open(my $fh, ">>", "uploads/".$outfile)
     or die "Can not open file: $!";
 my @values = split(/&/,$ENV{'QUERY_STRING'});
 my $datestring = localtime();
@@ -30,4 +30,4 @@ print $rf <<ENDTAG;
 </body>
 </html>
 ENDTAG
-close($fh);
+close($rf);

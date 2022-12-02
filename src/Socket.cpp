@@ -173,7 +173,6 @@ Config	*Socket::getConfig(std::string &location)
 {
 	std::map<std::string, Config*>::iterator it;
 
-	std::cout << "location:" << location << std::endl;
 	it = routes.find(location);
 	if (it != routes.end())
 		return it->second;

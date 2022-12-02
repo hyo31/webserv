@@ -78,17 +78,25 @@ int Config::addFiles(std::string path, std::string root)
     {
         page = x->d_name;
         page = "/" + page;
+        location = pathDir + page;
         if (page.length() > 5 && page.substr(page.length() - 5, page.length()) == ".html")
         {
-            location = pathDir + page;
             this->pages.insert(std::make_pair(root + page, location));
             this->pages.insert(std::make_pair(root + page.substr(0, page.length() - 5), location));
         }
         else if (page != "/." && page != "/..")
         {
-            this->addFiles(path, root + page);
-        }
+			std::string	temp = path + root + page;
+			DIR* 		tempDir = opendir(temp.c_str());
+			if (!tempDir)
+				this->pages.insert(std::make_pair(root + page, location));
+			else
+			{
+            	this->addFiles(path, root + page);
+				closedir(tempDir);
+			}
+		}
     }
-    closedir (directory);
+    closedir(directory);
     return (0);
 }
