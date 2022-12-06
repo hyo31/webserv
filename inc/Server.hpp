@@ -53,7 +53,7 @@ class Server
 		void		buildBodyForContentLength(std::string, std::string::size_type, std::vector<Client*>::iterator);
         int			configuration(std::string);
         int			findSocket(int);
-		bool		checkMaxClientBodySize(std::vector<Client*>::iterator);
+		int			checkMaxClientBodySize(std::vector<Client*>::iterator);
 		std::string createAutoIndex(std::string, std::string);
 
         std::vector<Socket*>		_sockets;
