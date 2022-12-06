@@ -54,7 +54,7 @@ class Server
         int			configuration(std::string);
         int			findSocket(int);
 		bool		checkMaxClientBodySize(std::vector<Client*>::iterator);
-		std::string createAutoIndex(std::string page, std::string folder);
+		std::string createAutoIndex(std::string, std::string);
 
         std::vector<Socket*>		_sockets;
         std::vector<Client*>		_clients;

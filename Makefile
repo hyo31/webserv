@@ -5,8 +5,10 @@ CC = g++
 CFLAGS = -Wall -Werror -Wextra -std=c++98
 
 SRC_DIR =	src/
+DIRS = obj/ response/ uploads/
 OBJ_DIR =	obj/
 RESPONSE_DIR =	response/
+UPLOAD_DIR = uploads/
 
 HEADER_FILES = inc/Server.hpp inc/Socket.hpp inc/Client.hpp inc/Config.hpp
 
@@ -23,7 +25,7 @@ SRC =	src/webserv.cpp\
 
 OBJ = $(SRC:$(SRC_DIR)%.cpp=$(OBJ_DIR)%.o)
 
-all: $(OBJ_DIR) $(RESPONSE_DIR)
+all: $(DIRS)
 	@$(MAKE) $(NAME) -j4
 
 $(NAME): $(OBJ)
@@ -32,12 +34,8 @@ $(NAME): $(OBJ)
 $(OBJ): $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp $(HEADER_FILES)
 	@$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
 
-$(RESPONSE_DIR):
-	mkdir response
-
-$(OBJ_DIR):
-	mkdir obj
-
+$(DIRS):
+	@mkdir -vp $(DIRS)
 
 clean:
 	@rm -f $(OBJ)

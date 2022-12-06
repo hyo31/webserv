@@ -149,45 +149,48 @@ std::string Server::findHtmlFile(int c_fd)
     {
 		/* if request GET = directory */
         ret = this->_sockets[(*it)->port]->getLocationPage(head[1]);
-		if (ret == "Directory")
+		// std::cout << "ret:" << ret << std::endl;
+		if ( ret.back() == '/' )
 		{
 			_responseHeader = "HTTP/1.1 200 OK";
 			ret = this->_sockets[(*it)->port]->getLocationPage(head[1] + "index.html");
+			// std::cout << "ret:" << ret << std::endl;
 			if (ret != "")
-			    return (ret);
-            if (config->autoindex)
-                return (this->createAutoIndex(config->root + head[1], head[1]));
+			    return (config->root + ret);
+            if (config->autoindex == true)
+                return (this->createAutoIndex(config->root, head[1]));
+			if (config->directoryRequest != "")
+				return (config->root + config->directoryRequest);
             _responseHeader = "HTTP/1.1 403 Forbidden";
-            return ("htmlFiles/Pages/errorPages/403.html");
-            std::cout << "ret:" << ret << std::endl;
+            return (config->errorpages + "403.html");
 		}
         if (ret != "")
         {
             _responseHeader = "HTTP/1.1 200 OK";
-            std::cout << ret << std::endl;
-            return (ret);
+            return (config->root + ret);
         }
 		ret = this->_sockets[(*it)->port]->getRedirectPage(head[1]);
 		if (ret != "")
 		{
 			_responseHeader = "HTTP/1.1 301 Moved Permanently\r\nLocation: ";
 			_responseHeader.append(ret);
-			return ("htmlFiles/Pages/errorPages/301.html");
+			// std::cout << " responseheader:" << _responseHeader << std::endl;
+			return ( config->errorpages + "301.html" );
 		}
         _responseHeader = "HTTP/1.1 404 Not Found";
-        return ("htmlFiles/Pages/errorPages/404.html");
+        return (config->errorpages + "404.html");
     }
     else if (head[0] == "POST")
 	{
         if (checkMaxClientBodySize(it) == false)
         {
 			_responseHeader = "HTTP/1.1 413 Request Entity Too Large";
-            return ("htmlFiles/Pages/errorPages/413.html");
+            return (config->errorpages + "413.html");
         }
         if (executeCGI("/" + config->cgi + head[1], this->_sockets[(*it)->port], this->_path))
         {
             _responseHeader = "HTTP/1.1 404 Not Found";
-            return ("htmlFiles/Pages/errorPages/404.html");
+            return (config->errorpages + "404.html");
         }
         _responseHeader = "HTTP/1.1 200 OK";
         return ("response/responseCGI.html");

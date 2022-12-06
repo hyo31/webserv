@@ -45,7 +45,7 @@ int Server::receiveClientRequest(int c_fd)
 		std::cout << "request is too big, didn't read it all\n";
     if ((*it)->request_is_read == true)
     {
-        std::cout << "clearing content\n";
+        // std::cout << "clearing content\n";
         std::ofstream ofs;
         ofs.open(this->_sockets[(*it)->port]->logFile, std::ofstream::out | std::ofstream::trunc);
         ofs.close();
@@ -57,14 +57,13 @@ int Server::receiveClientRequest(int c_fd)
     ofs.open(this->_sockets[(*it)->port]->logFile, std::fstream::out | std::fstream::app);
     ofs << buf;
     ofs.close();
-    std::ofstream asd;
-    asd.open("logs/check", std::fstream::out | std::fstream::app);
-    asd << buf;
+    std::ofstream ofs2;
+    ofs2.open("logs/check", std::fstream::out | std::fstream::app);
+    ofs2 << buf;
     /* check if request is full*/
     chunkedRequest(this->_sockets[(*it)->port]->logFile, it);
     if ((*it)->request_is_read == false)
         return 1;
-    
     return 0;
 }
 
@@ -73,7 +72,7 @@ void    removeResponseFiles()
     DIR             *directory;
     directory = opendir("response");
     if (!directory)
-        ft_return("can not open directory: ");
+        ft_return("can not open directory (removeResonseFiles): ");
     for (struct dirent *dirEntry = readdir(directory); dirEntry; dirEntry = readdir(directory))
     {
         std::string link = std::string(dirEntry->d_name);
@@ -106,13 +105,14 @@ int Server::sendResponseToClient(int c_fd)
         return ft_return("could not open response file ");
     htmlFileName = this->findHtmlFile(c_fd);
     if (!htmlFileName.size())
-        htmlFileName = "htmlFiles/Pages/errorPages/500.html";
+        htmlFileName = this->_sockets[(*it)->port]->serverConfig->errorpages + "500.html";
     htmlFile.open(htmlFileName, std::ios::in | std::ios::binary);
     if (!htmlFile.is_open())
     {
         ft_return("html file doesn't exist: ");
         this->_responseHeader = "HTTP/1.1 403 Forbidden";
-        htmlFile.open("htmlFiles/Pages/errorPages/403.html", std::ios::in | std::ios::binary);
+		// std::cout << this->_sockets[(*it)->port]->serverConfig->errorpages + "403.html" << std::endl;
+        htmlFile.open( this->_sockets[(*it)->port]->serverConfig->errorpages + "403.html", std::ios::in | std::ios::binary);
     }
 
 	//get length of htmlFile

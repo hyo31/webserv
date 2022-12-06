@@ -24,16 +24,17 @@ void	Server::buildBodyForContentLength(std::string str, std::string::size_type r
 	//check if the whole body is read
 	ret = str.find("\r\n\r\n");
 	start = ret + 4;
-	for (end = 0; str[end] != '\0'; ++end);
+	for (end = start; str[end] != '\0'; ++end);
+	// std::cout << "char read:" << (end - start)  << " cont len: " << (*it)->requestContentLength << std::endl;
 	if ((int)(end - start) != (*it)->requestContentLength)
 	{
 		if ((int)(end - start) > (*it)->requestContentLength)
 		{
-			std::cout << "Content Length in Header is wrong!\n";
+			std::cout << "Content Length:" << (*it)->requestContentLength << " should be:" << end << std::endl;
 			// set some value so we can return some error page ?
 		}
-		else
-			std::cout << "didnt read full content len\nCont len:" << (*it)->requestContentLength << "\nCharacters read:" << (start - end) << std::endl;
+		// else
+		// 	std::cout << "didnt read full content len\nCont len:" << (*it)->requestContentLength << "\nCharacters read:" << end << std::endl;
 		return ;
 	}
 	substr = str.substr(start, (*it)->requestContentLength);
@@ -134,13 +135,14 @@ bool	Server::checkMaxClientBodySize(std::vector<Client*>::iterator client)
 	start = (*client)->requestHeader.find("Content-Type: multipart/form-data;");
 	if (start == std::string::npos)
 		return true;
-	start = (*client)->requestHeader.find("=", start);
-	end = (*client)->requestHeader.find("\n", start);
-	boundary = (*client)->requestHeader.substr(start + 1, (end - start));
-	start = (*client)->requestBody.find("Content-Type: application/octet-stream") + 43;
-	if ((end = (*client)->requestBody.find(boundary, start) - 3) == std::string::npos)
+	start = (*client)->requestHeader.find("=", start) + 1;
+	end = (*client)->requestHeader.find("\r\n", start);
+	boundary = (*client)->requestHeader.substr(start, (end - start));
+	start = (*client)->requestBody.find("Content-Type: application/octet-stream") + 42;
+	if ((end = (*client)->requestBody.find(boundary, start)) == std::string::npos)
 		std::cout << "couldnt find a boundary :(" << std::endl;
-	if ((int)(end - start) > this->_sockets[(*client)->port]->serverConfig->maxClientBodySize)
+	// std::cout << "found:" << (int)(end - 4 - start) << " max:" << this->_sockets[(*client)->port]->serverConfig->maxClientBodySize << std::endl;
+	if ((int)(end - 4 - start) > this->_sockets[(*client)->port]->serverConfig->maxClientBodySize)
 		return false;
 	return true;
 }

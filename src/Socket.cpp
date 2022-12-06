@@ -148,11 +148,12 @@ std::string Socket::getLocationPage(std::string page)
     std::map<std::string, std::string>::iterator    it;
 	Config	*config = this->getConfig(page);
 
-
     it = config->pages.find(page);
     if (it == config->pages.end())
         return ("");
-    return (it->second);
+	if (it->first.back() != '/' && it->first.find(".html") == std::string::npos)
+		return (it->first + ".html");
+    return (it->first);
 }
 
 std::string Socket::getRedirectPage(std::string page)
@@ -160,11 +161,8 @@ std::string Socket::getRedirectPage(std::string page)
     std::map<std::string, std::string>::iterator	it;
 	Config	*config = this->getConfig(page);
 
-	it = config->pages.find(page);
-	if (it != config->pages.end())
-		return (page);
     it = config->redirects.find(page);
-    if (it == config->redirects.end())
+	if (it == config->redirects.end())
         return ("");
     return (it->second);
 }

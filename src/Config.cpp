@@ -36,12 +36,20 @@ Config::Config(std::string configfile, std::string path, bool ai) : configfile(c
 		this->autoindex = true;
 	pos = default_part.find("cgi ");
 	this->cgi = default_part.substr(pos + 4, default_part.find(";", pos) - (pos + 4));
+	pos = default_part.find("errorPages ");
+	if (pos != std::string::npos)
+	{
+		pos = pos + 11;
+		pos2 = default_part.find(";", pos);
+		this->errorpages = this->root + default_part.substr(pos, (pos2 - pos));
+	}
+	else
+		this->errorpages = "htmlFiles/pages/errorPages";
     this->addFiles(path + "/" + root, "");
     for(std::map<std::string, std::string>::iterator it = pages.begin(); it != pages.end(); ++it)
     {
         // std::cout << it->first << "     " << it->second << "\n";
     }
-	
 }
 Config::Config(const Config& src)
 {
@@ -56,6 +64,7 @@ Config & Config::operator=(const Config& src)
 		this->autoindex = src.autoindex;
 		this->methods = src.methods;
 		this->root = src.root;
+		this->directoryRequest = src.directoryRequest;
 		this->cgi = src.cgi;
 		this->maxClientBodySize = src.maxClientBodySize;
 		this->pages = src.pages;
@@ -75,7 +84,7 @@ int Config::addFiles(std::string path, std::string root)
     this->pages.insert(std::make_pair(root + "/", "Directory"));
     directory = opendir(pathDir.c_str());
     if (!directory)
-        return ft_return("can not open directory: ");
+        return ft_return("can not open directory(addFiles): ");
     while ((x = readdir(directory)))
     {
         page = x->d_name;
