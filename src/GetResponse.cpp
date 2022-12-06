@@ -149,51 +149,59 @@ std::string Server::findHtmlFile(int c_fd)
     {
 		/* if request GET = directory */
         ret = this->_sockets[(*it)->port]->getLocationPage(head[1]);
-		if (ret == "Directory")
-		{
-			_responseHeader = "HTTP/1.1 200 OK";
-			ret = this->_sockets[(*it)->port]->getLocationPage(head[1] + "index.html");
-			if (ret != "")
-			    return (ret);
+	    if (ret == "Directory")
+	    {
+	    	_responseHeader = "HTTP/1.1 200 OK";
+	    	ret = this->_sockets[(*it)->port]->getLocationPage(head[1] + "index.html");
+	    	if (ret != "")
+	    	    return (ret);
             if (config->autoindex)
                 return (this->createAutoIndex(config->root + head[1], head[1]));
             _responseHeader = "HTTP/1.1 403 Forbidden";
             return ("htmlFiles/Pages/errorPages/403.html");
             std::cout << "ret:" << ret << std::endl;
-		}
+	    }
         if (ret != "")
         {
             _responseHeader = "HTTP/1.1 200 OK";
             std::cout << ret << std::endl;
             return (ret);
         }
-		ret = this->_sockets[(*it)->port]->getRedirectPage(head[1]);
-		if (ret != "")
-		{
-			_responseHeader = "HTTP/1.1 301 Moved Permanently\r\nLocation: ";
-			_responseHeader.append(ret);
-			return ("htmlFiles/Pages/errorPages/301.html");
-		}
-        _responseHeader = "HTTP/1.1 404 Not Found";
-        return ("htmlFiles/Pages/errorPages/404.html");
+	    ret = this->_sockets[(*it)->port]->getRedirectPage(head[1]);
+	    if (ret != "")
+	    {
+	    	_responseHeader = "HTTP/1.1 301 Moved Permanently\r\nLocation: ";
+	    	_responseHeader.append(ret);
+	    	return ("htmlFiles/Pages/errorPages/301.html");
+	    }
     }
-    else if (head[0] == "POST")
+    if (head[0] == "POST")
 	{
-        if (checkMaxClientBodySize(it) == false)
+        int expression = checkMaxClientBodySize(it);
+        switch (expression)
         {
-			_responseHeader = "HTTP/1.1 413 Request Entity Too Large";
-            return ("htmlFiles/Pages/errorPages/413.html");
+            case 0:
+                if (!executeCGI("/" + config->cgi + head[1], this->_sockets[(*it)->port], this->_path))
+                {
+                    _responseHeader = "HTTP/1.1 200 OK";
+                    return ("response/responseCGI.html");
+                }
+            case 1:
+                _responseHeader = "HTTP/1.1 413 Request Entity Too Large";
+                return ("htmlFiles/Pages/errorPages/413.html");
+            case 2:
+                _responseHeader = "HTTP/1.1 204 No Content";
+                return ("htmlFiles/Pages/errorPages/400.html");
+            default:
+                if (!executeCGI("/" + config->cgi + head[1], this->_sockets[(*it)->port], this->_path))
+                {
+                    _responseHeader = "HTTP/1.1 200 OK";
+                    return ("response/responseCGI.html");
+                }
         }
-        if (executeCGI("/" + config->cgi + head[1], this->_sockets[(*it)->port], this->_path))
-        {
-            _responseHeader = "HTTP/1.1 404 Not Found";
-            return ("htmlFiles/Pages/errorPages/404.html");
-        }
-        _responseHeader = "HTTP/1.1 200 OK";
-        return ("response/responseCGI.html");
 
 	}
-	std::cout << "ILLEGAL METHOD\n";
+    _responseHeader = "HTTP/1.1 404 Not Found";
     head.clear();
-    return (NULL);
+    return ("htmlFiles/Pages/errorPages/404.html");
 }
