@@ -24,7 +24,7 @@
 # include <filesystem>
 
 # ifndef TIMEOUT
-#  define TIMEOUT 5 
+#  define TIMEOUT 60
 # endif
 
 class Config;
