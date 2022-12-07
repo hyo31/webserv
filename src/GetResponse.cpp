@@ -36,7 +36,7 @@ std::string readForm(std::string request)
     return (request.substr(pos + 4, request.length() - pos - 4));
 }
 
-char        **setupEnv(std::string page, Socket *socket, std::string path)
+char        **setupEnv(std::string page, Socket *socket, std::string path, std::string root)
 {
     std::map<std::string, std::string>  env;
     std::vector<std::string>            vars;
@@ -79,7 +79,7 @@ char        **setupEnv(std::string page, Socket *socket, std::string path)
     env["REQUEST_METHOD"] = "POST";
     env["SERVER_PORT"] = std::to_string(socket->port);
     env["RESPONSE_FILE"] = "response/responseCGI.html";
-    env["PATH"] = path + "/htmlFiles";
+    env["PATH"] = path + "/" + root;
     char    **c_env = new char*[env.size() + 1];
     int     i = 0;
     for (std::map<std::string, std::string>::const_iterator it = env.begin(); it != env.end(); it++)
@@ -94,15 +94,16 @@ char        **setupEnv(std::string page, Socket *socket, std::string path)
     return (c_env);
 }
 
-int         executeCGI(std::string page, Socket *socket, std::string path)
+int         executeCGI(std::string page, Socket *socket, std::string path, std::string root)
 {
     pid_t           pid;
     char            **env;
     int             status;
     std::string     pathCGI;
 
-    env = setupEnv(page, socket, path);
+    env = setupEnv(page, socket, path, root);
     pathCGI = path + page;
+    std::cout << pathCGI << std::endl;
     if (!env)
         return ft_return("failed setting up the environment: ");
     pid = fork();
@@ -145,63 +146,59 @@ std::string Server::findHtmlFile(int c_fd)
         head.push_back(line);
     fstr.close();
 	config = this->_sockets[(*it)->port]->getConfig(head[1]);
-    if (head[0] == "GET")
-    {
-		/* if request GET = directory */
-        ret = this->_sockets[(*it)->port]->getLocationPage(head[1]);
-		if (ret.back() == '/')
-		{
-			_responseHeader = "HTTP/1.1 200 OK";
-			ret = this->_sockets[(*it)->port]->getLocationPage(head[1] + "index.html");
-			if (ret != "")
-			    return (config->root + ret);
-            if (config->autoindex)
-                return (this->createAutoIndex(config->root + head[1], head[1]));
-            _responseHeader = "HTTP/1.1 403 Forbidden";
-            return (config->errorpages + "403.html");
-		}
-        if (ret != "")
-        {
-            _responseHeader = "HTTP/1.1 200 OK";
-            return (config->root + ret);
-        }
-		ret = this->_sockets[(*it)->port]->getRedirectPage(head[1]);
-		if (ret != "")
-		{
-			_responseHeader = "HTTP/1.1 301 Moved Permanently\r\nLocation: ";
-			_responseHeader.append(ret);
-			return ( config->errorpages + "301.html" );
-		}
-        _responseHeader = "HTTP/1.1 404 Not Found";
-        return (config->errorpages + "404.html");
-    }
-    if (head[0] == "POST")
+    if (head[1].size() > config->extension.size() && head[1].substr(head[1].size() - 3, head[1].size() - 1) == config->extension)
 	{
         int expression = checkMaxClientBodySize(it);
         switch (expression)
         {
-            case 0:
-                if (!executeCGI("/" + config->cgi + head[1], this->_sockets[(*it)->port], this->_path))
-                {
-                    _responseHeader = "HTTP/1.1 200 OK";
-                    return ("response/responseCGI.html");
-                }
             case 1:
                 _responseHeader = "HTTP/1.1 413 Request Entity Too Large";
                 return (config->errorpages + "413.html");
-            case 2:
-                _responseHeader = "HTTP/1.1 204 No Content";
-                return (config->errorpages + "400.html");
             default:
-                if (!executeCGI("/" + config->cgi + head[1], this->_sockets[(*it)->port], this->_path))
+                if (!executeCGI("/" + config->cgi + head[1], this->_sockets[(*it)->port], this->_path, config->root))
                 {
                     _responseHeader = "HTTP/1.1 200 OK";
                     return ("response/responseCGI.html");
                 }
         }
-
 	}
-    _responseHeader = "HTTP/1.1 404 Not Found";
+    
+    if (std::find(config->methods.begin(), config->methods.end(), head[0]) == config->methods.end())
+    {
+        _responseHeader = "HTTP/1.1 405 Method Not Allowed";
+        return (config->errorpages + "405.html");
+    }
+	/* if request GET = directory */
+    ret = this->_sockets[(*it)->port]->getLocationPage(head[1]);
+	if (ret == "Directory")
+	{
+		_responseHeader = "HTTP/1.1 200 OK";
+		ret = this->_sockets[(*it)->port]->getLocationPage(head[1] + "index.html");
+		if (ret != "")
+        {
+            //socket current dir
+		    return (ret);
+        }
+        std::cout << config->autoindex << std::endl;
+        if (config->autoindex)
+            return (this->createAutoIndex(config->root, head[1]));
+        _responseHeader = "HTTP/1.1 403 Forbidden";
+        return (config->errorpages + "403.html");
+	}
+    if (ret != "")
+    {
+        _responseHeader = "HTTP/1.1 200 OK";
+        //socket current page
+        return (ret);
+    }
+	ret = this->_sockets[(*it)->port]->getRedirectPage(head[1]);
+	if (ret != "")
+	{
+		_responseHeader = "HTTP/1.1 301 Moved Permanently\r\nLocation: ";
+		_responseHeader.append(ret);
+		return ( config->errorpages + "301.html" );
+	}
     head.clear();
+    _responseHeader = "HTTP/1.1 404 Not Found";
     return (config->errorpages + "404.html");
 }

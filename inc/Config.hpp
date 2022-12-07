@@ -21,6 +21,7 @@ class Config
 		std::string					directoryRequest;
 		std::string					cgi;
 		int							maxClientBodySize;
+		std::string					extension;
 
 		std::map<std::string, std::string>	pages; /* name - location */	
 		std::map<std::string, std::string>	redirects; /* name - redirect_location */

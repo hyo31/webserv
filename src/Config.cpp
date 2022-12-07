@@ -45,11 +45,18 @@ Config::Config(std::string configfile, std::string path, bool ai) : configfile(c
 	}
 	else
 		this->errorpages = "htmlFiles/pages/errorPages";
+	pos = default_part.find("extension ");
+	if (pos != std::string::npos)
+	{
+		pos = pos + 10;
+		pos2 = default_part.find(";", pos);
+		this->extension = default_part.substr(pos, (pos2 - pos));
+	}
+	else
+		this->extension = ".pl";
+
     this->addFiles(path + "/" + root, "");
-    for(std::map<std::string, std::string>::iterator it = pages.begin(); it != pages.end(); ++it)
-    {
-        // std::cout << it->first << "     " << it->second << "\n";
-    }
+	methods.push_back("GET");
 }
 Config::Config(const Config& src)
 {
@@ -67,6 +74,7 @@ Config & Config::operator=(const Config& src)
 		this->directoryRequest = src.directoryRequest;
 		this->cgi = src.cgi;
 		this->maxClientBodySize = src.maxClientBodySize;
+		this->extension = src.extension;
 		this->pages = src.pages;
 		this->redirects = src.redirects;
 		return *this;
@@ -82,6 +90,7 @@ int Config::addFiles(std::string path, std::string root)
 
     pathDir = path + root;
     this->pages.insert(std::make_pair(root + "/", "Directory"));
+	this->pages.insert(std::make_pair(root, "Directory"));
     directory = opendir(pathDir.c_str());
     if (!directory)
         return ft_return("can not open directory(addFiles): ");

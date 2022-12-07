@@ -6,17 +6,18 @@ std::string Server::createAutoIndex(std::string root, std::string folder)
     DIR             *directory;
 	std::string		page = root + folder;
 
+    std::cout << root << ", " << folder << std::endl;
     autoindexFile.open("response/autoindex.html", std::ofstream::out | std::ofstream::trunc);
     if (!autoindexFile.is_open())
     {
         ft_return("failed to create autoindex: ");
-        return (root + "/Pages/errorPages/404.html");
+        return (root + "/pages/errorPages/404.html");
     }
     directory = opendir(page.c_str());
     if (!directory)
     {
         ft_return("can not open directory(createAutoIndex): ");
-        return (root + "/Pages//404.html");
+        return (root + "/pages/errorPages/404.html");
     }
     autoindexFile <<
     "<!DOCTYPE html>\n\
