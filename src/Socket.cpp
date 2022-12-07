@@ -151,9 +151,8 @@ std::string Socket::getLocationPage(std::string page)
     it = config->pages.find(page);
     if (it == config->pages.end())
         return ("");
-	if (it->first.back() != '/' && it->first.find(".html") == std::string::npos)
-		return (it->first + ".html");
-    return (it->first);
+	std::cout << it->second << std::endl;
+    return (it->second);
 }
 
 std::string Socket::getRedirectPage(std::string page)

@@ -3,17 +3,18 @@ use strict;
 use CGI qw(:standard);
 use diagnostics;
 
-my $outfile = $ENV{'FILE_NAME'};
+my $outfile = $ENV{'PATH'}."/pages/".$ENV{'FILE_NAME'};
 my @a = (1..10);
 my $filename = $outfile;
 my $og_outfile = $outfile;
 for(@a){
-    if (-e "uploads/".$filename){
+    if (-e $filename){
         $outfile = $og_outfile.$_;     #file exists
     }
     $filename = $og_outfile.$_;
 }
-open(my $fh, ">>", "uploads/".$outfile)
+print "$outfile\n";
+open(my $fh, ">>", $outfile)
     or die "Can not open file: $!";
 my $content = $ENV{'FILE_BODY'};
 print $fh "$content";
