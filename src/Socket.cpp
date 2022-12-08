@@ -1,6 +1,6 @@
 #include "../inc/Socket.hpp"
 
-Socket::Socket(std::string config, std::string path)
+Socket::Socket(std::string config, std::string path) : bound(false)
 {
     size_t	pos, pos2;
 
@@ -48,8 +48,8 @@ int Socket::setupSockets()
         std::cerr << "bind failed: " << strerror(errno) << std::endl;
         close (this->fd);
 		return (0);
-        exit(1);
     }
+	this->bound = true;
     if (listen(this->fd, 100))
         return (ft_return("error: listen\n"));
     return (0);
@@ -64,7 +64,7 @@ void	Socket::setRouteConfigs(std::string & configfile)
 	{
 		Config	*routeConfig = new Config(*this->serverConfig);
 		end = configfile.find("{", start) - 1;
-		location = configfile.substr(start + 9, (end - start + 9));
+		location = configfile.substr(start + 9, end - (start + 9));
 		end = configfile.find("}", start);
 		route = configfile.substr(start, (end - start));
 		routeConfig->setConfig(route);
@@ -92,7 +92,6 @@ std::string Socket::getLocationPage(std::string page)
     it = config->pages.find(page);
     if (it == config->pages.end())
         return ("");
-	std::cout << it->second << std::endl;
     return (it->second);
 }
 

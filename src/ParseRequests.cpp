@@ -16,25 +16,24 @@ void	Server::buildBodyForContentLength(std::string str, std::string::size_type r
 	std::string				substr;
 
 	//find the number behind Content Length
-	// ret = str.find(" ", ret) + 1;
 	start = str.find(" ", ret) + 1;
 	end = str.find("\r\n", start) - 1;
 	substr = str.substr(start, (end - start + 1));
 	(*it)->requestContentLength = std::stoi(substr);
+	if ((*it)->requestContentLength > (*it)->server_config->maxClientBodySize)
+		(*it)->client_body_too_large = true;
 	//check if the whole body is read
 	ret = str.find("\r\n\r\n");
 	start = ret + 4;
 	for (end = start; str[end] != '\0'; ++end);
-	// std::cout << "char read:" << (end - start)  << " cont len: " << (*it)->requestContentLength << std::endl;
 	if ((int)(end - start) != (*it)->requestContentLength)
 	{
 		if ((int)(end - start) > (*it)->requestContentLength)
-		{
 			std::cout << "Content Length:" << (*it)->requestContentLength << " should be:" << end << std::endl;
-			// set some value so we can return some error page ?
-		}
-		// else
-		// 	std::cout << "didnt read full content len\nCont len:" << (*it)->requestContentLength << "\nCharacters read:" << end << std::endl;
+		else
+			std::cout << "didnt read full content len\nCont len:" << (*it)->requestContentLength << "\nCharacters read:" << end << std::endl;
+		substr = str.substr(start, (*it)->requestContentLength);
+		(*it)->requestBody.append(substr);
 		return ;
 	}
 	substr = str.substr(start, (*it)->requestContentLength);
@@ -72,6 +71,11 @@ void	Server::unchunk(std::string str, std::string::size_type ret, std::vector<Cl
 				break ;
 			start = end + 3;
 			(*it)->requestBody.append(str, start, chunkSize);
+			if ((*it)->requestBody.size() > (size_t)(*it)->server_config->maxClientBodySize)
+			{
+				(*it)->client_body_too_large = true;
+				return ;
+			}
 			start = start + chunkSize + 2;
 		}
 		(*it)->request_is_read = true;
@@ -87,42 +91,6 @@ void	Server::unchunk(std::string str, std::string::size_type ret, std::vector<Cl
 	}
 }
 
-void    Server::chunkedRequest(std::string path, std::vector<Client*>::iterator it)
-{
-    std::string 			str = readFileIntoString(path);
-	std::string 			substr;
-    size_t					ret, start, end;
-
-    (*it)->request_is_read = false;
-    if (str.find("\r\n\r\n") == std::string::npos)
-    {
-        std::cout << "Incomplete header\n" << std::endl;
-        return ;
-    }
-	/* store full header */
-	if ((*it)->headerSet == false)
-	{
-		end = str.find("\r\n\r\n") + 3;
-		(*it)->requestHeader = str.substr(0, end);
-		(*it)->requestHeader[end + 1] = '\0';
-		(*it)->headerSet = true;
-	}
-    //check header for either Content Length: or Transfer-Encoding: chunked
-    if ((ret = str.find("Content-Length:")) != std::string::npos)
-		return buildBodyForContentLength(str, ret, it);
-    else if ((ret = str.find("Transfer-Encoding:")) != std::string::npos)
-    {
-        start = ret;
-        end = str.find("\n", start);
-        substr = str.substr(start, (end - start));
-        if ((ret = substr.find("chunked")) != std::string::npos)
-			return unchunk(str, ret, it);
-	}
-    (*it)->request_is_read = true;
-    std::cout << "\n\033[33m\033[1m" << "RECEIVED:\n\033[0m\033[33m" << str << "\033[0m" << std::endl;
-	// std::cout << "HEADER:\n" << (*it)->requestHeader << "Body:\n" << (*it)->requestBody;
-    return ;
-}
 
 int	Server::checkMaxClientBodySize(std::vector<Client*>::iterator client)
 {
@@ -145,4 +113,42 @@ int	Server::checkMaxClientBodySize(std::vector<Client*>::iterator client)
 	if ((int)(end - 4 - start) > this->_sockets[(*client)->port]->serverConfig->maxClientBodySize)
 		return 1;
 	return 0;
+}
+
+void    Server::parseRequest(std::string path, std::vector<Client*>::iterator it)
+{
+    std::string 			str = readFileIntoString(path);
+	std::string 			substr;
+    size_t					ret, start, end;
+
+    (*it)->request_is_read = false;
+    if (str.find("\r\n\r\n") == std::string::npos)
+    {
+        std::cout << "Incomplete header\n" << std::endl;
+        return ;
+    }
+	/* store full header */
+	if ((*it)->headerSet == false)
+	{
+		end = str.find("\r\n\r\n") + 3;
+		(*it)->requestHeader = str.substr(0, end);
+		(*it)->requestHeader[end + 1] = '\0';
+		(*it)->headerSet = true;
+		(*it)->headerSize = (*it)->requestHeader.size();
+	}
+    //check header for either Content Length: or Transfer-Encoding: chunked
+    if ((ret = str.find("Content-Length:")) != std::string::npos)
+		return buildBodyForContentLength(str, ret, it);
+    else if ((ret = str.find("Transfer-Encoding:")) != std::string::npos)
+    {
+        start = ret;
+        end = str.find("\n", start);
+        substr = str.substr(start, (end - start));
+        if ((ret = substr.find("chunked")) != std::string::npos)
+			return unchunk(str, ret, it);
+	}
+    (*it)->request_is_read = true;
+    std::cout << "\n\033[33m\033[1m" << "RECEIVED:\n\033[0m\033[33m" << str << "\033[0m" << std::endl;
+	// std::cout << "HEADER:\n" << (*it)->requestHeader << "Body:\n" << (*it)->requestBody;
+    return ;
 }

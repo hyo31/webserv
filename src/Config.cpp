@@ -1,9 +1,10 @@
 #include "../inc/Config.hpp"
 
 
-Config::Config(std::string configfile, std::string path) :	servername("default"), errorpages("htmlFiles/pages/errorPages/"), autoindex(false),
-															root("htmlFiles"), directoryRequest(""), cgi("cgi-bin"), maxClientBodySize(4096),
-															extension(".pl") {
+Config::Config(std::string configfile, std::string path) :	servername("default"), root("htmlFiles"), errorpages(root + "/pages/errorPages/"),
+															autoindex(false), directoryRequest(""), cgi("cgi-bin"), maxClientBodySize(MAX_BODY),
+															extension(".pl")
+{
 	size_t		pos;
     std::string	default_part;
 
@@ -50,7 +51,7 @@ int Config::setPages(std::string path, std::string root)
 	this->pages.insert(std::make_pair(root, "Directory"));
     directory = opendir(pathDir.c_str());
     if (!directory)
-        return ft_return("can not open directory(addFiles): ");
+        return ft_return("can not open directory(setPages): ");
     while ((x = readdir(directory)))
     {
         page = x->d_name;
@@ -85,8 +86,8 @@ void	Config::setConfig(std::string & config)
 	int						num_of_config_options = 9;
 	std::string				line;
 	std::string::iterator 	start = config.begin(), new_pos = config.begin();
-	std::string 			members[9] = {"listen", "errorPages", "autoindex", "root", "directoryRequest", "cgi", "maxClientBodySize", "extension", "methods" };
-	ConfigMemFn				fs[] = {	&Config::setServerName, &Config::setErrorPages, &Config::setAutoIndex, &Config::setRoot, &Config::setDirectoryRequest,
+	std::string 			members[9] = {"listen", "root", "errorPages", "autoindex", "directoryRequest", "cgi", "maxClientBodySize", "extension", "methods" };
+	ConfigMemFn				fs[] = {	&Config::setServerName, &Config::setRoot, &Config::setErrorPages, &Config::setAutoIndex, &Config::setDirectoryRequest,
 										&Config::setCGI, &Config::setMaxBodySize, &Config::setExtension, &Config::setMethods };
 
 	for ( std::string::iterator it = config.begin(); it != config.end(); ++it ) {
@@ -112,7 +113,7 @@ void	Config::setServerName(std::string & line)
 // Location of default errorpages in config is declared as <errorPages location>
 void	Config::setErrorPages(std::string & line)
 {
-	this->errorpages = line.substr(line.find(" ") + 1);
+	this->errorpages = this->root + line.substr(line.find(" ") + 1);
 }
 
 // autoindex in config is declared as <autoindex on/off>
@@ -171,8 +172,13 @@ void	Config::setMethods(std::string & line )
 }
 
 //redirects in config are declared as <redirect to_this_location>
-void	Config::setRedirects(std::string & line , std::string & location)
+void	Config::setRedirects(std::string & route , std::string & location)
 {
-	std::string redirect_to = line.substr(line.find(" ") + 1);
-	this->redirects.insert(std::make_pair(location, redirect_to));
+	size_t	pos = route.find("redirect");
+
+	if (pos != std::string::npos)
+	{
+		std::string redirect_to = route.substr(route.find(" ", pos) + 1);
+		this->redirects.insert(std::make_pair(location, redirect_to));
+	}
 }

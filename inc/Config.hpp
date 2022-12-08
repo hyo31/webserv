@@ -18,10 +18,10 @@ class Config
 
 
 		std::string					servername;
+		std::string                 root;
 		std::string					errorpages;
 		bool						autoindex;
 		std::vector<std::string>	methods;
-		std::string                 root;
 		std::string					directoryRequest;
 		std::string					cgi;
 		int							maxClientBodySize;
@@ -36,9 +36,9 @@ class Config
 
 		int			setPages(std::string path, std::string location);
 		void		setServerName(std::string &);
+		void		setRoot(std::string &);
 		void		setErrorPages(std::string &);
 		void		setAutoIndex(std::string &);
-		void		setRoot(std::string &);
 		void		setDirectoryRequest(std::string &);
 		void		setCGI(std::string &);
 		void		setMaxBodySize(std::string &);

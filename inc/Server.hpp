@@ -28,6 +28,11 @@
 #  define TIMEOUT 60
 # endif
 
+# ifndef MAX_BODY
+#  define MAX_BODY 4000
+# endif
+
+
 class Config;
 class Client;
 class Socket;
@@ -44,11 +49,10 @@ class Server
         int			receiveClientRequest(int);
         int			sendResponseToClient(int);
         int			closeConnection(int);
-        int			is_connection_open(int);
         void		set_chlist(std::vector<struct kevent>&, uintptr_t, int16_t, uint16_t, uint32_t, intptr_t, void *);
         void		update_client_timestamp(int);
         void		bounceTimedOutClients();
-        void		chunkedRequest(std::string, std::vector<Client*>::iterator);
+        void		parseRequest(std::string, std::vector<Client*>::iterator);
 		void		unchunk(std::string, std::string::size_type, std::vector<Client*>::iterator);
 		void		buildBodyForContentLength(std::string, std::string::size_type, std::vector<Client*>::iterator);
         int			openSockets(std::string);

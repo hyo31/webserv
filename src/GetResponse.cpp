@@ -145,6 +145,11 @@ std::string Server::findHtmlFile(int c_fd)
         head.push_back(line);
     fstr.close();
 	config = this->_sockets[(*it)->port]->getConfig(head[1]);
+	if ((*it)->client_body_too_large == true)
+	{
+	    _responseHeader = "HTTP/1.1 413 Request Entity Too Large";
+        return (config->errorpages + "413.html");
+	}
     if (head[1].size() > config->extension.size() && head[1].substr(head[1].size() - 3, head[1].size() - 1) == config->extension)
 	{
         int expression = checkMaxClientBodySize(it);
@@ -172,6 +177,8 @@ std::string Server::findHtmlFile(int c_fd)
 	if (ret == "Directory")
 	{
 		_responseHeader = "HTTP/1.1 200 OK";
+		if (config->directoryRequest != "")
+			return (config->root + config->directoryRequest);
 		ret = this->_sockets[(*it)->port]->getLocationPage(head[1] + "index.html");
 		if (ret != "")
         {

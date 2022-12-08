@@ -31,8 +31,9 @@ int	Server::monitor_ports()
 
     /* enter run loop */
     std::cout << "\033[1m--waiting for events...--\n\033[0m";
-    while(true) 
+    while(1) 
     {
+		std::cout << "waiting on events...\n";
         /* use kevent to wait for an event (when a client tries to connect or when a connection has data to read/is open to receive data) */
         new_event = kevent(kq, &chlist[0], chlist.size(), tevents, 40, &this->_timeout);
         chlist.clear();
@@ -68,7 +69,9 @@ int	Server::monitor_ports()
                     if ((ret = this->receiveClientRequest(fd)) == -1)
                         return -1;
                     /* request has been read, now event is added to monitor if response can be sent */
-                    if (ret == 0)
+                    if (ret == 1)
+						set_chlist(chlist, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+					if (ret < 2)
                         set_chlist(chlist, fd, EVFILT_WRITE, EV_ADD | EV_ONESHOT, 0, 0, NULL);
                 }
                 else if (tevents[i].filter == EVFILT_WRITE)
@@ -103,8 +106,12 @@ int Server::openSockets(std::string configFilePath)
                     break;
                 socketConfig = socketConfig + line + "\n";
             }
-            this->_sockets.push_back(new Socket(socketConfig, this->_path));
-            socketConfig.erase(socketConfig.begin(), socketConfig.end());
+			Socket *new_sock = new Socket(socketConfig, this->_path);
+			if (new_sock->bound == true)
+            	this->_sockets.push_back(new_sock);
+			else
+				delete new_sock;
+			socketConfig.clear();
         }
     }
     configFile.close(); 

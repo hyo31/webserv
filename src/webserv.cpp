@@ -14,7 +14,6 @@ int main(int argc, char **argv, char **env)
         if (!path.find("PWD=", 0))
             break;
         path.erase();
-
     }
     if (argc == 2)
         webserv.startServer(argv[1], path.substr(4, path.length()));
