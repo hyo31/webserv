@@ -32,7 +32,6 @@ class Socket
     private:
                 	Socket(const Socket &);
         Socket &	operator=(const Socket &);
-        int			addFiles(std::string path, std::string location);
 
 };
 

@@ -2,26 +2,27 @@
 # define SERVER_HPP
 
 # include <iostream>
-# include <sys/socket.h>
-# include <netinet/in.h>
 # include <unistd.h>
 # include <vector>
 # include <iomanip>
 # include <fstream>
 # include <limits>
+# include <map>
+# include <sstream>
+# include <filesystem>
+# include <netinet/in.h>
+# include <iterator>
+# include <sys/socket.h>
+# include <sys/event.h>
 # include <errno.h>
 # include <sys/types.h>
-# include <sys/event.h>
 # include <sys/time.h>
 # include <fcntl.h>
-# include "Socket.hpp"
-# include <map>
-# include "Client.hpp"
-# include <sstream>
 # include <unistd.h>
 # include <sys/wait.h>
+# include "Client.hpp"
 # include "Config.hpp"
-# include <filesystem>
+# include "Socket.hpp"
 
 # ifndef TIMEOUT
 #  define TIMEOUT 60

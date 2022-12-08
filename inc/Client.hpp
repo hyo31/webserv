@@ -20,6 +20,7 @@ class Client
 		std::string	requestHeader;
 		std::string requestBody;
 		bool		headerSet;
+		std::string	current_route;
 
 	private:
     	Client();

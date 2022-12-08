@@ -3,10 +3,15 @@
 
 # include "Server.hpp"
 
+class Config;
+
+typedef  void (Config::*ConfigMemFn)( std::string & );
+#define CALL_MEMBER_FN(ptrToMember)  (this->*(ptrToMember))
+
 class Config
 {
     public:
-        Config(std::string, std::string, bool);
+        Config(std::string, std::string);
         ~Config();
 		Config(const Config&);
     	Config  &operator=(const Config&);
@@ -14,7 +19,6 @@ class Config
 
 		std::string					servername;
 		std::string					errorpages;
-		std::string                 configfile;
 		bool						autoindex;
 		std::vector<std::string>	methods;
 		std::string                 root;
@@ -25,11 +29,21 @@ class Config
 
 		std::map<std::string, std::string>	pages; /* name - location */	
 		std::map<std::string, std::string>	redirects; /* name - redirect_location */
+		void		setConfig(std::string &);
+		void		setRedirects(std::string &, std::string &);
 
     private:
 
-		int		addFiles(std::string path, std::string location);
-
+		int			setPages(std::string path, std::string location);
+		void		setServerName(std::string &);
+		void		setErrorPages(std::string &);
+		void		setAutoIndex(std::string &);
+		void		setRoot(std::string &);
+		void		setDirectoryRequest(std::string &);
+		void		setCGI(std::string &);
+		void		setMaxBodySize(std::string &);
+		void		setExtension(std::string &);
+		void		setMethods(std::string &);
 };
 
 #endif

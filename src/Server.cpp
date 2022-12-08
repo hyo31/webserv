@@ -17,7 +17,7 @@ int	Server::monitor_ports()
 {
     int i, sock_num, new_event, kq, conn_fd, ret;
 	std::vector<struct  kevent> chlist;         /* list of events to monitor */
-	struct  kevent              tevents[40];	/* list of triggered events */
+	struct  kevent              tevents[42];	/* list of triggered events */
 
     /* create the queue */
     /* initialize kevent events structs - uses EVFILT_READ so it returns when there is data available to read */
@@ -72,8 +72,6 @@ int	Server::monitor_ports()
                 else if (tevents[i].filter == EVFILT_WRITE)
                 {
                     std::cout << "WRITING to:" << fd << std::endl;
-                    // char msg[74] = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!";
-                    // send(fd, msg, 74, 0);
                     if (this->sendResponseToClient(fd) == -1)
                         return -1;
                 }

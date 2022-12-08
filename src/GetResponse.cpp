@@ -133,7 +133,6 @@ std::string Server::findHtmlFile(int c_fd)
     for(; it != end; ++it)
         if (c_fd == (*it)->conn_fd)
             break ;
-	
     fstr.open(this->_sockets[(*it)->port]->logFile);
     if (!fstr.is_open())
     {
@@ -176,7 +175,7 @@ std::string Server::findHtmlFile(int c_fd)
 		ret = this->_sockets[(*it)->port]->getLocationPage(head[1] + "index.html");
 		if (ret != "")
         {
-            //socket current dir
+            (*it)->current_route = head[1];
 		    return (ret);
         }
         std::cout << config->autoindex << std::endl;
@@ -188,7 +187,7 @@ std::string Server::findHtmlFile(int c_fd)
     if (ret != "")
     {
         _responseHeader = "HTTP/1.1 200 OK";
-        //socket current page
+         (*it)->current_route = head[1];
         return (ret);
     }
 	ret = this->_sockets[(*it)->port]->getRedirectPage(head[1]);
