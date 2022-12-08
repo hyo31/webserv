@@ -1,5 +1,7 @@
 #include "../inc/Server.hpp"
 
+// to do - DELETE ALL NEWS
+
 int main(int argc, char **argv, char **env)
 {
     if (argc < 1 || argc > 2)
