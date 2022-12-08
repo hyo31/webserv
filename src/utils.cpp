@@ -33,19 +33,6 @@ int Server::closeConnection(int fd)
     return 0;
 }
 
-int    Server::is_connection_open(int c_fd)
-{
-    std::vector<Client*>::iterator it = this->_clients.begin();
-    std::vector<Client*>::iterator end = this->_clients.end();
-
-    for(; it != end; ++it)
-    {
-        if (c_fd == (*it)->conn_fd)
-            return true;
-    }
-    return false;
-}
-
 void    Server::update_client_timestamp(int fd)
 {
     std::vector<Client*>::iterator it = this->_clients.begin();
@@ -72,4 +59,12 @@ void    Server::bounceTimedOutClients()
             closeConnection((*it)->conn_fd);
         }
     }
+}
+
+int	Server::findSocket(int fd)
+{
+    for (size_t i = 0; i < this->_sockets.size(); i++)
+        if (fd == this->_sockets[i]->fd)
+            return i;
+    return -1;
 }

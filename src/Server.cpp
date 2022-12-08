@@ -5,6 +5,8 @@ Server::Server()
 	this->_timeout.tv_sec = TIMEOUT;
 	this->_timeout.tv_nsec = 0;
 }
+Server::Server(const Server &) { std::cout << "cant copy server!" << std::endl; }
+Server &	Server::operator=(const Server &) {std::cout << "no assignment allowed for server object!" << std::endl; return *this; }
 
 Server::~Server()
 {
@@ -20,10 +22,10 @@ int	Server::monitor_ports()
 	struct  kevent              tevents[42];	/* list of triggered events */
 
     /* create the queue */
-    /* initialize kevent events structs - uses EVFILT_READ so it returns when there is data available to read */
     kq = kqueue();  
     if (kq == -1)
         return ft_return("kqueue failed");
+    /* initialize kevent chlist structs - uses EVFILT_READ so it returns when there is data available to read */
     for (size_t j = 0; j < this->_sockets.size(); ++j)
         set_chlist(chlist, this->_sockets[j]->fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
 
@@ -36,7 +38,7 @@ int	Server::monitor_ports()
         chlist.clear();
         if (new_event < 0)
             return ft_return("kevent failed: \n");
-        /* kevent returned with n new events */
+        /* kevent returned with new events */
         else if (new_event > 0)
         {
             for (i = 0; i < new_event; i++)
@@ -65,7 +67,7 @@ int	Server::monitor_ports()
                     std::cout << "READING from:" << fd << std::endl;
                     if ((ret = this->receiveClientRequest(fd)) == -1)
                         return -1;
-                    /* now that we read the request, we can respond, so now we add an event to monitor that triggers if we can send to client */
+                    /* request has been read, now event is added to monitor if response can be sent */
                     if (ret == 0)
                         set_chlist(chlist, fd, EVFILT_WRITE, EV_ADD | EV_ONESHOT, 0, 0, NULL);
                 }
@@ -82,17 +84,7 @@ int	Server::monitor_ports()
 	return -1;
 }
 
-
-
-int Server::findSocket(int fd)
-{
-    for (size_t i = 0; i < this->_sockets.size(); i++)
-        if (fd == this->_sockets[i]->fd)
-            return i;
-    return -1;
-}
-
-int Server::configuration(std::string configFilePath)
+int Server::openSockets(std::string configFilePath)
 {
     std::ifstream               configFile;
     std::string                 line;
@@ -124,7 +116,7 @@ int	Server::startServer(std::string configFilePath, std::string path)
 {
 	int	status = 0;
     this->_path = path;
-    if (configuration(configFilePath) == -1)
+    if (openSockets(configFilePath) == -1)
         return (ft_return(""));
     std::cout << "\033[1mOpened sockets: \033[0m";
     for (size_t i = 0; i < this->_sockets.size(); i++)

@@ -91,9 +91,7 @@ void    Server::chunkedRequest(std::string path, std::vector<Client*>::iterator 
 {
     std::string 			str = readFileIntoString(path);
 	std::string 			substr;
-    std::string::size_type  ret;
-	std::string::size_type	start;
-	std::string::size_type	end;
+    size_t					ret, start, end;
 
     (*it)->request_is_read = false;
     if (str.find("\r\n\r\n") == std::string::npos)

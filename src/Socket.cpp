@@ -4,23 +4,25 @@ Socket::Socket(std::string config, std::string path)
 {
     size_t	pos, pos2;
 
-	this->serverConfig = new Config(config, path);
     try
     {
+		this->serverConfig = new Config(config, path);
 		pos = config.find("listen") + 7;
 		pos2 = config.find(" ", pos);
         port = std::stoi(config.substr(pos, (pos2 - pos)));
         logFile = "logs/port" + config.substr(pos, (pos2 - pos)) + ".log";
         ipAddr = "localhost";
+		this->setRouteConfigs(config);
+    	this->setupSockets();
     }
     catch(std::invalid_argument const& ex)
     {
-        std::cout << "std::invalid_argument::what(): " << ex.what() << '\n';
+        std::cout << "what():" << ex.what() << std::endl;
         exit (ft_return("Error reading config file"));
     }
-	this->setRouteConfigs(config);
-    this->setupSockets();
 }
+Socket::Socket(const Socket &) { std::cout << "cant copy sockets!" << std::endl; }
+Socket &	Socket::operator=(const Socket &) {std::cout << "no assignment allowed for socket object!" << std::endl; return *this; }
 
 Socket::~Socket()
 {

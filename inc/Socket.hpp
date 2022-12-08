@@ -10,7 +10,6 @@ class Socket
 {
     public:
         Socket(std::string config, std::string path);
-        Socket(std::string ipAddr, int port);
         ~Socket();
 
 		Config						*serverConfig;
@@ -20,7 +19,6 @@ class Socket
         sockaddr_in					socketAddr;
         unsigned int				socketAddrLen;
         std::string					logFile;
-        int             			startServer();
         int             			setupSockets();
         std::string     			getLocationPage(std::string page);
 		std::string					getRedirectPage(std::string page);

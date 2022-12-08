@@ -2,23 +2,23 @@
 # define SERVER_HPP
 
 # include <iostream>
-# include <unistd.h>
 # include <vector>
+# include <map>
 # include <iomanip>
 # include <fstream>
 # include <limits>
-# include <map>
 # include <sstream>
 # include <filesystem>
-# include <netinet/in.h>
 # include <iterator>
-# include <sys/socket.h>
-# include <sys/event.h>
+# include <unistd.h>
 # include <errno.h>
+# include <fcntl.h>
+# include <netinet/in.h>
+# include <unistd.h>
+# include <sys/event.h>
+# include <sys/socket.h>
 # include <sys/types.h>
 # include <sys/time.h>
-# include <fcntl.h>
-# include <unistd.h>
 # include <sys/wait.h>
 # include "Client.hpp"
 # include "Config.hpp"
@@ -49,10 +49,9 @@ class Server
         void		update_client_timestamp(int);
         void		bounceTimedOutClients();
         void		chunkedRequest(std::string, std::vector<Client*>::iterator);
-        int			Configuration(std::string);
 		void		unchunk(std::string, std::string::size_type, std::vector<Client*>::iterator);
 		void		buildBodyForContentLength(std::string, std::string::size_type, std::vector<Client*>::iterator);
-        int			configuration(std::string);
+        int			openSockets(std::string);
         int			findSocket(int);
 		int			checkMaxClientBodySize(std::vector<Client*>::iterator);
 		std::string createAutoIndex(std::string, std::string);
