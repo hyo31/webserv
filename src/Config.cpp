@@ -51,7 +51,10 @@ int Config::setPages(std::string path, std::string root)
 	this->pages.insert(std::make_pair(root, "Directory"));
     directory = opendir(pathDir.c_str());
     if (!directory)
+	{
+		std::cout << "failedpath:" << pathDir << std::endl;
         return ft_return("can not open directory(setPages): ");
+	}
     while ((x = readdir(directory)))
     {
         page = x->d_name;

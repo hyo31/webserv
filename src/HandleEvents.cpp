@@ -9,9 +9,9 @@ int Server::acceptRequest(int sock_num)
         return (ft_return("error: accept\n"));
     Client *newclient = new Client(conn_fd, sock_num, this->_sockets[sock_num]->serverConfig);
     this->_clients.push_back(newclient);
-    int status = fcntl(conn_fd, F_SETFL, O_NONBLOCK);	
+    int status = fcntl(conn_fd, F_SETFL, O_NONBLOCK);
     if (status == -1)
-        ft_return("fcntl failed");
+        ft_return("fcntl failed:");
     return conn_fd;
 }
 

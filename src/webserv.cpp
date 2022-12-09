@@ -6,6 +6,7 @@ int main(int argc, char **argv, char **env)
 {
     if (argc < 1 || argc > 2)
         return (ft_return("Wrong number of arguments: "));
+
     Server      webserv;
     std::string path;
     for (int i = 0; env[i]; i++)
@@ -15,6 +16,9 @@ int main(int argc, char **argv, char **env)
             break;
         path.erase();
     }
+	struct sigaction sigact;
+	sigaction(SIGINT, &sigact, nullptr);
+
     if (argc == 2)
         webserv.startServer(argv[1], path.substr(4, path.length()));
     else

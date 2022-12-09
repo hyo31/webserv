@@ -13,6 +13,7 @@
 # include <unistd.h>
 # include <errno.h>
 # include <fcntl.h>
+# include <signal.h>
 # include <netinet/in.h>
 # include <unistd.h>
 # include <sys/event.h>
@@ -41,9 +42,8 @@ class Server
     private:
         Server(const Server &);
         Server &	operator=(const Server &);
-        
+
         std::string	findHtmlFile(int);
-		std::string	getDirectoryListedPage(std::string);
         int			monitor_ports();
         int			acceptRequest(int);
         int			receiveClientRequest(int);
@@ -59,6 +59,7 @@ class Server
         int			findSocket(int);
 		int			checkMaxClientBodySize(std::vector<Client*>::iterator);
 		std::string createAutoIndex(std::string, std::string);
+		void		closeSockets();
 
         std::vector<Socket*>		_sockets;
         std::vector<Client*>		_clients;

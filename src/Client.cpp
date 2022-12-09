@@ -5,11 +5,11 @@ Client::Client(int fd, int port, Config  *server_config) : conn_fd(fd), port(por
 { 
     this->timestamp = std::time(nullptr);
     this->request_is_read = true;
+	this->client_body_too_large = false;
     this->requestContentLength = -1;
 	this->requestHeader = "";
 	this->requestBody = "";
 	this->headerSet = false;
-	this->client_body_too_large = false;
 	this->headerSize = 0;
 }
 

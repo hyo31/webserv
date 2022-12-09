@@ -66,8 +66,9 @@ int	Server::monitor_ports()
                 else if (tevents[i].filter == EVFILT_READ)
                 {
                     std::cout << "READING from:" << fd << std::endl;
-                    if ((ret = this->receiveClientRequest(fd)) == -1)
-                        return -1;
+					ret = this->receiveClientRequest(fd);
+                    if (ret == -1)
+                    	return -1;
                     /* request has been read, now event is added to monitor if response can be sent */
                     if (ret == 1)
 						set_chlist(chlist, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
@@ -133,11 +134,17 @@ int	Server::startServer(std::string configFilePath, std::string path)
         std::cout << this->_sockets[i]->port << " ";
     std::cout << std::endl << std::endl;;
 	status = this->monitor_ports();
+	closeSockets();
 	if (status == -1)
 		return ft_return("monitor failed: ");
-    delete this->_sockets[0];
-    delete this->_sockets[1];
-    delete this->_sockets[2];
 	return 0;
 }
 
+void	Server::closeSockets(void)
+{
+	while (!_sockets.empty())
+	{
+		delete _sockets.back();
+		_sockets.pop_back();
+	}
+}
