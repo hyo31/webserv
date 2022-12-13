@@ -109,6 +109,7 @@ int Server::sendResponseToClient(int c_fd)
     if (!responseFile.is_open())
         return ft_return("could not open response file ");
     htmlFileName = this->findHtmlFile(c_fd);
+	// std::cout << "html ret:" << htmlFileName << std::endl;
     if (!htmlFileName.size())
         htmlFileName = this->_sockets[(*it)->port]->serverConfig->errorpages + "500.html";
     htmlFile.open(htmlFileName, std::ios::in | std::ios::binary);

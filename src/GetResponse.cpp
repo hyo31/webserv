@@ -189,10 +189,7 @@ std::string Server::findHtmlFile(int c_fd)
 			return (config->root + config->directoryRequest);
 		ret = this->_sockets[(*it)->port]->getLocationPage(head[1] + "index.html");
 		if (ret != "")
-        {
-            (*it)->current_route = head[1];
 		    return (ret);
-        }
         if (config->autoindex)
             return (this->createAutoIndex(config->root, head[1]));
         _responseHeader = "HTTP/1.1 403 Forbidden";
@@ -201,7 +198,6 @@ std::string Server::findHtmlFile(int c_fd)
     if (ret != "")
     {
         _responseHeader = "HTTP/1.1 200 OK";
-         (*it)->current_route = head[1];
         return (ret);
     }
 	ret = this->_sockets[(*it)->port]->getRedirectPage(head[1]);

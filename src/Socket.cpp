@@ -100,10 +100,17 @@ std::string Socket::getLocationPage(std::string page)
 {
     std::map<std::string, std::string>::iterator    it;
 	Config	*config = this->getConfig(page);
+	size_t	pos;
 
     it = config->pages.find(page);
     if (it == config->pages.end())
         return ("");
+	if (config->root != "")
+	{
+		pos = it->second.find("htmlFiles");
+		if (pos != std::string::npos)
+			it->second.replace(pos, 9, config->root);
+	}
     return (it->second);
 }
 
