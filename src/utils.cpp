@@ -26,6 +26,7 @@ int Server::closeConnection(int fd)
         {
             delete *it;
             this->_clients.erase(it);
+			break ;
         }
     }
     close(fd);
