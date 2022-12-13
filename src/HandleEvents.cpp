@@ -114,9 +114,9 @@ int Server::sendResponseToClient(int c_fd)
     htmlFile.open(htmlFileName, std::ios::in | std::ios::binary);
     if (!htmlFile.is_open())
     {
-        std::cout << "html file:" << htmlFileName << "  doesn't exist!" << std::endl;
-        this->_responseHeader = "HTTP/1.1 403 Forbidden";
-        htmlFile.open( this->_sockets[(*it)->port]->serverConfig->errorpages + "403.html", std::ios::in | std::ios::binary);
+    	std::cout << "html file:" << htmlFileName << "  doesn't exist!" << std::endl;
+    	this->_responseHeader = "HTTP/1.1 403 Forbidden";
+    	htmlFile.open( this->_sockets[(*it)->port]->serverConfig->errorpages + "403.html", std::ios::in | std::ios::binary);
 		if (!htmlFile.is_open())
 			htmlFile.open( "htmlFiles/pages/errorPages/403.html", std::ios::in | std::ios::binary);
     }
@@ -132,9 +132,11 @@ int Server::sendResponseToClient(int c_fd)
 	responseFile << "Content-Type: text/html" << std::endl;
 	responseFile << "Content-Length: " << fileSize << "\r\n\r\n"; //std::endl << std::endl;
 
-	//create char string to read html into, which is then read into responseFile         
-	char    html[fileSize];
+	//create char string to read html into, which is then read into responseFile      
+	std::cout << "filesize:" << fileSize << std::endl;   
+	char    html[fileSize + 1];
 	htmlFile.read(html, fileSize);
+	html[fileSize] = '\0';
 	responseFile << html << std::endl;
 
 	//get length of full responseFile
@@ -144,8 +146,9 @@ int Server::sendResponseToClient(int c_fd)
 	responseFile.seekg(0, std::ios::beg);
 
 	//create response which is sent back to client
-	char    response[fileSize];
+	char    response[fileSize + 1];
 	responseFile.read(response, fileSize);
+	response[fileSize] = '\0';
 	ssize_t bytesSent = send(c_fd, response, fileSize, 0);
 	if (bytesSent == -1)
 	{
@@ -154,6 +157,7 @@ int Server::sendResponseToClient(int c_fd)
 		close(c_fd);
 		return ft_return("error: send\n");
 	}
+
 	update_client_timestamp(c_fd);
 	std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << response << "\033[0m" << std::endl;
 	this->_responseHeader.clear();
