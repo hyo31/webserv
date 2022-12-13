@@ -75,8 +75,20 @@ void	Socket::setRouteConfigs(std::string & configfile)
 
 Config	*Socket::getConfig(std::string &location)
 {
-	std::map<std::string, Config*>::iterator it;
+	std::map<std::string, Config*>::iterator	it;
+	size_t	pos;
 
+	pos = location.find(".pl");
+	if (pos != std::string::npos)
+	{
+		pos = location.find_last_of("/") + 1;
+		std::string new_location = location.substr(0, pos);
+		it = routes.find(new_location);
+		if (it != routes.end())
+			return it->second;
+		else
+			return this->serverConfig;
+	}
 	it = routes.find(location);
 	if (it != routes.end())
 		return it->second;

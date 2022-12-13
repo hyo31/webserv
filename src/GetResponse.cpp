@@ -16,6 +16,8 @@ std::vector<std::string>    readFile(std::string request)
     pos = request.find("--" + boundary);
     pos = request.find("filename=", pos) + 10;
     filename = request.substr(pos, request.find("\r\n", pos) - (pos + 1));
+	if (filename.empty())
+		return (vars);
     pos = request.find("\r\n\r\n", pos);
     fileContent = request.substr(pos + 4, request.find("--" + boundary, pos) - (pos + 5));
     vars.push_back(filename);
@@ -145,6 +147,11 @@ std::string Server::findHtmlFile(int c_fd)
         head.push_back(line);
     fstr.close();
 	config = this->_sockets[(*it)->port]->getConfig(head[1]);
+    if (std::find(config->methods.begin(), config->methods.end(), head[0]) == config->methods.end())
+    {
+        _responseHeader = "HTTP/1.1 405 Method Not Allowed";
+        return (config->errorpages + "405.html");
+    }
 	if ((*it)->client_body_too_large == true)
 	{
 	    _responseHeader = "HTTP/1.1 413 Request Entity Too Large";
@@ -167,11 +174,6 @@ std::string Server::findHtmlFile(int c_fd)
         }
 	}
     
-    if (std::find(config->methods.begin(), config->methods.end(), head[0]) == config->methods.end())
-    {
-        _responseHeader = "HTTP/1.1 405 Method Not Allowed";
-        return (config->errorpages + "405.html");
-    }
 	/* if request GET = directory */
     ret = this->_sockets[(*it)->port]->getLocationPage(head[1]);
 	if (ret == "Directory")
