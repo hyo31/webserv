@@ -74,5 +74,6 @@ class Server
 
 };
 
-int	ft_return(std::string str);
+int		ft_return(std::string str);
+
 #endif

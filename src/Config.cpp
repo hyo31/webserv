@@ -150,6 +150,7 @@ void	Config::setCGI(std::string & line)
 void	Config::setMaxBodySize(std::string & line)
 {
 	this->maxClientBodySize = std::stoi(line.substr(line.find(" ") + 1));
+
 }
 
 //extensions in config are declared as <extension .x>
@@ -178,10 +179,14 @@ void	Config::setMethods(std::string & line )
 void	Config::setRedirects(std::string & route , std::string & location)
 {
 	size_t	pos = route.find("redirect");
+	size_t	newline;
 
 	if (pos != std::string::npos)
 	{
-		std::string redirect_to = route.substr(route.find(" ", pos) + 1);
+		pos = route.find(" ", pos) + 1;
+		newline = route.find("\n", pos);
+		std::string redirect_to = route.substr(pos, (newline - pos));
 		this->redirects.insert(std::make_pair(location, redirect_to));
+		std::cout << "red to:" << redirect_to << std::endl;
 	}
 }

@@ -118,6 +118,10 @@ int         executeCGI(std::string page, Socket *socket, std::string path, std::
     }
     else
         waitpid(pid, &status, 0);
+    for (int i = 0; env[i] != NULL ; i++) {
+		delete env[i];
+	}
+	delete env;
     if (WIFEXITED(status))
         return (WEXITSTATUS(status));
     return (0);
@@ -147,33 +151,35 @@ std::string Server::findHtmlFile(int c_fd)
         head.push_back(line);
     fstr.close();
 	config = this->_sockets[(*it)->port]->getConfig(head[1]);
-    if (std::find(config->methods.begin(), config->methods.end(), head[0]) == config->methods.end())
-    {
-        _responseHeader = "HTTP/1.1 405 Method Not Allowed";
-        return (config->errorpages + "405.html");
-    }
-	if ((*it)->client_body_too_large == true)
+	if (head[0] == "POST")
 	{
-	    _responseHeader = "HTTP/1.1 413 Request Entity Too Large";
-        return (config->errorpages + "413.html");
+		if (std::find(config->methods.begin(), config->methods.end(), head[0]) == config->methods.end())
+		{
+			_responseHeader = "HTTP/1.1 405 Method Not Allowed";
+			return (config->errorpages + "405.html");
+		}
+		if ((*it)->client_body_too_large == true)
+		{
+			_responseHeader = "HTTP/1.1 413 Request Entity Too Large";
+			return (config->errorpages + "413.html");
+		}
+		if (head[1].size() > config->extension.size() && head[1].substr(head[1].size() - 3, head[1].size() - 1) == config->extension)
+		{
+			int expression = checkMaxClientBodySize(it);
+			switch (expression)
+			{
+				case 1:
+					_responseHeader = "HTTP/1.1 413 Request Entity Too Large";
+					return (config->errorpages + "413.html");
+				default:
+					if (!executeCGI("/" + config->cgi + head[1], this->_sockets[(*it)->port], this->_path, config->root))
+					{
+						_responseHeader = "HTTP/1.1 200 OK";
+						return ("response/responseCGI.html");
+					}
+			}
+		}
 	}
-    if (head[1].size() > config->extension.size() && head[1].substr(head[1].size() - 3, head[1].size() - 1) == config->extension)
-	{
-        int expression = checkMaxClientBodySize(it);
-        switch (expression)
-        {
-            case 1:
-                _responseHeader = "HTTP/1.1 413 Request Entity Too Large";
-                return (config->errorpages + "413.html");
-            default:
-                if (!executeCGI("/" + config->cgi + head[1], this->_sockets[(*it)->port], this->_path, config->root))
-                {
-                    _responseHeader = "HTTP/1.1 200 OK";
-                    return ("response/responseCGI.html");
-                }
-        }
-	}
-    
 	/* if request GET = directory */
     ret = this->_sockets[(*it)->port]->getLocationPage(head[1]);
 	if (ret == "Directory")

@@ -15,6 +15,8 @@ void Server::set_chlist(std::vector<struct kevent>& change_list, uintptr_t ident
     change_list.push_back(temp_evt);
 }
 
+
+
 int Server::closeConnection(int fd)
 {
     std::vector<Client*>::iterator it = this->_clients.begin();

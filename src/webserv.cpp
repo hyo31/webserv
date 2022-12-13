@@ -16,9 +16,6 @@ int main(int argc, char **argv, char **env)
             break;
         path.erase();
     }
-	struct sigaction sigact;
-	sigaction(SIGINT, &sigact, nullptr);
-
     if (argc == 2)
         webserv.startServer(argv[1], path.substr(4, path.length()));
     else

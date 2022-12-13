@@ -130,9 +130,9 @@ void    Server::parseRequest(std::string path, std::vector<Client*>::iterator it
 	/* store full header */
 	if ((*it)->headerSet == false)
 	{
-		end = str.find("\r\n\r\n") + 3;
+		end = str.find("\r\n\r\n");
 		(*it)->requestHeader = str.substr(0, end);
-		(*it)->requestHeader[end + 1] = '\0';
+		(*it)->requestHeader[end + 2] = '\0';
 		(*it)->headerSet = true;
 		(*it)->headerSize = (*it)->requestHeader.size();
 	}
