@@ -1,22 +1,22 @@
 #include "../inc/Config.hpp"
 
-
+//Constructor that creates a config object for each serverblock
 Config::Config(std::string configfile, std::string path) :	servername("default"), root("htmlFiles"), errorpages(root + "/pages/errorPages/"),
 															autoindex(false), directoryRequest(""), cgi("cgi-bin"), maxClientBodySize(MAX_BODY),
 															extension(".pl")
 {
-	size_t		pos;
-    std::string	default_part;
+	size_t	pos;
 
-	default_part = configfile;
 	pos = configfile.find("location");
 	if (pos != std::string::npos)
-		default_part = configfile.substr(0, (pos - 1));
+		configfile = configfile.substr(0, (pos - 1));
 	methods.push_back("GET");
-	setConfig(default_part);
+	setConfig(configfile);
 	setPages(path + "/" + this->root, "");
 }
 
+//When parsing specific routes in the serverblock, a new config object is created by copying the original
+//then route-info is added/overwrites the original
 Config::Config(const Config& src)
 {
     *this = src;
@@ -40,6 +40,8 @@ Config & Config::operator=(const Config& src)
 
 Config::~Config() { std::cout << "Config removed\n"; }
 
+//All our html files are added to a map.
+//The name is the key, the location on the system the value.
 int Config::setPages(std::string path, std::string root)
 {
     std::string     pathDir, page, location;

@@ -132,7 +132,7 @@ std::string Server::findHtmlFile(int c_fd)
     std::vector<Client*>::iterator	it = this->_clients.begin();
     std::vector<Client*>::iterator	end = this->_clients.end();
 	std::string::iterator			strit;
-	std::string						ret;
+	std::string						ret, location;
 	Config							*config;
     std::fstream                    fstr;
 
@@ -149,34 +149,34 @@ std::string Server::findHtmlFile(int c_fd)
     std::string line;
     for (int i = 0; i < 3 && fstr.peek() != '\n' && fstr >> line; i++)
         head.push_back(line);
+	location = head[1];
     fstr.close();
-	config = this->_sockets[(*it)->port]->getConfig(head[1]);
+	config = this->_sockets[(*it)->port]->getConfig(location);
+	if (std::find(config->methods.begin(), config->methods.end(), head[0]) == config->methods.end())
+	{
+		_responseHeader = "HTTP/1.1 405 Method Not Allowed";
+		return (config->errorpages + "405.html");
+	}
 	if (head[0] == "POST")
 	{
-		if (std::find(config->methods.begin(), config->methods.end(), head[0]) == config->methods.end())
-		{
-			_responseHeader = "HTTP/1.1 405 Method Not Allowed";
-			return (config->errorpages + "405.html");
-		}
 		if ((*it)->client_body_too_large == true)
 		{
 			_responseHeader = "HTTP/1.1 413 Request Entity Too Large";
 			return (config->errorpages + "413.html");
 		}
-		if (head[1].size() > config->extension.size() && head[1].substr(head[1].size() - 3, head[1].size() - 1) == config->extension)
+		if (location.size() > config->extension.size() && head[1].substr(location.size() - 3, location.size() - 1) == config->extension)
 		{
-			int expression = checkMaxClientBodySize(it);
-			switch (expression)
+			// int expression = checkMaxClientBodySize(it);
+			// switch (expression)
+			// {
+			// 	case 1:
+			// 		_responseHeader = "HTTP/1.1 413 Request Entity Too Large";
+			// 		return (config->errorpages + "413.html");
+			// 	default:
+			if (!executeCGI("/" + config->cgi + head[1], this->_sockets[(*it)->port], this->_path, config->root))
 			{
-				case 1:
-					_responseHeader = "HTTP/1.1 413 Request Entity Too Large";
-					return (config->errorpages + "413.html");
-				default:
-					if (!executeCGI("/" + config->cgi + head[1], this->_sockets[(*it)->port], this->_path, config->root))
-					{
-						_responseHeader = "HTTP/1.1 200 OK";
-						return ("response/responseCGI.html");
-					}
+				_responseHeader = "HTTP/1.1 200 OK";
+				return ("response/responseCGI.html");
 			}
 		}
 	}
@@ -187,7 +187,8 @@ std::string Server::findHtmlFile(int c_fd)
 		_responseHeader = "HTTP/1.1 200 OK";
 		if (config->directoryRequest != "")
 			return (config->root + config->directoryRequest);
-		ret = this->_sockets[(*it)->port]->getLocationPage(head[1] + "index.html");
+		location = head[1] + "index.html";
+		ret = this->_sockets[(*it)->port]->getLocationPage(location);
 		if (ret != "")
 		    return (ret);
         if (config->autoindex)

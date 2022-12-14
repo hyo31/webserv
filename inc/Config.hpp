@@ -34,7 +34,7 @@ class Config
 
     private:
 
-		int			setPages(std::string path, std::string location);
+		int			setPages(std::string , std::string );
 		void		setServerName(std::string &);
 		void		setRoot(std::string &);
 		void		setErrorPages(std::string &);

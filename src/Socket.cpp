@@ -1,5 +1,8 @@
 #include "../inc/Socket.hpp"
 
+//each serverblock listens to a socket.
+//The socket objects bind with the server and listen to the port
+//Each object creates its own configuration file
 Socket::Socket(std::string config, std::string path) : bound(false)
 {
     size_t	pos, pos2;
@@ -55,6 +58,8 @@ int Socket::setupSockets()
     return (0);
 }
 
+//sets up a map with all the info for all the routes
+//key = location, value = pointer to the config
 void	Socket::setRouteConfigs(std::string & configfile)
 {
 	std::string	location, route;
@@ -73,6 +78,9 @@ void	Socket::setRouteConfigs(std::string & configfile)
 	}
 }
 
+//finds the correct config corresponding to the (clients) requested location
+//if the client tries to upload, the request will be routed to our .pl script
+//and the location needs to be the root directory , not the name itself
 Config	*Socket::getConfig(std::string &location)
 {
 	std::map<std::string, Config*>::iterator	it;
@@ -96,13 +104,14 @@ Config	*Socket::getConfig(std::string &location)
 		return this->serverConfig;
 }
 
-std::string Socket::getLocationPage(std::string page)
+//find the correct page for the requested location and if root is set in a route it will be replaced
+std::string Socket::getLocationPage(std::string & location)
 {
     std::map<std::string, std::string>::iterator    it;
-	Config	*config = this->getConfig(page);
+	Config	*config = this->getConfig(location);
 	size_t	pos;
 
-    it = config->pages.find(page);
+    it = config->pages.find(location);
     if (it == config->pages.end())
         return ("");
 	if (config->root != "")
@@ -114,12 +123,13 @@ std::string Socket::getLocationPage(std::string page)
     return (it->second);
 }
 
-std::string Socket::getRedirectPage(std::string page)
+//find the correct page to redirect to
+std::string Socket::getRedirectPage(std::string & location)
 {
     std::map<std::string, std::string>::iterator	it;
-	Config	*config = this->getConfig(page);
+	Config	*config = this->getConfig(location);
 
-    it = config->redirects.find(page);
+    it = config->redirects.find(location);
 	if (it == config->redirects.end())
         return ("");
     return (it->second);

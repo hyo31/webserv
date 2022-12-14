@@ -26,11 +26,11 @@
 # include "Socket.hpp"
 
 # ifndef TIMEOUT
-#  define TIMEOUT 60
+#  define TIMEOUT 5
 # endif
 
 # ifndef MAX_BODY
-#  define MAX_BODY 4000
+#  define MAX_BODY INT_MAX
 # endif
 
 

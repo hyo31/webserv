@@ -20,13 +20,12 @@ int Server::receiveClientRequest(int c_fd)
     std::vector<Client*>::iterator	it = this->_clients.begin();
     std::vector<Client*>::iterator	end = this->_clients.end();
     ssize_t							bytesRead = -1;
-	char							buf[5000];
+	char							buf[5001];
 
     for(; it != end; ++it)
         if (c_fd == (*it)->conn_fd)
             break ;
     bytesRead = recv(c_fd, buf, 5000, 0);
-    buf[bytesRead] = '\0';
     update_client_timestamp(c_fd);
     if (bytesRead == -1)
     {
@@ -42,6 +41,7 @@ int Server::receiveClientRequest(int c_fd)
     }
 	else if (bytesRead == 5000)
 		std::cout << "request is too big, require another read\n";
+    buf[bytesRead] = '\0';
     if ((*it)->request_is_read == true)
     {
 		std::cout << "clearing content..\n";

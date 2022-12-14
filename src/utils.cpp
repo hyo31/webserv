@@ -60,6 +60,7 @@ void    Server::bounceTimedOutClients()
         {
             std::cout << "Bouncing client from:" << (*it)->conn_fd << std::endl;
 			closeConnection((*it)->conn_fd);
+			break ;
         }
     }
 }

@@ -20,6 +20,7 @@ void	Server::buildBodyForContentLength(std::string str, std::string::size_type r
 	end = str.find("\r\n", start) - 1;
 	substr = str.substr(start, (end - start + 1));
 	(*it)->requestContentLength = std::stoi(substr);
+	// std::cout << "max: " << (*it)->server_config->maxClientBodySize << "  CL:" << (*it)->requestContentLength << std::endl;
 	if ((*it)->requestContentLength > (*it)->server_config->maxClientBodySize)
 		(*it)->client_body_too_large = true;
 	//check if the whole body is read
@@ -92,28 +93,28 @@ void	Server::unchunk(std::string str, std::string::size_type ret, std::vector<Cl
 }
 
 
-int	Server::checkMaxClientBodySize(std::vector<Client*>::iterator client)
-{
-	size_t		start;
-	size_t		end;
-	std::string	boundary;
+// int	Server::checkMaxClientBodySize(std::vector<Client*>::iterator client)
+// {
+// 	size_t		start;
+// 	size_t		end;
+// 	std::string	boundary;
 
-	if ((*client)->requestHeader.find("Content-Length:") == std::string::npos)
-		return 2;
-	start = (*client)->requestHeader.find("Content-Type: multipart/form-data;");
-	if (start == std::string::npos)
-		return 0;
-	start = (*client)->requestHeader.find("=", start) + 1;
-	end = (*client)->requestHeader.find("\r\n", start);
-	boundary = (*client)->requestHeader.substr(start, (end - start));
-	start = (*client)->requestBody.find("Content-Type: application/octet-stream") + 42;
-	if ((end = (*client)->requestBody.find(boundary, start)) == std::string::npos)
-		std::cout << "couldnt find a boundary :(" << std::endl;
-	// std::cout << "found:" << (int)(end - 4 - start) << " max:" << this->_sockets[(*client)->port]->serverConfig->maxClientBodySize << std::endl;
-	if ((int)(end - 4 - start) > this->_sockets[(*client)->port]->serverConfig->maxClientBodySize)
-		return 1;
-	return 0;
-}
+// 	if ((*client)->requestHeader.find("Content-Length:") == std::string::npos)
+// 		return 2;
+// 	start = (*client)->requestHeader.find("Content-Type: multipart/form-data;");
+// 	if (start == std::string::npos)
+// 		return 0;
+// 	start = (*client)->requestHeader.find("=", start) + 1;
+// 	end = (*client)->requestHeader.find("\r\n", start);
+// 	boundary = (*client)->requestHeader.substr(start, (end - start));
+// 	start = (*client)->requestBody.find("Content-Type: application/octet-stream") + 42;
+// 	if ((end = (*client)->requestBody.find(boundary, start)) == std::string::npos)
+// 		std::cout << "couldnt find a boundary :(" << std::endl;
+// 	// std::cout << "found:" << (int)(end - 4 - start) << " max:" << this->_sockets[(*client)->port]->serverConfig->maxClientBodySize << std::endl;
+// 	if ((int)(end - 4 - start) > this->_sockets[(*client)->port]->serverConfig->maxClientBodySize)
+// 		return 1;
+// 	return 0;
+// }
 
 void    Server::parseRequest(std::string path, std::vector<Client*>::iterator it)
 {
@@ -132,7 +133,7 @@ void    Server::parseRequest(std::string path, std::vector<Client*>::iterator it
 	{
 		end = str.find("\r\n\r\n");
 		(*it)->requestHeader = str.substr(0, end);
-		(*it)->requestHeader[end + 2] = '\0';
+		(*it)->requestHeader[end] = '\0';
 		(*it)->headerSet = true;
 		(*it)->headerSize = (*it)->requestHeader.size();
 	}

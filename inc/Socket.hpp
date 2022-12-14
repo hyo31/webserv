@@ -21,8 +21,8 @@ class Socket
         std::string					logFile;
 		bool						bound;
         int             			setupSockets();
-        std::string     			getLocationPage(std::string page);
-		std::string					getRedirectPage(std::string page);
+        std::string     			getLocationPage(std::string &);
+		std::string					getRedirectPage(std::string &);
 		void						setRouteConfigs(std::string &);
 		Config						*getConfig(std::string &);
 		
