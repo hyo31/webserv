@@ -88,6 +88,7 @@ int	Server::monitor_ports()
 	return -1;
 }
 
+// add the sockets according to the config file
 int Server::openSockets(std::string configFilePath)
 {
     std::ifstream               configFile;
@@ -119,12 +120,12 @@ int Server::openSockets(std::string configFilePath)
     return (0);
 }
 
-//making the server listen to three sockets, bound do three different ports, writing requests to logfiles
+// start the server
 int	Server::startServer(std::string configFilePath, std::string path)
 {
 	int	status = 0;
     this->_path = path;
-    if (openSockets(configFilePath) == -1)
+    if (openSockets(configFilePath))
         return (ft_return(""));
     std::cout << "\033[1mOpened sockets: \033[0m";
     for (size_t i = 0; i < this->_sockets.size(); i++)

@@ -69,12 +69,13 @@ int Server::receiveClientRequest(int c_fd)
     return 0;
 }
 
+// remove the temporary response files
 void    removeResponseFiles()
 {
     DIR             *directory;
     directory = opendir("response");
     if (!directory)
-        ft_return("can not open directory (removeResonseFiles): ");
+        ft_return("can not open directory(removeResonseFiles): ");
     for (struct dirent *dirEntry = readdir(directory); dirEntry; dirEntry = readdir(directory))
     {
         std::string link = std::string(dirEntry->d_name);
@@ -87,6 +88,7 @@ void    removeResponseFiles()
 	closedir(directory);
 }
 
+// create a correct response to the request of the client and send it back
 int Server::sendResponseToClient(int c_fd)
 {
     int             fileSize;
@@ -102,14 +104,16 @@ int Server::sendResponseToClient(int c_fd)
             break ;
 	if (it == end)
 		return 0;
+
+    // clear response file
     ofs.open("response/response.txt", std::ofstream::out | std::ofstream::trunc);
     ofs.close();
-    //open streamfiles
+    
+    // open streamfiles
     responseFile.open("response/response.txt", std::ios::in | std::ios::out | std::ios::binary);
     if (!responseFile.is_open())
         return ft_return("could not open response file ");
     htmlFileName = this->findHtmlFile(c_fd);
-	// std::cout << "html ret:" << htmlFileName << std::endl;
     if (!htmlFileName.size())
         htmlFileName = this->_sockets[(*it)->port]->serverConfig->errorpages + "500.html";
     htmlFile.open(htmlFileName, std::ios::in | std::ios::binary);
@@ -158,7 +162,6 @@ int Server::sendResponseToClient(int c_fd)
 		close(c_fd);
 		return ft_return("error: send\n");
 	}
-
 	update_client_timestamp(c_fd);
 	std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << response << "\033[0m" << std::endl;
 	this->_responseHeader.clear();

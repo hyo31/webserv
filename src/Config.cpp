@@ -170,7 +170,7 @@ void	Config::setMethods(std::string & line )
 	this->methods.clear();
 	while (1)
 	{
-		this->methods.push_back( allowed_methods.substr( pos, allowed_methods.find("+", pos) - pos ));
+		this->methods.push_back(allowed_methods.substr(pos, allowed_methods.find("+", pos) - pos));
 		pos = allowed_methods.find("+", pos) + 1;
 		if (pos == 0)
 			break;

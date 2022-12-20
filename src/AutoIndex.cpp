@@ -1,5 +1,6 @@
 #include "../inc/Server.hpp"
 
+// create an automatically generated index for the requested directory
 std::string Server::createAutoIndex(std::string root, std::string folder)
 {
     std::ofstream   autoindexFile;
@@ -18,6 +19,8 @@ std::string Server::createAutoIndex(std::string root, std::string folder)
         ft_return("can not open directory(createAutoIndex): ");
         return (root + "/pages/errorPages/404.html");
     }
+
+    // content of the autoindex file
     autoindexFile <<
     "<!DOCTYPE html>\n\
     <html lang=\"en\">\n\
@@ -44,6 +47,8 @@ std::string Server::createAutoIndex(std::string root, std::string folder)
     </head>\n\
     <body\">\n\
     <h1>" + folder + "</h1><br>" << std::endl;
+
+    // find all files and directories in the requested direcotry
     for (struct dirent *dirEntry = readdir(directory); dirEntry; dirEntry = readdir(directory))
     {
         std::string link = std::string(dirEntry->d_name);
@@ -51,8 +56,12 @@ std::string Server::createAutoIndex(std::string root, std::string folder)
         {
             std::string	temp = page + link;
 			DIR* 		tempDir = opendir(temp.c_str());
+
+            // add a file to the autoindex
 			if (!tempDir)
                 autoindexFile << "<a href=\"" << folder + link << "\">/" << link << "</a><br>" << std::endl;
+            
+            // add a directory to the autoindex
             else
             {
                 autoindexFile << "<a href=\"" << folder + link << "/\">/" << link << "/</a><br>" << std::endl;

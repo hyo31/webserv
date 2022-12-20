@@ -85,24 +85,28 @@ void	Socket::setRouteConfigs(std::string & configfile)
 Config	*Socket::getConfig(std::string &location)
 {
 	std::map<std::string, Config*>::iterator	it;
-	size_t	pos;
+	std::string 								new_location = location;
+	size_t										pos;
 
 	pos = location.find(".pl");
 	if (pos != std::string::npos)
 	{
 		pos = location.find_last_of("/") + 1;
-		std::string new_location = location.substr(0, pos);
-		it = routes.find(new_location);
-		if (it != routes.end())
-			return it->second;
-		else
-			return this->serverConfig;
+		new_location = location.substr(0, pos);
 	}
-	it = routes.find(location);
+	it = routes.find(new_location);
 	if (it != routes.end())
 		return it->second;
-	else
-		return this->serverConfig;
+	pos = location.find(".html");
+	if (pos != std::string::npos)
+	{
+		pos = location.find_last_of(".");
+		new_location = location.substr(0, pos);
+	}
+	it = routes.find(new_location);
+	if (it != routes.end())
+		return it->second;
+	return this->serverConfig;
 }
 
 //find the correct page for the requested location and if root is set in a route it will be replaced
