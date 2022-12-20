@@ -15,6 +15,8 @@ void Server::set_chlist(std::vector<struct kevent>& change_list, uintptr_t ident
     change_list.push_back(temp_evt);
 }
 
+
+
 int Server::closeConnection(int fd)
 {
     std::vector<Client*>::iterator it = this->_clients.begin();
@@ -26,24 +28,12 @@ int Server::closeConnection(int fd)
         {
             delete *it;
             this->_clients.erase(it);
+			break ;
         }
     }
     close(fd);
     std::cout << "disconnected from socket:" << fd << std::endl;
     return 0;
-}
-
-int    Server::is_connection_open(int c_fd)
-{
-    std::vector<Client*>::iterator it = this->_clients.begin();
-    std::vector<Client*>::iterator end = this->_clients.end();
-
-    for(; it != end; ++it)
-    {
-        if (c_fd == (*it)->conn_fd)
-            return true;
-    }
-    return false;
 }
 
 void    Server::update_client_timestamp(int fd)
@@ -69,7 +59,16 @@ void    Server::bounceTimedOutClients()
         if ((*it)->timestamp + TIMEOUT <=  current_time)
         {
             std::cout << "Bouncing client from:" << (*it)->conn_fd << std::endl;
-            closeConnection((*it)->conn_fd);
+			closeConnection((*it)->conn_fd);
+			break ;
         }
     }
+}
+
+int	Server::findSocket(int fd)
+{
+    for (size_t i = 0; i < this->_sockets.size(); i++)
+        if (fd == this->_sockets[i]->fd)
+            return i;
+    return -1;
 }

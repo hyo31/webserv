@@ -63,5 +63,6 @@ std::string Server::createAutoIndex(std::string root, std::string folder)
     autoindexFile <<\
     "</body>\n\
     </html>" << std::endl;
+	closedir(directory);
     return ("response/autoindex.html");
 }

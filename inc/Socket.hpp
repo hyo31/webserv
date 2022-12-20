@@ -10,7 +10,6 @@ class Socket
 {
     public:
         Socket(std::string config, std::string path);
-        Socket(std::string ipAddr, int port);
         ~Socket();
 
 		Config						*serverConfig;
@@ -20,11 +19,11 @@ class Socket
         sockaddr_in					socketAddr;
         unsigned int				socketAddrLen;
         std::string					logFile;
+		bool						bound;
         std::string                 currentFile;
-        int             			startServer();
         int             			setupSockets();
-        std::string     			getLocationPage(std::string page);
-		std::string					getRedirectPage(std::string page);
+        std::string     			getLocationPage(std::string &);
+		std::string					getRedirectPage(std::string &);
 		void						setRouteConfigs(std::string &);
 		Config						*getConfig(std::string &);
 		
@@ -33,7 +32,6 @@ class Socket
     private:
                 	Socket(const Socket &);
         Socket &	operator=(const Socket &);
-        int			addFiles(std::string path, std::string location);
 
 };
 
