@@ -103,7 +103,6 @@ int         executeCGI(std::string page, Socket *socket, std::string path, std::
 
     env = setupEnv(page, socket, path, root);
     pathCGI = path + page;
-    std::cout << pathCGI << std::endl;
     if (!env)
         return ft_return("failed setting up the environment: ");
     pid = fork();
@@ -133,7 +132,7 @@ std::string Server::findHtmlFile(int c_fd)
     for(; it != end; ++it)
         if (c_fd == (*it)->conn_fd)
             break ;
-	
+    std::cout << this->_sockets[(*it)->port]->currentFile << std::endl;
     fstr.open(this->_sockets[(*it)->port]->logFile);
     if (!fstr.is_open())
     {
@@ -162,7 +161,6 @@ std::string Server::findHtmlFile(int c_fd)
                 }
         }
 	}
-    
     if (std::find(config->methods.begin(), config->methods.end(), head[0]) == config->methods.end())
     {
         _responseHeader = "HTTP/1.1 405 Method Not Allowed";
@@ -176,10 +174,9 @@ std::string Server::findHtmlFile(int c_fd)
 		ret = this->_sockets[(*it)->port]->getLocationPage(head[1] + "index.html");
 		if (ret != "")
         {
-            //socket current dir
+            this->_sockets[(*it)->port]->currentFile = head[1];
 		    return (ret);
         }
-        std::cout << config->autoindex << std::endl;
         if (config->autoindex)
             return (this->createAutoIndex(config->root, head[1]));
         _responseHeader = "HTTP/1.1 403 Forbidden";
@@ -188,7 +185,7 @@ std::string Server::findHtmlFile(int c_fd)
     if (ret != "")
     {
         _responseHeader = "HTTP/1.1 200 OK";
-        //socket current page
+        this->_sockets[(*it)->port]->currentFile = head[1];
         return (ret);
     }
 	ret = this->_sockets[(*it)->port]->getRedirectPage(head[1]);

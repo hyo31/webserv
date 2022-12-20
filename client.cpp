@@ -43,7 +43,6 @@ int main(int argc, char const *argv[])
     send(sock, hello, sizeof(hello) , 0);
     printf("Hello message sent\n");
 	ssize_t kek = recv(sock, buffer, 6000, 0);
-    std::cout << buffer << std::endl;
 
     return 0;
 }

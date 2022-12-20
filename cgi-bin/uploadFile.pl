@@ -4,7 +4,7 @@ use CGI qw(:standard);
 use diagnostics;
 
 my $outfile = $ENV{'PATH'}."/pages/".$ENV{'FILE_NAME'};
-my @a = (1..10);
+my @a = (1..100);
 my $filename = $outfile;
 my $og_outfile = $outfile;
 for(@a){

@@ -20,6 +20,7 @@ class Socket
         sockaddr_in					socketAddr;
         unsigned int				socketAddrLen;
         std::string					logFile;
+        std::string                 currentFile;
         int             			startServer();
         int             			setupSockets();
         std::string     			getLocationPage(std::string page);

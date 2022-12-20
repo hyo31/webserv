@@ -12,6 +12,7 @@ Socket::Socket(std::string config, std::string path)
         port = std::stoi(config.substr(pos + 7, (pos2 - pos - 7)));
         logFile = "logs/port" + config.substr(pos + 7, (pos2 - pos - 7)) + ".log";
         ipAddr = "localhost";
+		currentFile = "";
     }
     catch(std::invalid_argument const& ex)
     {
@@ -151,7 +152,6 @@ std::string Socket::getLocationPage(std::string page)
     it = config->pages.find(page);
     if (it == config->pages.end())
         return ("");
-	std::cout << it->second << std::endl;
     return (it->second);
 }
 

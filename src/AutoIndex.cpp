@@ -6,7 +6,6 @@ std::string Server::createAutoIndex(std::string root, std::string folder)
     DIR             *directory;
 	std::string		page = root + folder;
 
-    std::cout << root << ", " << folder << std::endl;
     autoindexFile.open("response/autoindex.html", std::ofstream::out | std::ofstream::trunc);
     if (!autoindexFile.is_open())
     {
@@ -52,7 +51,6 @@ std::string Server::createAutoIndex(std::string root, std::string folder)
         {
             std::string	temp = page + link;
 			DIR* 		tempDir = opendir(temp.c_str());
-            std::cout << temp << std::endl;
 			if (!tempDir)
                 autoindexFile << "<a href=\"" << folder + link << "\">/" << link << "</a><br>" << std::endl;
             else
