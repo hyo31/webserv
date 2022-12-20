@@ -5,10 +5,11 @@ CC = g++
 CFLAGS = -Wall -Werror -Wextra -fsanitize=address -std=c++98
 
 SRC_DIR =	src/
-DIRS = obj/ response/ uploads/
+DIRS = obj/ response/ uploads/ logs/
 OBJ_DIR =	obj/
 RESPONSE_DIR =	response/
 UPLOAD_DIR = uploads/
+LOG_DIR = logs/
 
 HEADER_FILES = inc/Server.hpp inc/Socket.hpp inc/Client.hpp inc/Config.hpp
 
@@ -39,11 +40,15 @@ $(DIRS):
 
 clean:
 	@rm -f $(OBJ)
+	@rm -f uploads/*
+	@rm -f logs/*
+	@rm -f response/*
 
 fclean: clean
 	@rm -f $(NAME)
-	@rm -f uploads/*
-	@rm -f logs/*
+	@rm -rf $(RESPONSE_DIR)
+	@rm -rf $(UPLOAD_DIR)
+	@rm -rf $(LOG_DIR)
 
 re: fclean all
 
