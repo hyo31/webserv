@@ -20,7 +20,7 @@ void	Server::buildBodyForContentLength(std::string str, std::string::size_type r
 	end = str.find("\r\n", start) - 1;
 	substr = str.substr(start, (end - start + 1));
 	(*it)->requestContentLength = std::stoi(substr);
-	// std::cout << "max: " << (*it)->server_config->maxClientBodySize << "  CL:" << (*it)->requestContentLength << std::endl;
+	std::cout << "max: " << (*it)->server_config->maxClientBodySize << "  CL:" << (*it)->requestContentLength << std::endl;
 	if ((*it)->requestContentLength > (*it)->server_config->maxClientBodySize)
 		(*it)->client_body_too_large = true;
 	//check if the whole body is read
@@ -40,6 +40,7 @@ void	Server::buildBodyForContentLength(std::string str, std::string::size_type r
 	substr = str.substr(start, (*it)->requestContentLength);
 	(*it)->requestBody.append(substr);
 	(*it)->request_is_read = true;
+	std::cout << (*it)->requestBody << std::endl;
     std::cout << "\n\033[33m\033[1m" << "RECEIVED:\n\033[0m\033[33m" << str << "\033[0m" << std::endl;
 	// std::cout << "HEADER:\n" << (*it)->requestHeader << "Body:\n" << (*it)->requestBody;
 	return ;
@@ -63,14 +64,14 @@ void	Server::unchunk(std::string str, std::string::size_type ret, std::vector<Cl
 	{
 		while (1)
 		{
-			std::string::size_type end = str.find("\r\n", start) - 1;
-			std::string substr = str.substr(start, (end - start + 1));
+			std::string::size_type end = str.find("\r\n", start);
+			std::string substr = str.substr(start, (end - start));
 			ss << std::hex << substr;
 			ss >> chunkSize;
 			ss.clear();
 			if (chunkSize == 0)
 				break ;
-			start = end + 3;
+			start = end + 2;
 			(*it)->requestBody.append(str, start, chunkSize);
 			if ((*it)->requestBody.size() > (size_t)(*it)->server_config->maxClientBodySize)
 			{

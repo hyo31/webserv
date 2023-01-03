@@ -33,6 +33,11 @@
 #  define MAX_BODY INT_MAX
 # endif
 
+enum {
+	ERROR = -1,
+	TOO_LARGE = 1,
+	NOT_FULLY_READ = 2
+};
 
 class Config;
 class Client;

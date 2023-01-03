@@ -112,7 +112,9 @@ void	Config::setConfig(std::string & config)
 void	Config::setServerName(std::string & line)
 {
 	size_t	pos = line.find(" ") + 1;
-	this->servername = line.substr(line.find(" ", pos) + 1);
+
+	if (line.find(" ", pos) != std::string::npos )
+		this->servername = line.substr(line.find(" ", pos) + 1);
 }
 
 // Location of default errorpages in config is declared as <errorPages location>

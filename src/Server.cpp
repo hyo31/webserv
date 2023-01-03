@@ -33,7 +33,7 @@ int	Server::monitor_ports()
     std::cout << "\033[1m--waiting for events...--\n\033[0m";
     while(1) 
     {
-		std::cout << "waiting on events...\n";
+		// std::cout << "waiting on events...\n";
         /* use kevent to wait for an event (when a client tries to connect or when a connection has data to read/is open to receive data) */
         new_event = kevent(kq, &chlist[0], chlist.size(), tevents, 40, &this->_timeout);
         chlist.clear();
@@ -67,13 +67,14 @@ int	Server::monitor_ports()
                 {
                     std::cout << "READING from:" << fd << std::endl;
 					ret = this->receiveClientRequest(fd);
-                    if (ret == -1)
-                    	return -1;
+                    if (ret == ERROR)
+                    	return ERROR;
                     /* request has been read, now event is added to monitor if response can be sent */
-                    if (ret == 1)
+                    if (ret == TOO_LARGE)
 						set_chlist(chlist, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
-					if (ret < 2)
-                        set_chlist(chlist, fd, EVFILT_WRITE, EV_ADD | EV_ONESHOT, 0, 0, NULL);
+					if (ret == NOT_FULLY_READ)
+						continue ;
+                    set_chlist(chlist, fd, EVFILT_WRITE, EV_ADD | EV_ONESHOT, 0, 0, NULL);
                 }
                 else if (tevents[i].filter == EVFILT_WRITE)
                 {

@@ -123,7 +123,7 @@ int Server::sendResponseToClient(int c_fd)
     	this->_responseHeader = "HTTP/1.1 403 Forbidden";
     	htmlFile.open( this->_sockets[(*it)->port]->serverConfig->errorpages + "403.html", std::ios::in | std::ios::binary);
 		if (!htmlFile.is_open())
-			htmlFile.open( "htmlFiles/pages/errorPages/403.html", std::ios::in | std::ios::binary);
+			htmlFile.open( "htmlFiles/pages/errorPages/500.html", std::ios::in | std::ios::binary);
     }
 
 	//get length of htmlFile
@@ -138,7 +138,7 @@ int Server::sendResponseToClient(int c_fd)
 	responseFile << "Content-Length: " << fileSize << "\r\n\r\n"; //std::endl << std::endl;
 
 	//create char string to read html into, which is then read into responseFile      
-	std::cout << "filesize:" << fileSize << std::endl;   
+	// std::cout << "filesize:" << fileSize << std::endl;   
 	char    html[fileSize + 1];
 	htmlFile.read(html, fileSize);
 	html[fileSize] = '\0';

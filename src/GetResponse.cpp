@@ -1,47 +1,32 @@
 #include "../inc/Server.hpp"
 
-// returns the content of the uploaded file
-std::vector<std::string>    readFile(std::string request)
+std::vector<std::string>    readFile(std::string requestHeader, std::string requestBody)
 {
     size_t                      pos;
     std::vector<std::string>    vars;
     std::string                 boundary, filename, fileContent;
 
-    pos = request.find("boundary=");
+    pos = requestHeader.find("boundary=");
     if (pos == std::string::npos)
     {
         ft_return("request has no boundary: ");
         return (vars);
     }
-    boundary = request.substr(request.find("=", pos) + 1, request.find("\r\n", pos) - (request.find("=", pos) + 1));
-    pos = request.find("--" + boundary);
-    pos = request.find("filename=", pos) + 10;
-    filename = request.substr(pos, request.find("\r\n", pos) - (pos + 1));
+    boundary = requestHeader.substr(requestHeader.find("=", pos) + 1, requestHeader.find("\r\n", pos) - (requestHeader.find("=", pos) + 1));
+    pos = requestBody.find("--" + boundary);
+    pos = requestBody.find("filename=", pos) + 10;
+    filename = requestBody.substr(pos, requestBody.find("\r\n", pos) - (pos + 1));
 	if (filename.empty())
 		return (vars);
-    pos = request.find("\r\n\r\n", pos);
-    fileContent = request.substr(pos + 4, request.find("--" + boundary, pos) - (pos + 5));
+    pos = requestBody.find("\r\n\r\n", pos);
+    fileContent = requestBody.substr(pos + 4, requestBody.find("--" + boundary, pos) - (pos + 5));
     vars.push_back(filename);
     vars.push_back(fileContent);
     return (vars);
 }
 
-// returns the content of the uploaded form
-std::string readForm(std::string request)
-{
-    size_t  pos;
-
-    pos = request.find("\r\n\r\n");
-    if (pos == std::string::npos)
-    {
-        ft_return("request has no body: ");
-        return ("");
-    }
-    return (request.substr(pos + 4, request.length() - pos - 4));
-}
-
 // set the environment for CGI
-char        **setupEnv(std::string page, Socket *socket, std::string path, std::string root)
+char        **setupEnv(std::string page, Socket *socket, std::string path, std::string root, std::string requestBody, std::string requestHeader )
 {
     std::map<std::string, std::string>  env;
     std::vector<std::string>            vars;
@@ -50,19 +35,8 @@ char        **setupEnv(std::string page, Socket *socket, std::string path, std::
     std::string                         request, content;
     std::size_t                         pos;
     
-    // open logfile and read the request message
-    receivedMessage.open(socket->logFile);
-    if (!receivedMessage.is_open())
-    {
-        ft_return("could not open file: ");
-        return (NULL);
-    }
-    buff << receivedMessage.rdbuf();
-    receivedMessage.close();
-    request = buff.str();
-
     // find the content type and set the environment accordingly
-    pos = request.find("Content-Type: ");
+    pos = requestHeader.find("Content-Type: ");
     if (pos == std::string::npos)
     {
         ft_return("request has no Content-Type: ");
@@ -70,18 +44,19 @@ char        **setupEnv(std::string page, Socket *socket, std::string path, std::
     }
 
     // content type is a form
-    if (request.substr(request.find(" ", pos) + 1, request.find("\r\n", pos) - (request.find(" ", pos) + 1)) == "application/x-www-form-urlencoded")
+    if (requestHeader.substr(requestHeader.find(" ", pos) + 1, requestHeader.find("\r\n", pos) - (requestHeader.find(" ", pos) + 1)) == "application/x-www-form-urlencoded")
     {
         env["FILE_NAME"] = "form.log";
-        env["QUERY_STRING"] = readForm(request);
+        env["QUERY_STRING"] = requestBody;
     }
 
     // content type is a file
     else
     {
-        vars = readFile(request);
+        vars = readFile(requestHeader, requestBody);
         if (vars.empty())
             return (NULL);
+		std::cout << "vars0:" <<vars[0] << "  vars1:" << vars[1] << std::endl;
         env["FILE_NAME"] = vars[0];
         env["FILE_BODY"] = vars[1];
     }
@@ -109,7 +84,7 @@ char        **setupEnv(std::string page, Socket *socket, std::string path, std::
 }
 
 // execute the CGI
-int         executeCGI(std::string page, Socket *socket, std::string path, std::string root)
+int         executeCGI(std::string page, Socket *socket, std::string path, std::string root, std::vector<Client*>::iterator	it)
 {
     pid_t           pid;
     char            **env;
@@ -117,13 +92,13 @@ int         executeCGI(std::string page, Socket *socket, std::string path, std::
     std::string     pathCGI;
 
     // setup the environmental variables for execve
-    env = setupEnv(page, socket, path, root);
+    env = setupEnv(page, socket, path, root, (*it)->requestBody, (*it)->requestHeader );
     pathCGI = path + page;
     if (!env)
         return ft_return("failed setting up the environment: ");
     pid = fork();
     if (pid == -1)
-        return ft_return("fork faield: ");
+        return ft_return("fork failed: ");
     
     // execute the script
     if (!pid)
@@ -212,16 +187,17 @@ std::string Server::findHtmlFile(int c_fd)
 			_responseHeader = "HTTP/1.1 413 Request Entity Too Large";
 			return (config->errorpages + "413.html");
 		}
-
         // execute the CGI on the requested file if it has the right extension
 		if (location.size() > config->extension.size() && head[1].substr(location.size() - 3, location.size() - 1) == config->extension)
 		{
-			if (!executeCGI("/" + config->cgi + head[1], this->_sockets[(*it)->port], this->_path, config->root))
+			if (!executeCGI("/" + config->cgi + head[1], this->_sockets[(*it)->port], this->_path, config->root, it))
 			{
 				_responseHeader = "HTTP/1.1 200 OK";
 				return ("response/responseCGI.html");
 			}
 		}
+		else
+			return (config->errorpages + "403.html");
 	}
     ret = this->_sockets[(*it)->port]->getLocationPage(head[1]);
 	

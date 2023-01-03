@@ -7,14 +7,15 @@
 #include <arpa/inet.h>
 #include <iostream>
 
-#define PORT 8001
+#define PORT 8002
 
 int main(int argc, char const *argv[])
 {
     int sock = 0; long valread;
     struct sockaddr_in serv_addr;
-    // char hello[500] = "POST / HTTP/1.1\nHost: localhost:8004\nUser-Agent: Go-http-client/1.1\nTransfer-Encoding: chunked\nContent-Type: test/file\nAccept-Encoding: gzip\r\n\r\na\r\nten chara.\r\n15\r\n12345\r\n\r\n";
+    // char hello[500] = "POST /uploadForm.pl HTTP/1.1\r\nHost: localhost:8004\r\nUser-Agent: Go-http-client/1.1\r\nTransfer-Encoding: chunked\r\nContent-Type: application/x-www-form-urlencoded\r\nAccept-Encoding: gzip\r\n\r\n20\r\nfname=bass&lname=nop&message=hoi\r\n0\r\n\r\n";
 	char hello[500] = "DELETE /pages/abc.txt HTTP/1.1\r\nHost: localhost\r\n\r\n";
+
 
     char buffer[6000] = {0};
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
