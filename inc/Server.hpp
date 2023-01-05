@@ -45,40 +45,37 @@ class Socket;
 class Server
 {
     private:
-        Server(const Server &);
-        Server &	operator=(const Server &);
+        Server( const Server & );
+        Server &	operator=( const Server & );
 
-        std::string	findHtmlFile(int);
+        std::string	findHtmlFile( Client* );
+		std::string createAutoIndex( std::string, std::string );
+		Client 		*findClient( int);
+        Client		*acceptRequest( int );
         int			monitor_ports();
-        int			acceptRequest(int);
-        int			receiveClientRequest(int);
-        int			sendResponseToClient(int);
-        int			closeConnection(int);
-        void		set_chlist(std::vector<struct kevent>&, uintptr_t, int16_t, uint16_t, uint32_t, intptr_t, void *);
-        void		update_client_timestamp(int);
+        int			receiveClientRequest( Client* );
+        int			sendResponseToClient( Client* );
+        int			closeConnection( Client* );
+        int			openSockets( std::string );
+        int			findSocket( int );
+        void		set_chlist( std::vector< struct kevent >&, uintptr_t, int16_t, uint16_t, uint32_t, intptr_t, void * );
         void		bounceTimedOutClients();
-        void		parseRequest(std::string, std::vector<Client*>::iterator);
-		void		unchunk(std::string, std::string::size_type, std::vector<Client*>::iterator);
-		void		buildBodyForContentLength(std::string, std::string::size_type, std::vector<Client*>::iterator);
-        int			openSockets(std::string);
-        int			findSocket(int);
-		int			checkMaxClientBodySize(std::vector<Client*>::iterator);
-		std::string createAutoIndex(std::string, std::string);
+        void		parseRequest( std::string, Client * );
 		void		closeSockets();
 
-        std::vector<Socket*>		_sockets;
-        std::vector<Client*>		_clients;
-        std::string					_responseHeader;
-        std::string            	 	_path;
-		struct timespec				_timeout;
+        std::vector<Socket*>	_sockets;
+        std::vector<Client*>	_clients;
+        std::string				_responseHeader;
+        std::string				_path;
+		struct timespec			_timeout;
 
     public:
 			Server();
 			~Server();
-	int		startServer(std::string configFilePath, std::string path);
+	int		startServer( std::string configFilePath, std::string path );
 
 };
 
-int		ft_return(std::string str);
+int		ft_return( std::string str );
 
 #endif
