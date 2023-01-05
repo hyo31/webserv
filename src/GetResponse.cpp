@@ -63,7 +63,7 @@ char	**setupEnv( std::string page, int port, std::string path, std::string root,
     env["REQUEST_METHOD"] = "POST";
     env["SERVER_PORT"] = std::to_string( port );
     env["RESPONSE_FILE"] = "response/responseCGI.html";
-    env["PATH"] = path + "/" + root;
+    env["UPLOAD_DIR"] = path + "/" + root + "/" + "uploads/";
 
     // copy env to a c_str
     char    **c_env = new char*[env.size() + 1];

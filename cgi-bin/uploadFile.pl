@@ -3,7 +3,8 @@ use strict;
 use CGI qw(:standard);
 use diagnostics;
 
-my $outfile = $ENV{'PATH'}."/pages/".$ENV{'FILE_NAME'};
+mkdir $ENV{'UPLOAD_DIR'} unless -d $ENV{UPLOAD_DIR};
+my $outfile = $ENV{'UPLOAD_DIR'}.$ENV{'FILE_NAME'};
 my @a = (1..100);
 my $filename = $outfile;
 my $og_outfile = $outfile;
