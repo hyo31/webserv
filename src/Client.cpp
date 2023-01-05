@@ -1,6 +1,6 @@
 #include "../inc/Client.hpp"
 
-
+//CONSTRUCTOR + DESTRUCTOR
 Client::Client(int fd, int port, Config  *server_config) : conn_fd(fd), port(port), server_config(server_config)
 { 
     this->timestamp = std::time(nullptr);
@@ -12,14 +12,12 @@ Client::Client(int fd, int port, Config  *server_config) : conn_fd(fd), port(por
 	this->headerSet = false;
 	this->headerSize = 0;
 }
-
 Client::~Client() { std::cout << "Client removed\n"; }
 
-Client::Client(const Client& src)
-{
-    *this = src;
-}
+//COPY CONSTRUCTOR
+Client::Client(const Client& src) { *this = src; }
 
+//ASSIGNMENT OPERATOR
 Client & Client::operator=(const Client& src)
 {
     this->conn_fd = src.conn_fd;
@@ -34,7 +32,38 @@ Client & Client::operator=(const Client& src)
     return *this;
 }
 
+//CLIENT FUNCTIONS
+
+//UTILS
 void    Client::update_client_timestamp()
 {
     this->timestamp = std::time(nullptr);
 }
+
+//GETTERS
+std::string	Client::getLocation()		{ return this->requestLocation; }
+std::string	Client::getBody()			{ return this->requestBody; }
+std::string	Client::getHeader()			{ return this->requestHeader; }
+std::string	Client::getMethod()			{ return this->requestMethod; }
+int			Client::getContentLength()	{ return this->requestContentLength; }
+int			Client::getConnectionFD()	{ return this->conn_fd; }
+int			Client::getPort()			{ return this->port; }
+int			Client::getHeaderSize()		{ return this->headerSize; }
+bool		Client::requestIsRead()		{ return this->request_is_read; }
+bool		Client::headerIsSet()		{ return this->headerSet; }
+bool		Client::bodyTooLarge()		{ return this->client_body_too_large; }
+Config		*Client::getConfig()		{ return this->server_config; }
+std::time_t	Client::getTimeStamp()		{ return this->timestamp; }
+
+
+//SETTERS
+void	Client::setBody( std::string body )					{ this->requestBody = body; }
+void	Client::setHeader( std::string header, int end )	{ this->requestHeader = header; this->requestHeader[end] = '\0'; }
+void	Client::setMethod( std::string method )				{ this->requestMethod = method; }
+void	Client::setLocation( std::string location )			{ this->requestLocation = location; }
+void	Client::setHeaderSize( int size )					{ this->headerSize = size; }
+void	Client::setContentLength( int len )					{ this->requestContentLength = len; }
+void	Client::setHeaderIsSet( bool status )				{ this->headerSet = status; }
+void	Client::setRequestIsRead( bool status )				{ this->request_is_read = status; }
+void	Client::setBodyTooLarge( bool status )				{ this->client_body_too_large = status; }
+
