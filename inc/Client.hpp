@@ -12,30 +12,27 @@ class Client
     	Client( const Client& );
     	Client  &operator=( const Client& );
 
-		int			getContentLength();
 		int			getConnectionFD();
 		int			getPort();
-		int			getHeaderSize();
 		std::string	getLocation();
 		std::string	getBody();
 		std::string	getHeader();
 		std::string	getMethod();
 		Config		*getConfig();
 		std::time_t	getTimeStamp();
-
 		bool		requestIsRead();
 		bool		headerIsSet();
 		bool		bodyTooLarge();
-
+		bool		illegalRequest();
+	
+		void		setIllegalRequest( bool );
 		void		setHeaderIsSet( bool );
 		void		setRequestIsRead( bool );
 		void		setBodyTooLarge( bool );
-		void		setHeaderSize( int );
 		void		setHeader( std::string, int );
 		void		setBody( std::string );
 		void		setMethod( std::string );
 		void		setLocation( std::string );
-		void		setContentLength( int );
 	    void		update_client_timestamp();
 
 	private:
@@ -47,11 +44,10 @@ class Client
 		std::string	current_route;
     	int			conn_fd;
     	int			port;
-		int			headerSize;
-	    int			requestContentLength;
 		bool		headerSet;
     	bool		request_is_read;
 		bool		client_body_too_large;
+		bool		illegal_request;
 		Config		*server_config;
     	Client();
 }; 

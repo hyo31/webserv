@@ -39,8 +39,8 @@
 
 enum {
 	ERROR = -1,
-	TOO_LARGE = 1,
-	NOT_FULLY_READ = 2
+	STOP_READ = 1,
+	CONT_READ = 2
 };
 
 class Config;
@@ -66,6 +66,10 @@ class Server
         void		bounceTimedOutClients();
         void		parseRequest( std::string, Client * );
 		void		closeSockets();
+		std::string	methodDELETE( Client*, Config* );
+		std::string	methodGET( Client*, Config* );
+		std::string	methodPOST( Client*, Config* );
+		std::string	getHtmlFile( Client* );
 
         std::vector<Socket*>	_sockets;
         std::vector<Client*>	_clients;
@@ -80,6 +84,7 @@ class Server
 
 };
 
-int		ft_return( std::string str );
+int	ft_return( std::string str );
+int	executeCGI( std::string, int, std::string, std::string, std::string, std::string );
 
 #endif

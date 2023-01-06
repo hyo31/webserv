@@ -33,36 +33,35 @@ int	Server::monitor_ports()
         set_chlist( chlist, this->_sockets[j]->fd, EVFILT_READ, EV_ADD, 0, 0, NULL );
 
     /* enter run loop */
-    std::cout << "\033[1m--waiting for events...--\n\033[0m";
     while( 1 ) 
     {
-		std::cout << "waiting on events...\n";
+    	std::cout << "\033[1m--waiting for events...--\n\033[0m";
         /* use kevent to wait for an event (when a client tries to connect or when a connection has data to read/is open to receive data) */
         new_event = kevent( kq, &chlist[0], chlist.size(), tevents, 42, &this->_timeout );
         chlist.clear();
         if ( new_event < 0 )
             return ft_return( "kevent failed: \n" );
         /* kevent returned with new events */
-        else if ( new_event > 0 )
+        if ( new_event > 0 )
         {
             for ( i = 0; i < new_event; i++ )
             {
-                fd = (int)tevents[i].ident;
+                fd = ( int )tevents[i].ident;
 				client = findClient( fd );
                 std::cout << "handling event:" << i+1 << "/" << new_event <<  " on fd:" << fd << std::endl;
                 /* EV_EOF is set if the reader on the conn_fd has disconnected */
-                if (tevents[i].flags & EV_EOF)
+                if ( tevents[i].flags & EV_EOF )
                 {
                     std::cout << "Client disconnected..\n";
                     if ( closeConnection( client ) == -1 )
-                        return -1;
+                        return ERROR;
                 }
                 else if ( ( sock_num = findSocket( fd ) ) != -1 )
                 {
                     std::cout << "accepting for: " << fd << std::endl;
                     client = acceptRequest( sock_num );
                     if ( client == nullptr )
-                        return -1;
+                        return ERROR;
 					conn_fd = client->getConnectionFD();
                     std::cout << "OPENED:" << conn_fd << std::endl;
                     /* add event to monitor, triggers when server can read request from client through conn_fd */
@@ -73,11 +72,11 @@ int	Server::monitor_ports()
                     std::cout << "READING from:" << fd << std::endl;
 					ret = this->receiveClientRequest( client, request );
                     if ( ret == ERROR )
-                    	return ERROR;
+                    	return ERROR ;
                     /* request has been read, now event is added to monitor if response can be sent */
-                    if ( ret == TOO_LARGE )
+                    if ( ret == STOP_READ )
 						set_chlist( chlist, fd, EVFILT_READ, EV_DELETE, 0, 0, nullptr );
-					if ( ret == NOT_FULLY_READ )
+					if ( ret == CONT_READ )
 						continue ;
                     set_chlist( chlist, fd, EVFILT_WRITE, EV_ADD | EV_ONESHOT, 0, 0, nullptr );
                 }
@@ -85,7 +84,7 @@ int	Server::monitor_ports()
                 {
                     std::cout << "WRITING to:" << fd << std::endl;
                     if ( this->sendResponseToClient( client ) == -1 )
-                        return -1;
+                        return ERROR;
                 }
             }
         }

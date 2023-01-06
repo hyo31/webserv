@@ -22,7 +22,8 @@ SRC =	src/webserv.cpp\
 		src/ParseRequests.cpp\
 		src/Config.cpp\
 		src/AutoIndex.cpp\
-		src/GetResponse.cpp\
+		src/Methods.cpp\
+		src/executeCGI.cpp\
 
 OBJ = $(SRC:$(SRC_DIR)%.cpp=$(OBJ_DIR)%.o)
 

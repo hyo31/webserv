@@ -20,12 +20,10 @@ Client *Server::acceptRequest( int sock_num )
 
 int Server::receiveClientRequest( Client *client, std::string & request )
 {
-	int			ix = 0;
-    ssize_t		bytesRead = 1;
-	int			c_fd = client->getConnectionFD();
-	int			port = client->getPort();
-
-
+    ssize_t				bytesRead = 1;
+	int					c_fd = client->getConnectionFD();
+	int					port = client->getPort();
+    std::ofstream		ofs;
 	std::vector<char>	buff( 1024 * 1024 );
 
 	while ( ( bytesRead = recv( c_fd, &buff[0], buff.size(), 0 ) ) > 0 )
@@ -33,46 +31,34 @@ int Server::receiveClientRequest( Client *client, std::string & request )
     	for ( int i = 0; i < bytesRead; ++i ) {
 			request.push_back( buff[i] );
 		}
-		ix++;
 	}
-	// if ( bytesRead == -1 )
-    // {
-    // 	closeConnection( client );
-    //    	return ft_return( "recv failed:\n" );
-   	// }
-	// std::cout << "FINAL:" << request << std::endl;
 	client->update_client_timestamp();
     if ( client->requestIsRead() == true )
     {
-		std::cout << "clearing content..\n";
-        std::ofstream ofs;
+		// std::cout << "clearing content..\n";
         ofs.open( this->_sockets[port]->logFile, std::ofstream::out | std::ofstream::trunc );
         ofs.close();
 		client->setHeaderIsSet( false );
 		client->setBody( "" );
 		client->setHeader( "", 0 );
     }
-    std::ofstream ofs;
     ofs.open( this->_sockets[port]->logFile, std::fstream::out | std::fstream::app );
     ofs << request;
     ofs.close();
-    // std::ofstream ofs2;
-    // ofs2.open( "logs/check", std::fstream::out | std::fstream::app );
-    // ofs2 << buf;
-	// ofs2.close();
     parseRequest( request, client );
 	if ( client->requestIsRead() == false && client->bodyTooLarge() == false )
-		return NOT_FULLY_READ;
+		return CONT_READ;
 	request.clear();
-	if ( client->bodyTooLarge() == true )
-		return TOO_LARGE;
+	if ( client->bodyTooLarge() == true || client->illegalRequest() == true )
+		return STOP_READ;
     return 0;
 }
 
 // remove the temporary response files
-void    removeResponseFiles()
+void    removeResponseFiles( void )
 {
-    DIR             *directory;
+    DIR	*directory;
+
     directory = opendir( "response" );
     if ( !directory )
         std::cout << "can not open directory(removeResonseFiles)\n";
@@ -106,7 +92,7 @@ int Server::sendResponseToClient( Client *client )
     responseFile.open( "response/response.txt", std::ios::in | std::ios::out | std::ios::binary );
     if ( !responseFile.is_open() )
         return ft_return( "could not open response file " );
-    htmlFileName = this->findHtmlFile( client );
+    htmlFileName = this->getHtmlFile( client );
     if ( !htmlFileName.size() )
         htmlFileName = client->getConfig()->errorpages + "500.html";
     htmlFile.open( htmlFileName, std::ios::in | std::ios::binary );
@@ -131,7 +117,6 @@ int Server::sendResponseToClient( Client *client )
 	responseFile << "Content-Length: " << fileSize << "\r\n\r\n"; //std::endl << std::endl;
 
 	//create char string to read html into, which is then read into responseFile      
-	// std::cout << "filesize:" << fileSize << std::endl;   
 	char    html[fileSize + 1];
 	htmlFile.read( html, fileSize );
 	html[fileSize] = '\0';
