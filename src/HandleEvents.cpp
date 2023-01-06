@@ -18,30 +18,30 @@ Client *Server::acceptRequest( int sock_num )
     return this->_clients.back();
 }
 
-int Server::receiveClientRequest( Client *client )
+int Server::receiveClientRequest( Client *client, std::string & request )
 {
-    ssize_t	bytesRead = -1;
-	char	buf[5001];
-	int		c_fd = client->getConnectionFD();
-	int		port = client->getPort();
+	int			ix = 0;
+    ssize_t		bytesRead = 1;
+	int			c_fd = client->getConnectionFD();
+	int			port = client->getPort();
 
-    bytesRead = recv( c_fd, buf, 5000, 0 );
+
+	std::vector<char>	buff( 1024 * 1024 );
+
+	while ( ( bytesRead = recv( c_fd, &buff[0], buff.size(), 0 ) ) > 0 )
+	{
+    	for ( int i = 0; i < bytesRead; ++i ) {
+			request.push_back( buff[i] );
+		}
+		ix++;
+	}
+	// if ( bytesRead == -1 )
+    // {
+    // 	closeConnection( client );
+    //    	return ft_return( "recv failed:\n" );
+   	// }
+	// std::cout << "FINAL:" << request << std::endl;
 	client->update_client_timestamp();
-    if ( bytesRead == -1 )
-    {
-        closeConnection( client );
-        return ft_return( "recv failed:\n" );
-    }
-    else if ( bytesRead == 0 )
-    {
-        std::cout << "0 bytes read/stream socket peer shutdown (eof)\n";
-        if (closeConnection( client ) == -1 )
-            return -1;
-        return 1; 
-    }
-	else if ( bytesRead == 5000 )
-		std::cout << "request is too big, require another read\n";
-    buf[bytesRead] = '\0';
     if ( client->requestIsRead() == true )
     {
 		std::cout << "clearing content..\n";
@@ -54,16 +54,16 @@ int Server::receiveClientRequest( Client *client )
     }
     std::ofstream ofs;
     ofs.open( this->_sockets[port]->logFile, std::fstream::out | std::fstream::app );
-    ofs << buf;
+    ofs << request;
     ofs.close();
-    std::ofstream ofs2;
-    ofs2.open( "logs/check", std::fstream::out | std::fstream::app );
-    ofs2 << buf;
-	ofs2.close();
-    /* check if request is full*/
-    parseRequest( this->_sockets[port]->logFile, client );
+    // std::ofstream ofs2;
+    // ofs2.open( "logs/check", std::fstream::out | std::fstream::app );
+    // ofs2 << buf;
+	// ofs2.close();
+    parseRequest( request, client );
 	if ( client->requestIsRead() == false && client->bodyTooLarge() == false )
 		return NOT_FULLY_READ;
+	request.clear();
 	if ( client->bodyTooLarge() == true )
 		return TOO_LARGE;
     return 0;

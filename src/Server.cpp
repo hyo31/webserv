@@ -21,6 +21,7 @@ int	Server::monitor_ports()
 	Client						*client;
 	std::vector<struct  kevent> chlist;         /* list of events to monitor */
 	struct  kevent              tevents[42];	/* list of triggered events */
+	std::string					request = "";
 
     /* create the queue */
     kq = kqueue();  
@@ -35,7 +36,7 @@ int	Server::monitor_ports()
     std::cout << "\033[1m--waiting for events...--\n\033[0m";
     while( 1 ) 
     {
-		// std::cout << "waiting on events...\n";
+		std::cout << "waiting on events...\n";
         /* use kevent to wait for an event (when a client tries to connect or when a connection has data to read/is open to receive data) */
         new_event = kevent( kq, &chlist[0], chlist.size(), tevents, 42, &this->_timeout );
         chlist.clear();
@@ -70,7 +71,7 @@ int	Server::monitor_ports()
                 else if ( tevents[i].filter == EVFILT_READ )
                 {
                     std::cout << "READING from:" << fd << std::endl;
-					ret = this->receiveClientRequest( client );
+					ret = this->receiveClientRequest( client, request );
                     if ( ret == ERROR )
                     	return ERROR;
                     /* request has been read, now event is added to monitor if response can be sent */

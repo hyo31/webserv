@@ -26,11 +26,15 @@
 # include "Socket.hpp"
 
 # ifndef TIMEOUT
-#  define TIMEOUT 5
+#  define TIMEOUT 7
+# endif
+
+# ifndef MAX_ARGLEN_EXECVE
+#  define MAX_ARGLEN_EXECVE 262144
 # endif
 
 # ifndef MAX_BODY
-#  define MAX_BODY INT_MAX
+#  define MAX_BODY MAX_ARGLEN_EXECVE
 # endif
 
 enum {
@@ -53,7 +57,7 @@ class Server
 		Client 		*findClient( int);
         Client		*acceptRequest( int );
         int			monitor_ports();
-        int			receiveClientRequest( Client* );
+        int			receiveClientRequest( Client*, std::string& );
         int			sendResponseToClient( Client* );
         int			closeConnection( Client* );
         int			openSockets( std::string );

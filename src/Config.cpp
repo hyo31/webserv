@@ -154,6 +154,8 @@ void	Config::setCGI( std::string line )
 void	Config::setMaxBodySize( std::string line )
 {
 	this->maxClientBodySize = std::stoi( line.substr( line.find( " " ) + 1 ) );
+	if ( this->maxClientBodySize > MAX_BODY )
+		this->maxClientBodySize = MAX_BODY;
 }
 
 //extensions in config are declared as <extension .x>

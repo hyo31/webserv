@@ -14,7 +14,6 @@ for(@a){
     }
     $filename = $og_outfile.$_;
 }
-print "$outfile\n";
 open(my $fh, ">>", $outfile)
     or die "Can not open file: $!";
 my $content = $ENV{'FILE_BODY'};

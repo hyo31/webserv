@@ -72,7 +72,12 @@ char	**setupEnv( std::string page, int port, std::string path, std::string root,
     {
         temp = it->first + "=" + it->second;
         c_env[i] = new char[temp.size() + 1];
-        strcpy( c_env[i], temp.c_str() );
+		std::cout << " size: " << temp.size() << std::endl;
+		for ( size_t j = 0; j < temp.size(); ++j ) {
+			c_env[i][j] = temp[j];
+		}
+		c_env[i][temp.size()] = '\0';
+        // strcpy( c_env[i], temp.c_str() );
         i++;
     }
     c_env[i] = NULL;
@@ -133,6 +138,9 @@ std::string Server::findHtmlFile( Client* client )
 	location = client->getLocation();
 	method = client->getMethod();
 	config = this->_sockets[port]->getConfig( location );
+
+	// std::cout << "header after parsing:\n" << client->getHeader() << std::endl;
+	// std::cout << "body after parsing:\n" << client->getBody() << std::endl;
 
     // respond to DELETE request
     if ( method == "DELETE" )
