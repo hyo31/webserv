@@ -2,7 +2,7 @@ NAME = webserver
 
 CC = g++
 
-CFLAGS = -Wall -Werror -Wextra -fsanitize=address -std=c++98
+CFLAGS = -Wall -Werror -Wextra -std=c++98 #-fsanitize=address
 
 SRC_DIR =	src/
 DIRS = obj/ response/ uploads/ logs/
