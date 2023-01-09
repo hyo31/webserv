@@ -16,8 +16,30 @@ for(@a){
 }
 open(my $fh, ">>", $outfile)
     or die "Can not open file: $!";
+binmode($fh);
 my $content = $ENV{'FILE_BODY'};
-print $fh "$content";
+my @chars = split("", $ENV{'FILE_BODY'});
+my $i = 0;
+
+if (@chars)
+{
+	for (@chars)
+	{
+		print $fh $chars[$i];
+		$i++;
+		# @chars++;
+	}
+}
+# @a = (1..$ENV{'BODY_LEN'});
+
+# for $i (0..$ENV{'BODY_LEN'}){
+#    	$char = substr( $content, $i , 1 );
+#     print $fh $char;
+# }
+
+#print $fh "$content";
+
+
 open(my $rf, ">>", $ENV{'RESPONSE_FILE'})
     or die "Can not open file: $!";
 print $rf <<ENDTAG;

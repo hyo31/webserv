@@ -19,7 +19,7 @@ std::vector<std::string>	readFile( std::string header, std::string body )
 	if ( filename.empty() )
 		return (vars);
     pos = body.find( "\r\n\r\n", pos );
-    fileContent = body.substr( pos + 4, body.find( "--" + boundary, pos ) - ( pos + 5 ) );
+    fileContent = body.substr( pos + 4, body.find( "--" + boundary, pos ) - ( pos - 4) );
     vars.push_back( filename );
     vars.push_back( fileContent );
     return ( vars );
@@ -56,6 +56,7 @@ char	**setupEnv( std::string page, int port, std::string path, std::string root,
             return nullptr;
         env["FILE_NAME"] = vars[0];
         env["FILE_BODY"] = vars[1];
+		env["BODY_LEN"] = std::to_string( vars[1].size() );
     }
     env["HTTP_HOST"] =  "localhost:" + std::to_string( port );
     env["REQUEST_URI"] = page;
@@ -72,7 +73,7 @@ char	**setupEnv( std::string page, int port, std::string path, std::string root,
     {
         temp = it->first + "=" + it->second;
         c_env[i] = new char[temp.size() + 1];
-		std::cout << " size: " << temp.size() << std::endl;
+		// std::cout << " size: " << temp.size() << std::endl;
 		for ( size_t j = 0; j < temp.size(); ++j ) {
 			c_env[i][j] = temp[j];
 		}
@@ -104,6 +105,7 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
     // execute the script
     if ( !pid )
     {
+		std::cout << std::endl;
         execve( pathCGI.c_str(), NULL, env );
         exit ( ft_return( "execve failed: " ) );
     }
