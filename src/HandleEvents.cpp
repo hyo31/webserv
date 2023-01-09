@@ -102,7 +102,7 @@ int Server::sendResponseToClient( Client *client )
     	this->_responseHeader = "HTTP/1.1 403 Forbidden";
     	htmlFile.open( client->getConfig()->errorpages + "403.html", std::ios::in | std::ios::binary );
 		if ( !htmlFile.is_open() )
-			htmlFile.open( "htmlFiles/pages/errorPages/500.html", std::ios::in | std::ios::binary );
+			htmlFile.open( "public_html/pages/errorPages/500.html", std::ios::in | std::ios::binary );
     }
 
 	//get length of htmlFile

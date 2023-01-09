@@ -97,21 +97,19 @@ void	SaveBinaryFile( std::string path, Client *client )
 	std::string					temp, dest;
 	
 	to_upload = readFile( client->getHeader(), client->getBody() );
-	dest = path + "/" + config->root + "/" + config->uploadDir + to_upload[0];
+	dest = path + "/" + config->root + config->uploadDir + to_upload[0];
 
-	std::ofstream	outfile( "htmlFiles/uploads/" + to_upload[0] );
+	std::ofstream	outfile( config->root + config->uploadDir + to_upload[0] );
 	outfile << to_upload[1];
 	outfile.close();
 
 	std::ofstream outfile2( "response/responseCGI.html" );
-	std::ifstream ifs("htmlFiles/uploadresponse.html");
-	ifs.seekg(0, std::ios::end);   
-	temp.reserve(ifs.tellg());
-	ifs.seekg(0, std::ios::beg);
-	temp.assign((std::istreambuf_iterator<char>(ifs)),
-				std::istreambuf_iterator<char>());
+	std::ifstream ifs( config->root + "/uploadresponse.html" );
+	ifs.seekg( 0, std::ios::end );   
+	temp.reserve( ifs.tellg() );
+	ifs.seekg( 0, std::ios::beg );
+	temp.assign( ( std::istreambuf_iterator<char>( ifs ) ), std::istreambuf_iterator<char>() );
 	temp.replace( temp.find( "$outfile" ), 8,  dest, 0, dest.size() );
-	std::cout << "temp:" << temp << std::endl;
 	outfile2 << temp;
 	outfile2.close();
 }

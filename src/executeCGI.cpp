@@ -64,7 +64,7 @@ char	**setupEnv( std::string page, int port, std::string path, std::string root,
     env["REQUEST_METHOD"] = "POST";
     env["SERVER_PORT"] = std::to_string( port );
     env["RESPONSE_FILE"] = "response/responseCGI.html";
-    env["UPLOAD_DIR"] = path + "/" + root + "/" + uploaddir;
+    env["UPLOAD_DIR"] = path + "/" + root + uploaddir;
 
     // copy env to a c_str
     char    **c_env = new char*[env.size() + 1];
@@ -73,12 +73,10 @@ char	**setupEnv( std::string page, int port, std::string path, std::string root,
     {
         temp = it->first + "=" + it->second;
         c_env[i] = new char[temp.size() + 1];
-		// std::cout << " size: " << temp.size() << std::endl;
 		for ( size_t j = 0; j < temp.size(); ++j ) {
 			c_env[i][j] = temp[j];
 		}
 		c_env[i][temp.size()] = '\0';
-        // strcpy( c_env[i], temp.c_str() );
         i++;
     }
     c_env[i] = NULL;

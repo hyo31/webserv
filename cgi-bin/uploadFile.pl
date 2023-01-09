@@ -14,11 +14,9 @@ for(@a){
     }
     $filename = $og_outfile.$_;
 }
-print $outfile;
 open(my $fh, ">>", $outfile)
     or die "Can not open file: $!";
 my $content = $ENV{'FILE_BODY'};
-print $content;
 print $fh $content;
 open(my $rf, ">>", $ENV{'RESPONSE_FILE'})
     or die "Can not open file: $!";

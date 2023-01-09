@@ -86,6 +86,6 @@ std::string	Server::methodDELETE( Client *client, Config *config )
 	if ( file )
 		remove( ( config->root + client->getLocation() ).c_str() );
 	_responseHeader = "HTTP/1.1 200 OK";
-	return ( "htmlFiles/index.html" );
+	return ( config->root + "index.html" );
 
 }

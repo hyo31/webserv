@@ -129,9 +129,9 @@ std::string Socket::getLocationPage( std::string location ) const
         return "";
 	if ( config->root != "" )
 	{
-		pos = it->second.find( "htmlFiles" );
+		pos = it->second.find( "public_html" );
 		if ( pos != std::string::npos )
-			it->second.replace( pos, 9, config->root );
+			it->second.replace( pos, 11, config->root );
 	}
     return it->second;
 }

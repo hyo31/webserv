@@ -1,9 +1,9 @@
 #include "../inc/Config.hpp"
 
 //Constructor that creates a config object for each serverblock
-Config::Config( std::string config, std::string path ):	servername("default"), root("htmlFiles"), errorpages(root + "/pages/errorPages/"),
+Config::Config( std::string config, std::string path ):	servername("default"), root("public_html"), errorpages(root + "/pages/errorPages/"),
 														autoindex(false), directoryRequest(""), cgi("cgi-bin"), maxClientBodySize(MAX_BODY),
-														extension(".pl"), uploadDir( "uploads/")
+														extension(".pl"), uploadDir( "/uploads/")
 {
 	size_t	pos;
 
