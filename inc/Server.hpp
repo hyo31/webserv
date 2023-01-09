@@ -52,7 +52,6 @@ class Server
         Server( const Server & );
         Server &	operator=( const Server & );
 
-        std::string	findHtmlFile( Client* );
 		std::string createAutoIndex( std::string, std::string );
 		Client 		*findClient( int);
         Client		*acceptRequest( int );
@@ -84,7 +83,10 @@ class Server
 
 };
 
-int	ft_return( std::string str );
-int	executeCGI( std::string, int, std::string, std::string, std::string, std::string );
+int							ft_return( std::string );
+int							executeCGI( std::string, int, std::string, std::string, std::string, std::string, std::string );
+bool						BinaryFile( std::string );
+void						SaveBinaryFile( std::string, Client * );
+std::vector<std::string>	readFile( std::string header, std::string body );
 
 #endif

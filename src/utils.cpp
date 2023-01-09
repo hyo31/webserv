@@ -76,17 +76,50 @@ Client *Server::findClient( int c_fd )
 std::string Server::getHtmlFile( Client* client )
 {
 	Config		*config = this->_sockets[client->getPort()]->getConfig( client->getLocation() );
-	std::string	method = client->getMethod(), ret;
+	std::string	method = client->getMethod();
 
 	if ( std::find( config->methods.begin(), config->methods.end(), method ) == config->methods.end() )
 	{
 		_responseHeader = "HTTP/1.1 405 Method Not Allowed";
-		ret = config->errorpages + "405.html";
+		return config->errorpages + "405.html";
 	}
     if ( method == "DELETE" )
-	    ret = methodDELETE( client, config );
+	    return methodDELETE( client, config );
 	if ( method == "POST" )
-	    ret = methodPOST( client, config );
-	ret = methodGET( client, config );
-    return ret;
+	    return methodPOST( client, config );
+	return methodGET( client, config );
+}
+
+void	SaveBinaryFile( std::string path, Client *client )
+{
+	Config						*config = client->getConfig();
+	std::vector<std::string>	to_upload;
+	std::string					temp, dest;
+	
+	to_upload = readFile( client->getHeader(), client->getBody() );
+	dest = path + "/" + config->root + "/" + config->uploadDir + to_upload[0];
+
+	std::ofstream	outfile( "htmlFiles/uploads/" + to_upload[0] );
+	outfile << to_upload[1];
+	outfile.close();
+
+	std::ofstream outfile2( "response/responseCGI.html" );
+	std::ifstream ifs("htmlFiles/uploadresponse.html");
+	ifs.seekg(0, std::ios::end);   
+	temp.reserve(ifs.tellg());
+	ifs.seekg(0, std::ios::beg);
+	temp.assign((std::istreambuf_iterator<char>(ifs)),
+				std::istreambuf_iterator<char>());
+	temp.replace( temp.find( "$outfile" ), 8,  dest, 0, dest.size() );
+	std::cout << "temp:" << temp << std::endl;
+	outfile2 << temp;
+	outfile2.close();
+}
+
+bool BinaryFile( std::string body )
+{
+	const char *c_str = body.c_str();
+	if ( strlen( c_str ) != body.size() )
+		return true;
+	return false;
 }

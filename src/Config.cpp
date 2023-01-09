@@ -3,7 +3,7 @@
 //Constructor that creates a config object for each serverblock
 Config::Config( std::string config, std::string path ):	servername("default"), root("htmlFiles"), errorpages(root + "/pages/errorPages/"),
 														autoindex(false), directoryRequest(""), cgi("cgi-bin"), maxClientBodySize(MAX_BODY),
-														extension(".pl")
+														extension(".pl"), uploadDir( "uploads/")
 {
 	size_t	pos;
 
@@ -88,12 +88,12 @@ int Config::setPages( std::string path, std::string root )
 //only redirects are done seperately (see setRouteConfigs in Socket.cpp)
 void	Config::setConfig( std::string config )
 {
-	int						n = 9;
+	int						n = 10;
 	std::string				line;
 	std::string::iterator 	start = config.begin(), new_pos = config.begin();
-	std::string 			members[9] = { "listen", "root", "errorPages", "autoindex", "directoryRequest", "cgi", "maxClientBodySize", "extension", "methods" };
+	std::string 			members[10] = { "listen", "root", "errorPages", "autoindex", "directoryRequest", "cgi", "maxClientBodySize", "uploadDir", "extension", "methods" };
 	ConfigMemFn				fs[] = {	&Config::setServerName, &Config::setRoot, &Config::setErrorPages, &Config::setAutoIndex, &Config::setDirectoryRequest,
-										&Config::setCGI, &Config::setMaxBodySize, &Config::setExtension, &Config::setMethods };
+										&Config::setCGI, &Config::setMaxBodySize, &Config::setUploadDir, &Config::setExtension, &Config::setMethods };
 
 	for ( std::string::iterator it = config.begin(); it != config.end(); ++it ) {
 		if ( *it == '\n' )
@@ -156,6 +156,12 @@ void	Config::setMaxBodySize( std::string line )
 	this->maxClientBodySize = std::stoi( line.substr( line.find( " " ) + 1 ) );
 	if ( this->maxClientBodySize > MAX_BODY )
 		this->maxClientBodySize = MAX_BODY;
+}
+
+// uploadDir in config is declared as <uploadDir dir/>
+void	Config::setUploadDir( std::string line )
+{
+	this->uploadDir = line.substr( line.find( " " ) + 1 );
 }
 
 //extensions in config are declared as <extension .x>

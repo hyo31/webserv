@@ -19,14 +19,14 @@ std::vector<std::string>	readFile( std::string header, std::string body )
 	if ( filename.empty() )
 		return (vars);
     pos = body.find( "\r\n\r\n", pos );
-    fileContent = body.substr( pos + 4, body.find( "--" + boundary, pos ) - ( pos - 4) );
+    fileContent = body.substr( pos + 4, body.find( "--" + boundary, pos ) - ( pos + 6) );
     vars.push_back( filename );
     vars.push_back( fileContent );
     return ( vars );
 }
 
 // set the environment for CGI
-char	**setupEnv( std::string page, int port, std::string path, std::string root, std::string body, std::string header )
+char	**setupEnv( std::string page, int port, std::string path, std::string root, std::string body, std::string header, std::string uploaddir )
 {
     std::map<std::string, std::string>	env;
     std::vector<std::string>			vars;
@@ -64,7 +64,7 @@ char	**setupEnv( std::string page, int port, std::string path, std::string root,
     env["REQUEST_METHOD"] = "POST";
     env["SERVER_PORT"] = std::to_string( port );
     env["RESPONSE_FILE"] = "response/responseCGI.html";
-    env["UPLOAD_DIR"] = path + "/" + root + "/" + "uploads/";
+    env["UPLOAD_DIR"] = path + "/" + root + "/" + uploaddir;
 
     // copy env to a c_str
     char    **c_env = new char*[env.size() + 1];
@@ -86,7 +86,7 @@ char	**setupEnv( std::string page, int port, std::string path, std::string root,
 }
 
 // execute the CGI
-int	executeCGI( std::string page, int port, std::string path, std::string root, std::string body, std::string header )
+int	executeCGI( std::string page, int port, std::string path, std::string root, std::string body, std::string header, std::string uploaddir )
 {
     pid_t		pid;
     char		**env;
@@ -94,7 +94,7 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
     std::string	pathCGI;
 
     // setup the environmental variables for execve
-    env = setupEnv( page, port, path, root, body, header );
+    env = setupEnv( page, port, path, root, body, header, uploaddir );
     pathCGI = path + page;
     if ( !env )
         return ft_return( "failed setting up the environment: " );
@@ -105,7 +105,6 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
     // execute the script
     if ( !pid )
     {
-		std::cout << std::endl;
         execve( pathCGI.c_str(), NULL, env );
         exit ( ft_return( "execve failed: " ) );
     }

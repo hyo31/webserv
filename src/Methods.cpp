@@ -52,10 +52,16 @@ std::string	Server::methodPOST( Client *client, Config *config )
 		_responseHeader = "HTTP/1.1 413 Request Entity Too Large";
 		return ( config->errorpages + "413.html" );
 	}
+	if ( BinaryFile( client->getBody() ) == true )
+	{
+		SaveBinaryFile( this->_path, client );
+		_responseHeader = "HTTP/1.1 200 OK";
+		return ( "response/responseCGI.html" );
+	}
 	// execute the CGI on the requested file if it has the right extension
 	if ( location.size() > config->extension.size() && location.substr( location.size() - 3, location.size() - 1) == config->extension )
 	{
-		if ( !executeCGI("/" + config->cgi + location, client->getPort(), this->_path, config->root, client->getBody(), client->getHeader() ) )
+		if ( !executeCGI("/" + config->cgi + location, client->getPort(), this->_path, config->root, client->getBody(), client->getHeader(), config->uploadDir ) )
 		{
 			_responseHeader = "HTTP/1.1 200 OK";
 			return ( "response/responseCGI.html" );

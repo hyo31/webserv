@@ -26,6 +26,7 @@ class Config
 		std::string					cgi;
 		size_t						maxClientBodySize;
 		std::string					extension;
+		std::string					uploadDir;
 
 		std::map< std::string, std::string >	pages; /* name - location */	
 		std::map< std::string, std::string >	redirects; /* name - redirect_location */
@@ -42,6 +43,7 @@ class Config
 		void		setDirectoryRequest( std::string );
 		void		setCGI( std::string );
 		void		setMaxBodySize( std::string );
+		void		setUploadDir( std::string );
 		void		setExtension( std::string );
 		void		setMethods( std::string );
 };
