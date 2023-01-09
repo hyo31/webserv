@@ -76,19 +76,17 @@ Client *Server::findClient( int c_fd )
 std::string Server::getHtmlFile( Client* client )
 {
 	Config		*config = this->_sockets[client->getPort()]->getConfig( client->getLocation() );
-	std::string	method = client->getMethod();
+	std::string	method = client->getMethod(), ret;
 
 	if ( std::find( config->methods.begin(), config->methods.end(), method ) == config->methods.end() )
 	{
 		_responseHeader = "HTTP/1.1 405 Method Not Allowed";
-		return (config->errorpages + "405.html");
+		ret = config->errorpages + "405.html";
 	}
-
     if ( method == "DELETE" )
-		return methodDELETE( client, config );
-
+	    ret = methodDELETE( client, config );
 	if ( method == "POST" )
-		return methodPOST( client, config );
-	
-	return methodGET( client, config );
+	    ret = methodPOST( client, config );
+	ret = methodGET( client, config );
+    return ret;
 }
