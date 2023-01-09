@@ -19,6 +19,7 @@ Config::Config( std::string config, std::string path ):	servername("default"), r
 //then route-info is added/overwrites the original
 Config::Config( const Config& src )
 {
+	std::cout << "AAaAAAAAAAAAAAA\n\n\n";
     *this = src;
 }
 
@@ -35,6 +36,7 @@ Config & Config::operator=( const Config& src )
 		this->extension = src.extension;
 		this->pages = src.pages;
 		this->redirects = src.redirects;
+		this->uploadDir = src.uploadDir;
 		return *this;
 }
 

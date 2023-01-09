@@ -5,7 +5,7 @@ CC = g++
 CFLAGS = -Wall -Werror -Wextra -std=c++98 #-fsanitize=address
 
 SRC_DIR =	src/
-DIRS = obj/ response/ logs/
+DIRS = obj/ response/ forms/ logs/
 OBJ_DIR =	obj/
 RESPONSE_DIR =	response/
 UPLOAD_DIR = uploads/

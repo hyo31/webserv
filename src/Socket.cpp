@@ -16,8 +16,13 @@ Socket::Socket( std::string config, std::string path ) : bound( false )
         logFile = "logs/port" + config.substr( start, end - start ) + ".log";
         ipAddr = "localhost";
 		currentFile = "";
-		this->setRouteConfigs( config );
     	this->setupSockets();
+		if ( this->bound == false )
+		{
+			delete this->serverConfig;
+			return ;
+		}
+		this->setRouteConfigs( config );
     }
     catch( std::invalid_argument const& e )
     {
