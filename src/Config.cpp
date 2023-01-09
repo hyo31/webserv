@@ -19,7 +19,6 @@ Config::Config( std::string config, std::string path ):	servername("default"), r
 //then route-info is added/overwrites the original
 Config::Config( const Config& src )
 {
-	std::cout << "AAaAAAAAAAAAAAA\n\n\n";
     *this = src;
 }
 

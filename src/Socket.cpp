@@ -18,10 +18,7 @@ Socket::Socket( std::string config, std::string path ) : bound( false )
 		currentFile = "";
     	this->setupSockets();
 		if ( this->bound == false )
-		{
-			delete this->serverConfig;
 			return ;
-		}
 		this->setRouteConfigs( config );
     }
     catch( std::invalid_argument const& e )
@@ -35,6 +32,12 @@ Socket &	Socket::operator=( const Socket & ) { std::cout << "no assignment allow
 
 Socket::~Socket()
 {
+	//delete configs
+	std::map< std::string, Config* >::iterator	it;
+	for ( it = this->routes.begin(); it != this->routes.end(); ++it ) {
+		delete (*it).second;
+	}
+	delete this->serverConfig;
     std::cout << "Socket:" << this->fd << " - bound to port:" << this->port << " closed\n";
     close( fd );
 }
