@@ -92,7 +92,7 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
     std::string	pathCGI;
 
     // setup the environmental variables for execve
-    env = setupEnv( page, port, path, root, body, header, uploaddir );
+	env = setupEnv( page, port, path, root, body, header, uploaddir );
     pathCGI = path + page;
     if ( !env )
         return ft_return( "failed setting up the environment: " );

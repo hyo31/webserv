@@ -7,25 +7,17 @@ Socket::Socket( std::string config, std::string path ) : bound( false )
 {
     size_t	start, end;
 
-    try
-    {
-		this->serverConfig = new Config( config, path );
-		start = config.find( "listen" ) + 7;
-		end = config.find( " ", start );
-        port = std::stoi( config.substr( start, end - start ) );
-        logFile = "logs/port" + config.substr( start, end - start ) + ".log";
-        ipAddr = "localhost";
-		currentFile = "";
-    	this->setupSockets();
-		if ( this->bound == false )
-			return ;
-		this->setRouteConfigs( config );
-    }
-    catch( std::invalid_argument const& e )
-    {
-        std::cout << "what():" << e.what() << std::endl;
-        exit ( ft_return( "Error reading config file" ) );
-    }
+	this->serverConfig = new Config( config, path );
+	start = config.find( "listen" ) + 7;
+	end = config.find( " ", start );
+	port = std::stoi( config.substr( start, end - start ) );
+	logFile = "logs/port" + config.substr( start, end - start ) + ".log";
+	ipAddr = "localhost";
+	currentFile = "";
+	this->setupSockets();
+	if ( this->bound == false )
+		return ;
+	this->setRouteConfigs( config );
 }
 Socket::Socket( const Socket & ) { std::cout << "cant copy sockets!" << std::endl; }
 Socket &	Socket::operator=( const Socket & ) { std::cout << "no assignment allowed for socket object!" << std::endl; return *this; }
@@ -61,6 +53,8 @@ int Socket::setupSockets()
         close ( this->fd );
 		return 0;
     }
+	int i = 1;
+	setsockopt( this->fd, SOL_SOCKET, SO_REUSEADDR, ( char* )&i, sizeof( int ) );
 	this->bound = true;
     if ( listen( this->fd, 100 ) )
         return ft_return( "error: listen\n" );

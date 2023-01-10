@@ -67,37 +67,29 @@ static void	unchunk( std::string request, size_t start, Client *client, size_t m
 	start = request.find( "\r\n\r\n", start ) + 4;
 	if ( request.find( "\r\n\r\n", start ) == std::string::npos )
 		return ;
-	try
+	while ( 1 )
 	{
-		while ( 1 )
+		end = request.find( "\r\n", start );
+		substr = request.substr( start, ( end - start ) );
+		ss << std::hex << substr;
+		ss >> chunkSize;
+		ss.clear();
+		if (chunkSize == 0)
+			break ;
+		start = end + 2;
+		body = client->getBody();
+		body.append( request, start, chunkSize );
+		client->setBody( body );
+		if ( body.size() > maxBodySize )
 		{
-			end = request.find( "\r\n", start );
-			substr = request.substr( start, ( end - start ) );
-			ss << std::hex << substr;
-			ss >> chunkSize;
-			ss.clear();
-			if (chunkSize == 0)
-				break ;
-			start = end + 2;
-			body = client->getBody();
-			body.append( request, start, chunkSize );
-			client->setBody( body );
-			if ( body.size() > maxBodySize )
-			{
-				client->setBodyTooLarge( true );
-				return ;
-			}
-			start = start + chunkSize + 2;
+			client->setBodyTooLarge( true );
+			return ;
 		}
-		client->setRequestIsRead( true );
-		std::cout << "\n\033[33m\033[1m" << "RECEIVED:\n\033[0m\033[33m" << request << "\033[0m" << std::endl;
-		return ;
+		start = start + chunkSize + 2;
 	}
-	catch( const std::exception& e )
-	{
-		std::cerr << "error:" << e.what() << ": Request chunks not properly written!!\n";
-		return ;
-	}
+	client->setRequestIsRead( true );
+	std::cout << "\n\033[33m\033[1m" << "RECEIVED:\n\033[0m\033[33m" << request << "\033[0m" << std::endl;
+	return ;
 }
 
 void    Server::parseRequest( std::string request, Client *client )

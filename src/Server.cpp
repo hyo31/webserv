@@ -131,7 +131,7 @@ int	Server::startServer( std::string configFilePath, std::string path )
 	int	status = 0;
     this->_path = path;
     if ( openSockets( configFilePath ) )
-        return ft_return("" );
+        return ft_return( "" );
     std::cout << "\033[1mOpened sockets: \033[0m";
     for ( size_t i = 0; i < this->_sockets.size(); i++ )
         std::cout << this->_sockets[i]->fd << " ";
