@@ -21,6 +21,7 @@
 # include <sys/types.h>
 # include <sys/time.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include "Client.hpp"
 # include "Config.hpp"
 # include "Socket.hpp"

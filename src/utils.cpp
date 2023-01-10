@@ -94,15 +94,19 @@ void	SaveBinaryFile( std::string path, Client *client, Config *config )
 {
 	std::vector<std::string>	to_upload;
 	std::string					temp, dest;
+	DIR							*directory;
 	
+	directory = opendir((path + "/" + config->root + config->uploadDir).c_str());
+	if ( !directory )
+		mkdir( (path + "/" + config->root + config->uploadDir).c_str(), 0777 );
 	to_upload = readFile( client->getHeader(), client->getBody() );
 	dest = path + "/" + config->root + config->uploadDir + to_upload[0];
 
-	std::ofstream	outfile( config->root + config->uploadDir + to_upload[0] );
+	std::ofstream	outfile( config->root + config->uploadDir + to_upload[0], std::ofstream::out | std::ofstream::trunc );
 	outfile << to_upload[1];
 	outfile.close();
 
-	std::ofstream outfile2( "response/responseCGI.html" );
+	std::ofstream outfile2( "response/responseCGI.html", std::ofstream::out | std::ofstream::trunc );
 	std::ifstream ifs( config->root + "/uploadresponse.html" );
 	ifs.seekg( 0, std::ios::end );   
 	temp.reserve( ifs.tellg() );
