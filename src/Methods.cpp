@@ -75,11 +75,23 @@ std::string	Server::methodDELETE( Client *client, Config *config )
 	std::string		page = this->_sockets[client->getPort()]->getLocationPage( client->getLocation() );
     std::ifstream	file;
 
+	// check if allowed to delete file -> either route specifies that a file can be deleted 
+	// or it is in a directory where whiles can be deleted
+	if ( std::find( config->methods.begin(), config->methods.end(), "DELETE" ) == config->methods.end() )
+	{
+		std::string directory = client->getLocation().substr( 0, client->getLocation().find_last_of( "/" ) + 1 );
+		Config *dir_config = this->_sockets[client->getPort()]->getConfig( directory );
+		if ( std::find( dir_config->methods.begin(), dir_config->methods.end(), "DELETE" ) == dir_config->methods.end() )
+		{
+			_responseHeader = "HTTP/1.1 405 Method Not Allowed";
+			return config->errorpages + "405.html";
+		}
+	}
+
 	// check if the requested file exists and delete it
 	file.open( config->root + client->getLocation() );
 	if ( file )
 		remove( ( config->root + client->getLocation() ).c_str() );
 	_responseHeader = "HTTP/1.1 200 OK";
-	return ( config->root + "index.html" );
-
+	return ( config->root + "/index.html" );
 }

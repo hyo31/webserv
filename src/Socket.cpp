@@ -97,16 +97,19 @@ Config	*Socket::getConfig( std::string location ) const
 	size_t		pos;
 
 	std::cout << "loc:" << location << std::endl;
+	for (it = this->routes.begin(); it != this->routes.end(); it++) {
+		std::cout << (*it).first << std::endl;
+	}
 
-	
+
 	pos = location.find( ".pl" );
 	if ( pos != std::string::npos )
 	{
 		pos = location.find_last_of( "/" ) + 1;
 		new_location = location.substr( 0, pos );
 	}
-	it = routes.find( new_location );
-	if ( it != routes.end() )
+	it = this->routes.find( new_location );
+	if ( it != this->routes.end() )
 		return it->second;
 	pos = location.find( ".html" );
 	if ( pos != std::string::npos )
@@ -114,8 +117,8 @@ Config	*Socket::getConfig( std::string location ) const
 		pos = location.find_last_of( "." );
 		new_location = location.substr( 0, pos );
 	}
-	it = routes.find( new_location );
-	if ( it != routes.end() )
+	it = this->routes.find( new_location );
+	if ( it != this->routes.end() )
 		return it->second;
 	return this->serverConfig;
 }
