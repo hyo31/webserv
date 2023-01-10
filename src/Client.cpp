@@ -1,7 +1,7 @@
 #include "../inc/Client.hpp"
 
 //CONSTRUCTOR + DESTRUCTOR
-Client::Client(int fd, int port, Config  *server_config) : conn_fd(fd), port(port), server_config(server_config)
+Client::Client( int fd, int port ) : conn_fd( fd ), port( port )
 { 
     this->timestamp = std::time(nullptr);
     this->request_is_read = true;
@@ -13,10 +13,10 @@ Client::Client(int fd, int port, Config  *server_config) : conn_fd(fd), port(por
 Client::~Client() { std::cout << "Client removed\n"; }
 
 //COPY CONSTRUCTOR
-Client::Client(const Client& src) { *this = src; }
+Client::Client( const Client& src ) { *this = src; }
 
 //ASSIGNMENT OPERATOR
-Client & Client::operator=(const Client& src)
+Client & Client::operator=( const Client& src )
 {
     this->conn_fd = src.conn_fd;
     this->timestamp = src.timestamp;
@@ -26,6 +26,11 @@ Client & Client::operator=(const Client& src)
 	this->requestBody = src.requestBody;
 	this->headerSet = src.headerSet;
 	this->current_route = src.current_route;
+	this->requestMethod = src.requestMethod;
+	this->requestLocation = src.requestLocation;
+	this->current_route = src.current_route;
+	this->client_body_too_large = src.client_body_too_large;
+	this->illegal_request = src.illegal_request;
     return *this;
 }
 
@@ -34,7 +39,7 @@ Client & Client::operator=(const Client& src)
 //UTILS
 void    Client::update_client_timestamp()
 {
-    this->timestamp = std::time(nullptr);
+    this->timestamp = std::time( nullptr );
 }
 
 //GETTERS
@@ -48,7 +53,6 @@ bool		Client::requestIsRead()		{ return this->request_is_read; }
 bool		Client::headerIsSet()		{ return this->headerSet; }
 bool		Client::bodyTooLarge()		{ return this->client_body_too_large; }
 bool		Client::illegalRequest()	{ return this->illegal_request; }
-Config		*Client::getConfig()		{ return this->server_config; }
 std::time_t	Client::getTimeStamp()		{ return this->timestamp; }
 
 //SETTERS

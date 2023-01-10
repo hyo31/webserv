@@ -1,6 +1,7 @@
 #include "../inc/Server.hpp"
 
-// to do - DELETE ALL NEWS
+// to do - protect new
+// private stuff in config class
 
 int main( int argc, char **argv, char **env )
 {

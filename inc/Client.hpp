@@ -7,7 +7,7 @@ class Config;
 class Client
 {
 	public:
-    	Client( int, int, Config * );
+    	Client( int, int );
     	~Client();
     	Client( const Client& );
     	Client  &operator=( const Client& );
@@ -18,7 +18,6 @@ class Client
 		std::string	getBody();
 		std::string	getHeader();
 		std::string	getMethod();
-		Config		*getConfig();
 		std::time_t	getTimeStamp();
 		bool		requestIsRead();
 		bool		headerIsSet();
@@ -48,7 +47,6 @@ class Client
     	bool		request_is_read;
 		bool		client_body_too_large;
 		bool		illegal_request;
-		Config		*server_config;
     	Client();
 }; 
 

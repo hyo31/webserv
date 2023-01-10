@@ -96,6 +96,9 @@ Config	*Socket::getConfig( std::string location ) const
 	std::string	new_location = location;
 	size_t		pos;
 
+	std::cout << "loc:" << location << std::endl;
+
+	
 	pos = location.find( ".pl" );
 	if ( pos != std::string::npos )
 	{

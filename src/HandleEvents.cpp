@@ -10,7 +10,7 @@ Client *Server::acceptRequest( int sock_num )
         ft_return( "error: accept\n" );
 		return nullptr ;
 	}
-    Client *newclient = new Client( conn_fd, sock_num, this->_sockets[sock_num]->serverConfig );
+    Client *newclient = new Client( conn_fd, sock_num );
     this->_clients.push_back( newclient );
     int status = fcntl( conn_fd, F_SETFL, O_NONBLOCK );
     if ( status == -1 )
@@ -94,13 +94,13 @@ int Server::sendResponseToClient( Client *client )
         return ft_return( "could not open response file " );
     htmlFileName = this->getHtmlFile( client );
     if ( !htmlFileName.size() )
-        htmlFileName = client->getConfig()->errorpages + "500.html";
+        htmlFileName = this->_sockets[client->getPort()]->getConfig( client->getLocation() )->errorpages + "500.html";
     htmlFile.open( htmlFileName, std::ios::in | std::ios::binary );
     if ( !htmlFile.is_open() )
     {
     	std::cout << "html file:" << htmlFileName << "  doesn't exist!" << std::endl;
     	this->_responseHeader = "HTTP/1.1 403 Forbidden";
-    	htmlFile.open( client->getConfig()->errorpages + "403.html", std::ios::in | std::ios::binary );
+    	htmlFile.open( this->_sockets[client->getPort()]->getConfig( client->getLocation() )->errorpages + "403.html", std::ios::in | std::ios::binary );
 		if ( !htmlFile.is_open() )
 			htmlFile.open( "public_html/pages/errorPages/500.html", std::ios::in | std::ios::binary );
     }

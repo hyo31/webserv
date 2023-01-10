@@ -26,7 +26,7 @@ static size_t	getUploadBodySize( std::string body, std::string header )
 // 	return true ;
 // }
 
-static void	buildBodyForContentLength( std::string request, size_t start, Client *client )
+static void	buildBodyForContentLength( std::string request, size_t start, Client *client, size_t maxBodySize )
 {
 	size_t		end, content_len;
 	std::string	body, header = client->getHeader();
@@ -51,14 +51,14 @@ static void	buildBodyForContentLength( std::string request, size_t start, Client
 		return ;
 	}
 	client->setRequestIsRead( true );
-	if ( getUploadBodySize( body, header ) > client->getConfig()->maxClientBodySize )
+	if ( getUploadBodySize( body, header ) > maxBodySize )
 		client->setBodyTooLarge( true );
     std::cout << "\n\033[33m\033[1m" << "RECEIVED:\n\033[0m\033[33m" << request << "\033[0m" << std::endl;
 	return ;
 }
 
 
-static void	unchunk( std::string request, size_t start, Client *client )
+static void	unchunk( std::string request, size_t start, Client *client, size_t maxBodySize )
 {
 	std::stringstream	ss;
 	size_t 				end, chunkSize;
@@ -82,7 +82,7 @@ static void	unchunk( std::string request, size_t start, Client *client )
 			body = client->getBody();
 			body.append( request, start, chunkSize );
 			client->setBody( body );
-			if ( body.size() > client->getConfig()->maxClientBodySize )
+			if ( body.size() > maxBodySize )
 			{
 				client->setBodyTooLarge( true );
 				return ;
@@ -104,8 +104,9 @@ void    Server::parseRequest( std::string request, Client *client )
 {
 	std::string	substr, header;
     size_t		start, end;
-    client->setRequestIsRead( false );
+	size_t		MaxBody = this->_sockets[client->getPort()]->getConfig( client->getLocation() )->maxClientBodySize;
 
+    client->setRequestIsRead( false );
 	/* check if full header is read and store it */
     if ( request.find( "\r\n\r\n" ) != std::string::npos )
     {
@@ -127,13 +128,13 @@ void    Server::parseRequest( std::string request, Client *client )
 	client->setLocation( header.substr( start, end - start ) );
 
     if ( ( start = header.find( "Content-Length:" ) ) != std::string::npos )
-		return buildBodyForContentLength( request, start, client );
+		return buildBodyForContentLength( request, start, client, MaxBody );
     else if ( ( start = header.find( "Transfer-Encoding:" ) ) != std::string::npos )
     {
         end = request.find( "\n", start );
         substr = request.substr( start, end - start );
         if ( ( start = substr.find( "chunked" ) ) != std::string::npos )
-			return unchunk( request, start, client );
+			return unchunk( request, start, client, MaxBody );
 	}
     client->setRequestIsRead( true );
     std::cout << "\n\033[33m\033[1m" << "RECEIVED:\n\033[0m\033[33m" << request << "\033[0m" << std::endl;

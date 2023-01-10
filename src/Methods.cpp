@@ -54,7 +54,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 	}
 	if ( BinaryFile( client->getBody() ) == true )
 	{
-		SaveBinaryFile( this->_path, client );
+		SaveBinaryFile( this->_path, client, config );
 		_responseHeader = "HTTP/1.1 200 OK";
 		return ( "response/responseCGI.html" );
 	}
@@ -75,12 +75,6 @@ std::string	Server::methodDELETE( Client *client, Config *config )
 	std::string		page = this->_sockets[client->getPort()]->getLocationPage( client->getLocation() );
     std::ifstream	file;
 
-	// if DELETE method is not allowed, return 405
-	if ( page != "" && std::find( config->methods.begin(), config->methods.end(), client->getMethod() ) == config->methods.end() )
-	{
-		_responseHeader = "HTTP/1.1 405 Method Not Allowed";
-		return (config->errorpages + "405.html");
-	}
 	// check if the requested file exists and delete it
 	file.open( config->root + client->getLocation() );
 	if ( file )
