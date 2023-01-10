@@ -8,15 +8,14 @@
 #include <iostream>
 #include <time.h>
 
-#define PORT 8002
+#define PORT 8001
 
 int main(int argc, char const *argv[])
 {
     if (argc != 2)
         return 0;
-    int sock = 0;
+    int sock = 0, n1 = fork(), n2 = fork(), n3 = fork(), n4 = fork(), totalRequests = 0;
     struct sockaddr_in serv_addr;
-    // char hello[500] = "POST /uploadForm.pl HTTP/1.1\r\nHost: localhost:8004\r\nUser-Agent: Go-http-client/1.1\r\nTransfer-Encoding: chunked\r\nContent-Type: application/x-www-form-urlencoded\r\nAccept-Encoding: gzip\r\n\r\n20\r\nfname=bass&lname=nop&message=hoi\r\n0\r\n\r\n";
 	char hello[500] = "GET / HTTP/1.1\r\nHost: localhost\r\n\r\n";
     time_t start, now;
     float runTime = std::stof(argv[1]), elapsedTime = 0;
@@ -48,10 +47,18 @@ int main(int argc, char const *argv[])
             return -1;
         }   
         send(sock, hello, sizeof(hello) , 0);
-        printf("Hello message sent\n");
+        std::cout << "\033[33m\033[1m" << "message sent\033[0m\n";
 	    recv(sock, buffer, 6000, 0);
+        std::cout << "\033[32m\033[1m" << "message received\033[0m\n";
         now = time(NULL);
         elapsedTime = difftime(now, start);
+        if (n1 && n2 && n3 && n4)
+            totalRequests++;
+    }
+    if (n1 && n2 && n3 && n4)
+    {
+        wait(NULL);
+        std::cout << "\033[31m\033[1m" << "Requests sent to webserver: " << totalRequests * 5 << "\033[0m" << std::endl;
     }
     return 0;
 }
