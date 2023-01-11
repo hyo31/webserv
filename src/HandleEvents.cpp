@@ -32,6 +32,12 @@ int Server::receiveClientRequest( Client *client, std::string & request )
 			request.push_back( buff[i] );
 		}
 	}
+	if ( bytesRead == -1 )
+	{
+		std::cout << "error receiving data" << std::endl;
+		closeConnection( client );
+		return STOP_READ;
+	}
 	client->update_client_timestamp();
     if ( client->requestIsRead() == true ) //clear content from previous request
     {
@@ -75,7 +81,7 @@ void    removeResponseFiles( void )
 }
 
 // create a correct response to the request of the client and send it back
-int Server::sendResponseToClient( Client *client )
+int	Server::sendResponseToClient( Client *client )
 {
 	int				fileSize, c_fd = client->getConnectionFD();
     std::string     htmlFileName;
@@ -140,8 +146,9 @@ int Server::sendResponseToClient( Client *client )
 	{
 		htmlFile.close();
 		responseFile.close();
-		close( c_fd );
-		return printerror( "error: send\n" );
+		closeConnection( client );
+		std::cout << "error sending data to client.." << std::endl;
+		return 0;
 	}
 	client->update_client_timestamp();
 	std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << response << "\033[0m" << std::endl;
@@ -154,5 +161,5 @@ int Server::sendResponseToClient( Client *client )
 	removeResponseFiles();
 	if ( client->bodyTooLarge() == true )
 		closeConnection( client );
-    return (0);
+    return 0;
 }

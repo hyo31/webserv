@@ -12,7 +12,6 @@ std::string	Server::methodGET( Client *client, Config *config )
 	{
 		_responseHeader = "HTTP/1.1 301 Moved Permanently\r\nLocation: ";
 		_responseHeader.append( redirect_page );
-		std::cout << "WTF\n\n\n\n";
 		return ( config->errorpages + "301.html" );
 	}
 

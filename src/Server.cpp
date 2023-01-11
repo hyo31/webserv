@@ -18,6 +18,7 @@ int	Server::monitor_ports()
 	std::vector<struct  kevent> chlist;         /* list of events to monitor */
 	struct  kevent              tevents[42];	/* list of triggered events */
 	std::string					request = "";
+	intptr_t					data = 0;
 
     /* create the queue */
     kq = kqueue();  
@@ -26,7 +27,7 @@ int	Server::monitor_ports()
 
     /* initialize kevent chlist structs - uses EVFILT_READ so it returns when there is data available to read */
     for ( size_t j = 0; j < this->_sockets.size(); ++j )
-        set_chlist( chlist, this->_sockets[j]->fd, EVFILT_READ, EV_ADD, 0, 0, NULL );
+        set_chlist( chlist, this->_sockets[j]->fd, EVFILT_READ, EV_ADD, data, 0, NULL );
 
     /* enter run loop */
     while( 1 ) 
@@ -45,14 +46,17 @@ int	Server::monitor_ports()
                 fd = ( int )tevents[i].ident;
 				client = findClient( fd );
                 std::cout << "handling event:" << i+1 << "/" << new_event <<  " on fd:" << fd << std::endl;
-                /* EV_EOF is set if the reader on the conn_fd has disconnected */
-                if ( tevents[i].flags & EV_EOF )
-                {
-                    std::cout << "Client disconnected..\n";
-                    if ( closeConnection( client ) == -1 )
-                        return ERROR;
-                }
-                else if ( ( sock_num = findSocket( fd ) ) != -1 )
+				/* EV_ERROR is set if kevent occured an error processing chlist */
+				if ( tevents[i].flags & EV_ERROR )
+				{
+                	closeConnection( client );
+					std::cout << "system error:" << data << std::endl;
+                    return printerror( "kevent failed: \n" );
+				}
+                /* EV_EOF is set if the client has disconnected */
+				if ( tevents[i].flags & EV_EOF )
+                    closeConnection( client );
+                else if ( ( sock_num = findSocket( fd ) ) != -1 ) /* if fd is one of the listening sockes -> accept the connection */
                 {
                     std::cout << "accepting for: " << fd << std::endl;
                     client = acceptRequest( sock_num );
@@ -60,27 +64,25 @@ int	Server::monitor_ports()
                         return ERROR;
 					conn_fd = client->getConnectionFD();
                     std::cout << "OPENED:" << conn_fd << std::endl;
-                    /* add event to monitor, triggers when server can read request from client through conn_fd */
-                    set_chlist( chlist, conn_fd, EVFILT_READ, EV_ADD, 0, 0, nullptr );
+                    set_chlist( chlist, conn_fd, EVFILT_READ, EV_ADD, data, 0, nullptr );
                 }
-                else if ( tevents[i].filter == EVFILT_READ )
+                else if ( tevents[i].filter == EVFILT_READ ) /* if fd is one of the established connections -> READ or WRITE */
                 {
                     std::cout << "READING from:" << fd << std::endl;
 					ret = this->receiveClientRequest( client, request );
                     if ( ret == ERROR )
                     	return ERROR ;
-                    /* request has been read, now event is added to monitor if response can be sent */
                     if ( ret == STOP_READ )
-						set_chlist( chlist, fd, EVFILT_READ, EV_DELETE, 0, 0, nullptr );
+						set_chlist( chlist, fd, EVFILT_READ, EV_DELETE, data, 0, nullptr );
 					if ( ret == CONT_READ )
 						continue ;
-                    set_chlist( chlist, fd, EVFILT_WRITE, EV_ADD | EV_ONESHOT, 0, 0, nullptr );
+                    set_chlist( chlist, fd, EVFILT_WRITE, EV_ADD | EV_ONESHOT, data, 0, nullptr );
                 }
                 else if ( tevents[i].filter == EVFILT_WRITE )
                 {
                     std::cout << "WRITING to:" << fd << std::endl;
-                    if ( this->sendResponseToClient( client ) == -1 )
-                        return ERROR;
+                    if ( this->sendResponseToClient( client ) == ERROR )
+						return ERROR;
                 }
             }
         }

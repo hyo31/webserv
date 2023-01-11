@@ -25,10 +25,8 @@ Client & Client::operator=( const Client& src )
 	this->_requestHeader = src._requestHeader;
 	this->_requestBody = src._requestBody;
 	this->_headerSet = src._headerSet;
-	this->_current_route = src._current_route;
 	this->_requestMethod = src._requestMethod;
 	this->_requestLocation = src._requestLocation;
-	this->_current_route = src._current_route;
 	this->_client_body_too_large = src._client_body_too_large;
 	this->_illegal_request = src._illegal_request;
     return *this;

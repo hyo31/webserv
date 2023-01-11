@@ -40,7 +40,6 @@ class Client
 		std::string _requestBody;
 		std::string	_requestMethod;
 		std::string	_requestLocation;
-		std::string	_current_route;
     	int			_conn_fd;
     	int			_port;
 		bool		_headerSet;
