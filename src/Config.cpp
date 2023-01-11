@@ -2,11 +2,12 @@
 
 //Constructor that creates a config object for each serverblock
 Config::Config( std::string config, std::string path ):	servername( "default" ), root( "public_html" ), autoindex( false ),
-														directoryRequest( "" ), cgi( "cgi-bin" ), maxClientBodySize( MAX_BODY ),
+														directoryRequest( "" ), cgi( "/cgi-bin" ), maxClientBodySize( MAX_BODY ),
 														extension( ".pl" ), uploadDir( "/uploads/")
 {
 	size_t	pos;
 
+	errorPageDir = root + "/pages/errorpages/";
 	pos = config.find( "location" );
 	if ( pos != std::string::npos )
 		config = config.substr( 0, pos - 1 );

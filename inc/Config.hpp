@@ -27,6 +27,7 @@ class Config
 		size_t						maxClientBodySize;
 		std::string					extension;
 		std::string					uploadDir;
+		std::string					errorPageDir;
 
 		std::map< std::string, std::string >	pages; /* name - location */	
 		std::map< std::string, std::string >	redirects; /* name - redirect_location */

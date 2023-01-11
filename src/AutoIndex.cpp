@@ -5,6 +5,10 @@ std::string Server::createAutoIndex( std::string root, std::string folder )
 {
     std::ofstream   autoindexFile;
     DIR             *directory;
+
+    std::cout << folder[folder.size() - 1] << std::endl;
+    if (folder[folder.size() - 1] != '/')
+        folder += "/";
 	std::string		page = root + folder;
 
     autoindexFile.open( "response/autoindex.html", std::ofstream::out | std::ofstream::trunc );

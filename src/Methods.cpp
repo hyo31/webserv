@@ -12,7 +12,7 @@ std::string	Server::methodGET( Client *client, Config *config )
 	{
 		_responseHeader = "HTTP/1.1 301 Moved Permanently\r\nLocation: ";
 		_responseHeader.append( redirect_page );
-		return ( "/pages/errorpages/301.html" );
+		return ( config->errorPageDir + "301.html" );
 	}
 
     // respond to a GET request that requests a directory
@@ -33,7 +33,7 @@ std::string	Server::methodGET( Client *client, Config *config )
         if ( config->autoindex )
             return ( this->createAutoIndex( config->root, location ) );
         _responseHeader = "HTTP/1.1 403 Forbidden";
-        return ( "/pages/errorpages/403.html" );
+        return ( config->errorPageDir + "403.html" );
 	}
 	if ( page != "" )
     {
@@ -41,7 +41,7 @@ std::string	Server::methodGET( Client *client, Config *config )
         return ( page );
     }
     _responseHeader = "HTTP/1.1 404 Not Found";
-    return ( "/pages/errorpages/404.html" );
+    return ( config->errorPageDir + "404.html" );
 }
 
 std::string	Server::methodPOST( Client *client, Config *config )
@@ -51,7 +51,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 	if ( client->bodyTooLarge() == true )
 	{
 		_responseHeader = "HTTP/1.1 413 Request Entity Too Large";
-		return ( "/pages/errorpages/413.html" );
+		return ( config->errorPageDir + "413.html" );
 	}
 	if ( BinaryFile( client->getBody() ) == true )
 	{
@@ -62,14 +62,14 @@ std::string	Server::methodPOST( Client *client, Config *config )
 	// execute the CGI on the requested file if it has the right extension
 	if ( location.size() > config->extension.size() && location.substr( location.size() - 3, location.size() - 1) == config->extension )
 	{
-		if ( !executeCGI("/" + config->cgi + location, client->getPort(), this->_path, config->root, client->getBody(), client->getHeader(), config->uploadDir ) )
+		if ( !executeCGI( "/" + config->root + config->cgi + location, client->getPort(), this->_path, config->root, client->getBody(), client->getHeader(), config->uploadDir ) )
 		{
 			_responseHeader = "HTTP/1.1 200 OK";
 			return ( "response/responseCGI.html" );
 		}
 	}
 	_responseHeader = "HTTP/1.1 403 Forbidden";
-	return ( "/pages/errorpages/403.html" );
+	return ( config->errorPageDir + "403.html" );
 }
 
 std::string	Server::methodDELETE( Client *client, Config *config )
@@ -86,7 +86,7 @@ std::string	Server::methodDELETE( Client *client, Config *config )
 		if ( std::find( dir_config->methods.begin(), dir_config->methods.end(), "DELETE" ) == dir_config->methods.end() )
 		{
 			_responseHeader = "HTTP/1.1 405 Method Not Allowed";
-			return "/pages/errorpages/405.html";
+			return config->errorPageDir + "405.html";
 		}
 	}
 

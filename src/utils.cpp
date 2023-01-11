@@ -85,7 +85,7 @@ std::string Server::getHtmlFile( Client* client )
 	if ( std::find( config->methods.begin(), config->methods.end(), method ) == config->methods.end() )
 	{
 		_responseHeader = "HTTP/1.1 405 Method Not Allowed";
-		return "/pages/errorpages/405.html";
+		return config->errorPageDir + "405.html";
 	}
 	if ( method == "POST" )
 	    return methodPOST( client, config );

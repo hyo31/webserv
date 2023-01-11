@@ -88,7 +88,6 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
 {
     pid_t		pid;
     char		**env;
-    int			status;
     std::string	pathCGI;
 
     // setup the environmental variables for execve
@@ -106,17 +105,9 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
         execve( pathCGI.c_str(), NULL, env );
         exit ( printerror( "execve failed: " ) );
     }
-    else
-        waitpid( pid, &status, 0 );
-    
-    // wait for the script to finish, then return
-    if ( WIFEXITED(status) )
-    {
-        for ( int i = 0; env[i] != NULL ; i++ ) {
-		    delete env[i];
-	    }
-	    delete env;
-        return WEXITSTATUS( status );
-    }
+    for ( int i = 0; env[i] != NULL ; i++ ) {
+	    delete env[i];
+	}
+	delete env;
     return 0;
 }

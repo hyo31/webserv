@@ -32,11 +32,11 @@ int Server::receiveClientRequest( Client *client, std::string & request )
 			request.push_back( buff[i] );
 		}
 	}
-	if ( bytesRead == -1 )
-	{
-		closeConnection( client );
-		return CONT_READ;
-	}
+	// if ( bytesRead == -1 )
+	// {
+	// 	closeConnection( client );
+	// 	return CONT_READ;
+	// }
 
 	client->update_client_timestamp();
     if ( client->requestIsRead() == true ) //clear content from previous request
@@ -89,6 +89,7 @@ int	Server::sendResponseToClient( Client *client )
     std::fstream    responseFile;
     std::ofstream 	ofs;
 	ssize_t			bytesSent;
+	Config			*config = this->_sockets[client->getPort()]->getConfig( client->getLocation() );
 
     // clear response file
     ofs.open("response/response.txt", std::ofstream::out | std::ofstream::trunc);
@@ -101,12 +102,12 @@ int	Server::sendResponseToClient( Client *client )
     htmlFileName = this->getHtmlFile( client );
 	std::cout << "filename:" << htmlFileName << std::endl;
     if ( !htmlFileName.size() )
-        htmlFileName =  "/pages/errorpages/500.html";
+        htmlFileName = config->errorPageDir + "500.html";
     htmlFile.open( htmlFileName, std::ios::in | std::ios::binary );
     if ( !htmlFile.is_open() )
     {
     	this->_responseHeader = "HTTP/1.1 403 Forbidden";
-    	htmlFile.open( "/pages/errorpages/403.html", std::ios::in | std::ios::binary );
+    	htmlFile.open( config->errorPageDir + "403.html", std::ios::in | std::ios::binary );
 		if ( !htmlFile.is_open() )
 		{
 			htmlFile.open( createResponseHtml() );
@@ -127,7 +128,10 @@ int	Server::sendResponseToClient( Client *client )
 
 	//read correct headers (first one set in 'findHtmlFile') into responseFile
 	responseFile << this->_responseHeader << std::endl;
-	responseFile << "Content-Type: text/html" << std::endl;
+	if ( htmlFileName.substr( htmlFileName.size() - 5, 5 ) == ".html" )
+		responseFile << "Content-Type: text/html" << std::endl;
+	else
+		responseFile << "Content-Type: text/plain" << std::endl;
 	responseFile << "Content-Length: " << fileSize << "\r\n\r\n"; //std::endl << std::endl;
 
 	//create char string to read html into, which is then read into responseFile      
