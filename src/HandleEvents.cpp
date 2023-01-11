@@ -26,19 +26,15 @@ int Server::receiveClientRequest( Client *client, std::string & request )
     std::ofstream		ofs;
 	std::vector<char>	buff( 1024 * 1024 );
 
-	while ( ( bytesRead = recv( c_fd, &buff[0], buff.size(), 0 ) ) > 0 )
-	{
-    	for ( int i = 0; i < bytesRead; ++i ) {
-			request.push_back( buff[i] );
-		}
-	}
-	// if ( bytesRead == -1 )
-	// {
-	// 	closeConnection( client );
-	// 	return CONT_READ;
-	// }
-
+	bytesRead = recv( c_fd, &buff[0], buff.size(), 0 );
 	client->update_client_timestamp();
+	if ( bytesRead == 0 )
+		return STOP_READ;
+	if ( bytesRead == -1 )
+		return CONT_READ;
+	for ( int i = 0; i < bytesRead; ++i ) {
+		request.push_back( buff[i] );
+	}
     if ( client->requestIsRead() == true ) //clear content from previous request
     {
         ofs.open( this->_sockets[port]->logFile, std::ofstream::out | std::ofstream::trunc );
@@ -100,12 +96,12 @@ int	Server::sendResponseToClient( Client *client )
     if ( !responseFile.is_open() )
         return printerror( "could not open response file " );
     htmlFileName = this->getHtmlFile( client );
-	std::cout << "filename:" << htmlFileName << std::endl;
     if ( !htmlFileName.size() )
         htmlFileName = config->errorPageDir + "500.html";
     htmlFile.open( htmlFileName, std::ios::in | std::ios::binary );
     if ( !htmlFile.is_open() )
     {
+		std::cout << "cant open filename:" << htmlFileName << std::endl;
     	this->_responseHeader = "HTTP/1.1 403 Forbidden";
     	htmlFile.open( config->errorPageDir + "403.html", std::ios::in | std::ios::binary );
 		if ( !htmlFile.is_open() )

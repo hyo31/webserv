@@ -39,18 +39,22 @@ void	Server::closeConnection( Client *client )
 
 void    Server::bounceTimedOutClients()
 {
-    std::vector<Client*>::iterator client;
+    std::vector<Client*>::iterator client = this->_clients.begin();
     std::vector<Client*>::iterator end = this->_clients.end();
     time_t current_time = std::time(nullptr);
 
-    for( client = this->_clients.begin(); client != end; ++client )
+    while ( client != end )
     {
         if ( ( *client )->getTimeStamp() + TIMEOUT <=  current_time )
         {
             std::cout << "Bouncing client from:" << ( *client )->getConnectionFD() << std::endl;
 			closeConnection( *client );
-			break ;
+			client = _clients.begin();
+			if ( client == _clients.end() )
+				return ;
         }
+		else
+			client++;
     }
 }
 
@@ -167,5 +171,5 @@ std::string	createResponseHtml( void )
 		<< "</body>" << std::endl
 		<< "</html>" << std::endl;
 	ofs.close();
-	return "public_html/temp.html";
+	return "public_html/error500.html";
 }
