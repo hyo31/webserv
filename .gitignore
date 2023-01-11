@@ -7,3 +7,8 @@ test.cpp
 **/logs
 response.txt
 a.out
+logs/check
+logs/port8001.log
+logs/port8004.log
+public_html/uploads/
+*.DS_Store
