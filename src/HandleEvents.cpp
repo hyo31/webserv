@@ -7,14 +7,14 @@ Client *Server::acceptRequest( int sock_num )
                         ( socklen_t * )&this->_sockets[sock_num]->socketAddrLen );
     if ( conn_fd == -1 )
 	{
-        ft_return( "error: accept\n" );
+        printerror( "error: accept\n" );
 		return nullptr ;
 	}
     Client *newclient = new Client( conn_fd, sock_num );
     this->_clients.push_back( newclient );
     int status = fcntl( conn_fd, F_SETFL, O_NONBLOCK );
     if ( status == -1 )
-        ft_return( "fcntl failed:" );
+        printerror( "fcntl failed:" );
     return this->_clients.back();
 }
 
@@ -33,15 +33,15 @@ int Server::receiveClientRequest( Client *client, std::string & request )
 		}
 	}
 	client->update_client_timestamp();
-    if ( client->requestIsRead() == true )
+    if ( client->requestIsRead() == true ) //clear content from previous request
     {
-		// std::cout << "clearing content..\n";
         ofs.open( this->_sockets[port]->logFile, std::ofstream::out | std::ofstream::trunc );
         ofs.close();
 		client->setHeaderIsSet( false );
 		client->setBody( "" );
 		client->setHeader( "", 0 );
     }
+	//save request in logfile
     ofs.open( this->_sockets[port]->logFile, std::fstream::out | std::fstream::app );
     ofs << request;
     ofs.close();
@@ -91,18 +91,17 @@ int Server::sendResponseToClient( Client *client )
     // open streamfiles
     responseFile.open( "response/response.txt", std::ios::in | std::ios::out | std::ios::binary );
     if ( !responseFile.is_open() )
-        return ft_return( "could not open response file " );
+        return printerror( "could not open response file " );
     htmlFileName = this->getHtmlFile( client );
     if ( !htmlFileName.size() )
         htmlFileName = this->_sockets[client->getPort()]->getConfig( client->getLocation() )->errorpages + "500.html";
     htmlFile.open( htmlFileName, std::ios::in | std::ios::binary );
     if ( !htmlFile.is_open() )
     {
-    	std::cout << "html file:" << htmlFileName << "  doesn't exist!" << std::endl;
     	this->_responseHeader = "HTTP/1.1 403 Forbidden";
     	htmlFile.open( this->_sockets[client->getPort()]->getConfig( client->getLocation() )->errorpages + "403.html", std::ios::in | std::ios::binary );
 		if ( !htmlFile.is_open() )
-			htmlFile.open( "public_html/pages/errorPages/500.html", std::ios::in | std::ios::binary );
+			htmlFile.open( "public_html/pages/errorpages/500.html", std::ios::in | std::ios::binary );
     }
 
 	//get length of htmlFile
@@ -138,7 +137,7 @@ int Server::sendResponseToClient( Client *client )
 		htmlFile.close();
 		responseFile.close();
 		close( c_fd );
-		return ft_return( "error: send\n" );
+		return printerror( "error: send\n" );
 	}
 	client->update_client_timestamp();
 	std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << response << "\033[0m" << std::endl;

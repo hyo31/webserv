@@ -1,15 +1,12 @@
 #include "../inc/Server.hpp"
 
-// to do - protect new
-// private stuff in config class
-
 int main( int argc, char **argv, char **env )
 {
     Server      webserv;
     std::string path;
     
     if ( argc < 1 || argc > 2 )
-        return ft_return( "Wrong number of arguments: " );
+        return printerror( "Wrong number of arguments: " );
     
     // find the current path
     for ( int i = 0; env[i]; i++ )

@@ -35,18 +35,18 @@ class Client
 	    void		update_client_timestamp();
 
 	private:
-	    std::time_t	timestamp;
-		std::string	requestHeader;
-		std::string requestBody;
-		std::string	requestMethod;
-		std::string	requestLocation;
-		std::string	current_route;
-    	int			conn_fd;
-    	int			port;
-		bool		headerSet;
-    	bool		request_is_read;
-		bool		client_body_too_large;
-		bool		illegal_request;
+	    std::time_t	_timestamp;
+		std::string	_requestHeader;
+		std::string _requestBody;
+		std::string	_requestMethod;
+		std::string	_requestLocation;
+		std::string	_current_route;
+    	int			_conn_fd;
+    	int			_port;
+		bool		_headerSet;
+    	bool		_request_is_read;
+		bool		_client_body_too_large;
+		bool		_illegal_request;
     	Client();
 }; 
 

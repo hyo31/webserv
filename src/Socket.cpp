@@ -19,9 +19,8 @@ Socket::Socket( std::string config, std::string path ) : bound( false )
 		return ;
 	this->setRouteConfigs( config );
 }
-Socket::Socket( const Socket & ) { std::cout << "cant copy sockets!" << std::endl; }
-Socket &	Socket::operator=( const Socket & ) { std::cout << "no assignment allowed for socket object!" << std::endl; return *this; }
-
+Socket::Socket( const Socket & ) { }
+Socket &	Socket::operator=( const Socket & ) { return *this; }
 Socket::~Socket()
 {
 	//delete configs
@@ -39,10 +38,10 @@ int Socket::setupSockets()
 {
     this->fd = socket( AF_INET, SOCK_STREAM, 0 );
     if ( this->fd == -1 )
-        return ft_return("error: socket\n" );
+        return printerror("error: socket\n" );
     int status = fcntl( this->fd, F_SETFL, O_NONBLOCK );	
     if ( status == -1 )
-        ft_return( "fcntl failed" );
+        printerror( "fcntl failed" );
     memset( &socketAddr, 0, sizeof( socketAddr ) );
     socketAddr.sin_family = AF_INET;
     socketAddr.sin_addr.s_addr = htonl( INADDR_ANY );
@@ -57,7 +56,7 @@ int Socket::setupSockets()
 	setsockopt( this->fd, SOL_SOCKET, SO_REUSEADDR, ( char* )&i, sizeof( int ) );
 	this->bound = true;
     if ( listen( this->fd, 100 ) )
-        return ft_return( "error: listen\n" );
+        return printerror( "error: listen\n" );
     return 0;
 }
 
@@ -89,12 +88,6 @@ Config	*Socket::getConfig( std::string location ) const
 	std::map<std::string, Config*>::const_iterator	it;
 	std::string	new_location = location;
 	size_t		pos;
-
-	std::cout << "loc:" << location << std::endl;
-	for (it = this->routes.begin(); it != this->routes.end(); it++) {
-		std::cout << (*it).first << std::endl;
-	}
-
 
 	pos = location.find( ".pl" );
 	if ( pos != std::string::npos )

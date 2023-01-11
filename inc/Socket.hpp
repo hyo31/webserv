@@ -30,6 +30,7 @@ class Socket
 		std::map< std::string, Config* >	routes; /* location - config */
 
     private:
+                    Socket() {};
                 	Socket( const Socket & );
         Socket &	operator=( const Socket & );
 

@@ -1,7 +1,7 @@
 #include "../inc/Config.hpp"
 
 //Constructor that creates a config object for each serverblock
-Config::Config( std::string config, std::string path ):	servername("default"), root("public_html"), errorpages(root + "/pages/errorPages/"),
+Config::Config( std::string config, std::string path ):	servername("default"), root("public_html"), errorpages(root + "/pages/errorpages/"),
 														autoindex(false), directoryRequest(""), cgi("cgi-bin"), maxClientBodySize(MAX_BODY),
 														extension(".pl"), uploadDir( "/uploads/")
 {
@@ -56,7 +56,7 @@ int Config::setPages( std::string path, std::string root )
     if ( !directory )
 	{
 		std::cout << "failedpath:" << pathDir << std::endl;
-        return ft_return( "can not open directory(setPages): " );
+        return printerror( "can not open directory(setPages): " );
 	}
     while ( ( x = readdir( directory ) ) )
     {
@@ -109,7 +109,6 @@ void	Config::setConfig( std::string config )
 	}
 }
 
-// servername in config is declared on first line behind the port (seperated by one space)
 void	Config::setServerName( std::string line )
 {
 	size_t	pos = line.find( " " ) + 1;
@@ -118,13 +117,11 @@ void	Config::setServerName( std::string line )
 		this->servername = line.substr( line.find( " ", pos ) + 1 );
 }
 
-// Location of default errorpages in config is declared as <errorPages location>
 void	Config::setErrorPages( std::string line )
 {
 	this->errorpages = this->root + line.substr( line.find( " " ) + 1 );
 }
 
-// autoindex in config is declared as <autoindex on/off>
 void	Config::setAutoIndex( std::string line )
 {
 	if ( ( line.substr( line.find( " " ) + 1 ) ) == "on" )
@@ -133,25 +130,21 @@ void	Config::setAutoIndex( std::string line )
 		this->autoindex = false;
 }
 
-// root in config is declared as <root location>
 void	Config::setRoot( std::string line )
 {
 	this->root = line.substr( line.find( " " ) + 1 );
 }
 
-// default response page for a directory request in config is declared as <directoryRequest page>
 void	Config::setDirectoryRequest( std::string line )
 {
 	this->directoryRequest = line.substr( line.find( " " ) + 1 );
 }
 
-// cgi in config is declared as <cgi location_of_cgi_scripts>
 void	Config::setCGI( std::string line )
 {
 	this->cgi = line.substr( line.find( " " ) + 1 );
 }
 
-// MaxBodySize in config is declared as <maxClientBodySize xxx>
 void	Config::setMaxBodySize( std::string line )
 {
 	this->maxClientBodySize = std::stoi( line.substr( line.find( " " ) + 1 ) );
@@ -159,7 +152,6 @@ void	Config::setMaxBodySize( std::string line )
 		this->maxClientBodySize = MAX_BODY;
 }
 
-// uploadDir in config is declared as <uploadDir dir/>
 void	Config::setUploadDir( std::string line )
 {
 	this->uploadDir = line.substr( line.find( " " ) + 1 );
@@ -188,7 +180,7 @@ void	Config::setMethods( std::string line )
 }
 
 //redirects in config are declared as <redirect to_this_location>
-void	Config::setRedirects(std::string route , std::string location)
+void	Config::setRedirects(std::string route , std::string location )
 {
 	size_t	pos = route.find( "redirect" );
 	size_t	newline;
@@ -199,6 +191,5 @@ void	Config::setRedirects(std::string route , std::string location)
 		newline = route.find( "\n", pos );
 		std::string redirect_to = route.substr( pos, newline - pos );
 		this->redirects.insert( std::make_pair( location, redirect_to ) );
-		// std::cout << "red to:" << redirect_to << std::endl;
 	}
 }

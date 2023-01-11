@@ -10,14 +10,14 @@ std::string Server::createAutoIndex( std::string root, std::string folder )
     autoindexFile.open( "response/autoindex.html", std::ofstream::out | std::ofstream::trunc );
     if ( !autoindexFile.is_open() )
     {
-        ft_return( "failed to create autoindex: " );
-        return root + "/pages/errorPages/404.html";
+        printerror( "failed to create autoindex: " );
+        return root + "/pages/errorpages/404.html";
     }
     directory = opendir( page.c_str() );
     if ( !directory )
     {
-        ft_return( "can not open directory(createAutoIndex): " );
-        return root + "/pages/errorPages/404.html";
+        printerror( "can not open directory(createAutoIndex): " );
+        return root + "/pages/errorpages/404.html";
     }
 
     // content of the autoindex file

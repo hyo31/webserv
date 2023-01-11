@@ -6,10 +6,11 @@
 class Config;
 
 typedef  void ( Config::*ConfigMemFn )( std::string );
-#define CALL_MEMBER_FN( ptrToMember )( this->*(ptrToMember ) )
+#define CALL_MEMBER_FN( ptrToMember )( this->*( ptrToMember ) )
 
 class Config
 {
+		Config() {};
     public:
         Config( std::string, std::string );
         ~Config();
@@ -30,11 +31,9 @@ class Config
 
 		std::map< std::string, std::string >	pages; /* name - location */	
 		std::map< std::string, std::string >	redirects; /* name - redirect_location */
+	
 		void		setConfig( std::string );
 		void		setRedirects( std::string, std::string );
-
-    private:
-
 		int			setPages( std::string , std::string );
 		void		setServerName( std::string );
 		void		setRoot( std::string );
@@ -46,6 +45,7 @@ class Config
 		void		setUploadDir( std::string );
 		void		setExtension( std::string );
 		void		setMethods( std::string );
+
 };
 
 #endif

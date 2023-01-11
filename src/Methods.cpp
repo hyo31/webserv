@@ -6,6 +6,15 @@ std::string	Server::methodGET( Client *client, Config *config )
 	std::string index, location = client->getLocation();
     std::string page = this->_sockets[port]->getLocationPage( location );
 	std::string redirect_page = this->_sockets[port]->getRedirectPage( location );
+    
+	// check if requested page is a redirection
+	if ( redirect_page != "" )
+	{
+		_responseHeader = "HTTP/1.1 301 Moved Permanently\r\nLocation: ";
+		_responseHeader.append( redirect_page );
+		std::cout << "WTF\n\n\n\n";
+		return ( config->errorpages + "301.html" );
+	}
 
     // respond to a GET request that requests a directory
 	if ( page == "Directory" )
@@ -27,14 +36,7 @@ std::string	Server::methodGET( Client *client, Config *config )
         _responseHeader = "HTTP/1.1 403 Forbidden";
         return ( config->errorpages + "403.html" );
 	}
-    // check if requested page is a redirection
-	if ( redirect_page != "" )
-	{
-		_responseHeader = "HTTP/1.1 301 Moved Permanently\r\nLocation: ";
-		_responseHeader.append( redirect_page );
-		return ( config->errorpages + "301.html" );
-	}
-    if ( page != "" )
+	if ( page != "" )
     {
         _responseHeader = "HTTP/1.1 200 OK";
         return ( page );
@@ -67,6 +69,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 			return ( "response/responseCGI.html" );
 		}
 	}
+	_responseHeader = "HTTP/1.1 403 Forbidden";
 	return ( config->errorpages + "403.html" );
 }
 

@@ -1,6 +1,6 @@
 #include "../inc/Server.hpp"
 
-int ft_return( std::string str )
+int printerror( std::string str )
 {
     std::cerr << str << strerror( errno ) << std::endl;
     return (-1);
@@ -99,6 +99,8 @@ void	SaveBinaryFile( std::string path, Client *client, Config *config )
 	directory = opendir((path + "/" + config->root + config->uploadDir).c_str());
 	if ( !directory )
 		mkdir( (path + "/" + config->root + config->uploadDir).c_str(), 0777 );
+	else
+		closedir( directory );
 	to_upload = readFile( client->getHeader(), client->getBody() );
 	dest = path + "/" + config->root + config->uploadDir + to_upload[0];
 

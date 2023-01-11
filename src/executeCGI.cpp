@@ -9,7 +9,7 @@ std::vector<std::string>	readFile( std::string header, std::string body )
     pos = header.find( "boundary=" );
     if ( pos == std::string::npos )
     {
-        ft_return( "request has no boundary: " );
+        printerror( "request has no boundary: " );
         return ( vars );
     }
     boundary = header.substr( header.find( "=", pos ) + 1, header.find( "\r\n", pos ) - ( header.find( "=", pos ) + 1 ) );
@@ -37,7 +37,7 @@ char	**setupEnv( std::string page, int port, std::string path, std::string root,
     pos = header.find( "Content-Type: " );
     if ( pos == std::string::npos )
     {
-        ft_return( "request has no Content-Type: " );
+        printerror( "request has no Content-Type: " );
         return nullptr;
     }
 
@@ -95,16 +95,16 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
 	env = setupEnv( page, port, path, root, body, header, uploaddir );
     pathCGI = path + page;
     if ( !env )
-        return ft_return( "failed setting up the environment: " );
+        return printerror( "failed setting up the environment: " );
     pid = fork();
     if ( pid == -1 )
-        return ft_return( "fork failed: " );
+        return printerror( "fork failed: " );
     
     // execute the script
     if ( !pid )
     {
         execve( pathCGI.c_str(), NULL, env );
-        exit ( ft_return( "execve failed: " ) );
+        exit ( printerror( "execve failed: " ) );
     }
     else
         waitpid( pid, &status, 0 );
