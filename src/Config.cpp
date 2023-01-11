@@ -157,13 +157,11 @@ void	Config::setUploadDir( std::string line )
 	this->uploadDir = line.substr( line.find( " " ) + 1 );
 }
 
-//extensions in config are declared as <extension .x>
 void	Config::setExtension( std::string line )
 {
 	this->extension = line.substr( line.find( " " ) + 1 );
 }
 
-//methods in config are declared as <methods X+Y+Z>
 void	Config::setMethods( std::string line )
 {
 	size_t		pos = 0;
@@ -179,7 +177,6 @@ void	Config::setMethods( std::string line )
 	}
 }
 
-//redirects in config are declared as <redirect to_this_location>
 void	Config::setRedirects(std::string route , std::string location )
 {
 	size_t	pos = route.find( "redirect" );

@@ -48,7 +48,7 @@ class Server
         int			monitor_ports();
         int			receiveClientRequest( Client*, std::string& );
         int			sendResponseToClient( Client* );
-        int			closeConnection( Client* );
+        void		closeConnection( Client* );
         int			openSockets( std::string );
         int			findSocket( int );
         void		set_chlist( std::vector< struct kevent >&, uintptr_t, int16_t, uint16_t, uint32_t, intptr_t, void * );
