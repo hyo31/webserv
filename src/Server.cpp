@@ -47,12 +47,12 @@ int	Server::monitor_ports()
 				client = findClient( fd );
                 std::cout << "handling event:" << i+1 << "/" << new_event <<  " on fd:" << fd << std::endl;
 				/* EV_ERROR is set if kevent occured an error processing chlist */
-				if ( tevents[i].flags & EV_ERROR )
-				{
-                	closeConnection( client );
-					std::cout << "system error:" << data << std::endl;
-                    return printerror( "kevent failed: \n" );
-				}
+				// if ( tevents[i].flags & EV_ERROR )
+				// {
+                // 	closeConnection( client );
+				// 	std::cout << "system error:" << data << std::endl;
+                //     return printerror( "kevent failed: \n" );
+				// }
                 /* EV_EOF is set if the client has disconnected */
 				if ( tevents[i].flags & EV_EOF )
                     closeConnection( client );
@@ -73,7 +73,10 @@ int	Server::monitor_ports()
                     if ( ret == ERROR )
                     	return ERROR ;
                     if ( ret == STOP_READ )
+					{
 						set_chlist( chlist, fd, EVFILT_READ, EV_DELETE, data, 0, nullptr );
+						break ;
+					}
 					if ( ret == CONT_READ )
 						continue ;
                     set_chlist( chlist, fd, EVFILT_WRITE, EV_ADD | EV_ONESHOT, data, 0, nullptr );

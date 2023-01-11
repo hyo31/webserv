@@ -1,9 +1,9 @@
 #include "../inc/Config.hpp"
 
 //Constructor that creates a config object for each serverblock
-Config::Config( std::string config, std::string path ):	servername("default"), root("public_html"), errorpages(root + "/pages/errorpages/"),
-														autoindex(false), directoryRequest(""), cgi("cgi-bin"), maxClientBodySize(MAX_BODY),
-														extension(".pl"), uploadDir( "/uploads/")
+Config::Config( std::string config, std::string path ):	servername( "default" ), root( "public_html" ), autoindex( false ),
+														directoryRequest( "" ), cgi( "cgi-bin" ), maxClientBodySize( MAX_BODY ),
+														extension( ".pl" ), uploadDir( "/uploads/")
 {
 	size_t	pos;
 
@@ -25,7 +25,7 @@ Config::Config( const Config& src )
 Config & Config::operator=( const Config& src )
 {
 		this->servername = src.servername;
-		this->errorpages = src.errorpages;
+		this->errorPages = src.errorPages;
 		this->autoindex = src.autoindex;
 		this->methods = src.methods;
 		this->root = src.root;
@@ -92,7 +92,7 @@ void	Config::setConfig( std::string config )
 	int						n = 10;
 	std::string				line;
 	std::string::iterator 	start = config.begin(), new_pos = config.begin();
-	std::string 			members[10] = { "listen", "root", "errorPages", "autoindex", "directoryRequest", "cgi", "maxClientBodySize", "uploadDir", "extension", "methods" };
+	std::string 			members[10] = { "listen", "root", "errorPage", "autoindex", "directoryRequest", "cgi", "maxClientBodySize", "uploadDir", "extension", "methods" };
 	ConfigMemFn				fs[] = {	&Config::setServerName, &Config::setRoot, &Config::setErrorPages, &Config::setAutoIndex, &Config::setDirectoryRequest,
 										&Config::setCGI, &Config::setMaxBodySize, &Config::setUploadDir, &Config::setExtension, &Config::setMethods };
 
@@ -119,7 +119,14 @@ void	Config::setServerName( std::string line )
 
 void	Config::setErrorPages( std::string line )
 {
-	this->errorpages = this->root + line.substr( line.find( " " ) + 1 );
+	size_t	start, end;
+	std::string	error_num, error_page;
+
+	start = line.find( " " ) + 1;
+	end = line.find( " ", start );
+	error_num = line.substr( start, end - start );
+	error_page = line.substr( end + 1 );
+	this->errorPages.insert( std::make_pair( error_num, error_page ) );
 }
 
 void	Config::setAutoIndex( std::string line )

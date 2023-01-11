@@ -78,5 +78,5 @@ int							executeCGI( std::string, int, std::string, std::string, std::string, s
 bool						BinaryFile( std::string );
 void						SaveBinaryFile( std::string, Client *, Config * );
 std::vector<std::string>	readFile( std::string header, std::string body );
-
+std::string					createResponseHtml( void );
 #endif

@@ -34,10 +34,10 @@ int Server::receiveClientRequest( Client *client, std::string & request )
 	}
 	if ( bytesRead == -1 )
 	{
-		std::cout << "error receiving data" << std::endl;
 		closeConnection( client );
-		return STOP_READ;
+		return CONT_READ;
 	}
+
 	client->update_client_timestamp();
     if ( client->requestIsRead() == true ) //clear content from previous request
     {
@@ -99,15 +99,24 @@ int	Server::sendResponseToClient( Client *client )
     if ( !responseFile.is_open() )
         return printerror( "could not open response file " );
     htmlFileName = this->getHtmlFile( client );
+	std::cout << "filename:" << htmlFileName << std::endl;
     if ( !htmlFileName.size() )
-        htmlFileName = this->_sockets[client->getPort()]->getConfig( client->getLocation() )->errorpages + "500.html";
+        htmlFileName =  "/pages/errorpages/500.html";
     htmlFile.open( htmlFileName, std::ios::in | std::ios::binary );
     if ( !htmlFile.is_open() )
     {
     	this->_responseHeader = "HTTP/1.1 403 Forbidden";
-    	htmlFile.open( this->_sockets[client->getPort()]->getConfig( client->getLocation() )->errorpages + "403.html", std::ios::in | std::ios::binary );
+    	htmlFile.open( "/pages/errorpages/403.html", std::ios::in | std::ios::binary );
 		if ( !htmlFile.is_open() )
-			htmlFile.open( "public_html/pages/errorpages/500.html", std::ios::in | std::ios::binary );
+		{
+			htmlFile.open( createResponseHtml() );
+			if ( !htmlFile.is_open() )
+			{
+				std::cout << "couldnt create a response.." << std::endl;
+				closeConnection( client );
+				return 0;
+			}
+		}
     }
 
 	//get length of htmlFile

@@ -12,7 +12,7 @@ std::string	Server::methodGET( Client *client, Config *config )
 	{
 		_responseHeader = "HTTP/1.1 301 Moved Permanently\r\nLocation: ";
 		_responseHeader.append( redirect_page );
-		return ( config->errorpages + "301.html" );
+		return ( "/pages/errorpages/301.html" );
 	}
 
     // respond to a GET request that requests a directory
@@ -33,7 +33,7 @@ std::string	Server::methodGET( Client *client, Config *config )
         if ( config->autoindex )
             return ( this->createAutoIndex( config->root, location ) );
         _responseHeader = "HTTP/1.1 403 Forbidden";
-        return ( config->errorpages + "403.html" );
+        return ( "/pages/errorpages/403.html" );
 	}
 	if ( page != "" )
     {
@@ -41,7 +41,7 @@ std::string	Server::methodGET( Client *client, Config *config )
         return ( page );
     }
     _responseHeader = "HTTP/1.1 404 Not Found";
-    return ( config->errorpages + "404.html" );
+    return ( "/pages/errorpages/404.html" );
 }
 
 std::string	Server::methodPOST( Client *client, Config *config )
@@ -51,7 +51,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 	if ( client->bodyTooLarge() == true )
 	{
 		_responseHeader = "HTTP/1.1 413 Request Entity Too Large";
-		return ( config->errorpages + "413.html" );
+		return ( "/pages/errorpages/413.html" );
 	}
 	if ( BinaryFile( client->getBody() ) == true )
 	{
@@ -69,7 +69,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 		}
 	}
 	_responseHeader = "HTTP/1.1 403 Forbidden";
-	return ( config->errorpages + "403.html" );
+	return ( "/pages/errorpages/403.html" );
 }
 
 std::string	Server::methodDELETE( Client *client, Config *config )
@@ -86,7 +86,7 @@ std::string	Server::methodDELETE( Client *client, Config *config )
 		if ( std::find( dir_config->methods.begin(), dir_config->methods.end(), "DELETE" ) == dir_config->methods.end() )
 		{
 			_responseHeader = "HTTP/1.1 405 Method Not Allowed";
-			return config->errorpages + "405.html";
+			return "/pages/errorpages/405.html";
 		}
 	}
 

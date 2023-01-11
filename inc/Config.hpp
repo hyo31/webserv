@@ -20,7 +20,6 @@ class Config
 
 		std::string					servername;
 		std::string                 root;
-		std::string					errorpages;
 		bool						autoindex;
 		std::vector<std::string>	methods;
 		std::string					directoryRequest;
@@ -31,7 +30,8 @@ class Config
 
 		std::map< std::string, std::string >	pages; /* name - location */	
 		std::map< std::string, std::string >	redirects; /* name - redirect_location */
-	
+		std::map< std::string, std::string >	errorPages; /* error - page */
+
 		void		setConfig( std::string );
 		void		setRedirects( std::string, std::string );
 		int			setPages( std::string , std::string );
