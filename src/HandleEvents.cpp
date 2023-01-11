@@ -112,7 +112,11 @@ int Server::sendResponseToClient( Client *client )
 
 	//read correct headers (first one set in 'findHtmlFile') into responseFile
 	responseFile << this->_responseHeader << std::endl;
-	responseFile << "Content-Type: text/html" << std::endl;
+	std::cout << htmlFileName.substr( htmlFileName.size() - 5, 5 ) << std::endl;
+	if ( htmlFileName.substr( htmlFileName.size() - 5, 5 ) == ".html" )
+		responseFile << "Content-Type: text/html" << std::endl;
+	else
+		responseFile << "Content-Type: text/plain" << std::endl;
 	responseFile << "Content-Length: " << fileSize << "\r\n\r\n"; //std::endl << std::endl;
 
 	//create char string to read html into, which is then read into responseFile      

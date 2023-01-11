@@ -63,7 +63,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 	// execute the CGI on the requested file if it has the right extension
 	if ( location.size() > config->extension.size() && location.substr( location.size() - 3, location.size() - 1) == config->extension )
 	{
-		if ( !executeCGI("/" + config->cgi + location, client->getPort(), this->_path, config->root, client->getBody(), client->getHeader(), config->uploadDir ) )
+		if ( !executeCGI( config->root + config->cgi + location, client->getPort(), this->_path, config->root, client->getBody(), client->getHeader(), config->uploadDir ) )
 		{
 			_responseHeader = "HTTP/1.1 200 OK";
 			return ( "response/responseCGI.html" );

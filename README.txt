@@ -3,8 +3,6 @@ To use it, simple make and run it, it will use the default config.
 It handles GET, DELETE and POST
 Files can be uploaded and forms can be posted - it will do so using CGI (we run a perl script)
 
-No DNS is used, it only works with localhost
-
 In the config file you can set up server blocks. Each block should be within brackets
 {
 	[block]
