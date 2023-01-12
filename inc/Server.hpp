@@ -58,7 +58,7 @@ class Server
         void		parseRequest( std::string, Client* );
 		void		closeSockets();
 		void		addHost( int, std::string );
-        void        resetPages( Client* );
+        void        resetPages( );
 		std::string	methodDELETE( Client*, Config* );
 		std::string	methodGET( Client*, Config* );
 		std::string	methodPOST( Client*, Config* );

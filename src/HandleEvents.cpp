@@ -76,25 +76,38 @@ void    removeResponseFiles( void )
 	closedir( directory );
 }
 
-void	Server::resetPages( Client *client )
+void	Server::resetPages( ) 
 {
-	std::map< std::string, Config* >::iterator	it;
-	std::string	path = this->_path + "/" + this->_sockets[client->getSockNum()]->serverConfig->root;
-	
-	this->_sockets[client->getSockNum()]->serverConfig->pages.clear();
-	this->_sockets[client->getSockNum()]->serverConfig->setPages(path, "");
-	for (it = this->_sockets[client->getSockNum()]->routes.begin(); it != this->_sockets[client->getSockNum()]->routes.end(); ++it)
-	{
-		path = this->_path + "/" + (*it).second->root;
-		(*it).second->pages.clear();
-		(*it).second->setPages(path, "");
+	std::map< std::string, std::vector< Config* > >::iterator it;
+	std::string	path;
+
+	for ( size_t i = 0; i < this->_sockets.size(); ++i ) {
+		for ( it = this->_sockets[i]->hostConfigs.begin(); it != this->_sockets[i]->hostConfigs.end(); ++it ) {
+			for ( size_t j = 0; j < it->second.size(); ++j ) {
+				path = this->_path + "/" + it->second[j]->root;
+				it->second[j]->pages.clear();
+				it->second[j]->setPages( path, "" );
+			}
+		}
 	}
+
+	// std::map< std::string, Config* >::iterator	it;
+	// std::string	path = this->_path + "/" + this->_sockets[client->getSockNum()]->serverConfig->root;
+	
+	// this->_sockets[client->getSockNum()]->serverConfig->pages.clear();
+	// this->_sockets[client->getSockNum()]->serverConfig->setPages(path, "");
+	// for (it = this->_sockets[client->getSockNum()]->routes.begin(); it != this->_sockets[client->getSockNum()]->routes.end(); ++it)
+	// {
+	// 	path = this->_path + "/" + (*it).second->root;
+	// 	(*it).second->pages.clear();
+	// 	(*it).second->setPages(path, "");
+	// }
 }
 
 // create a correct response to the request of the client and send it back
 int	Server::sendResponseToClient( Client *client )
 {
-	Config			*config = this->_sockets[client->getSockNum()]->getConfig( client->getLocation() );
+	Config			*config = this->_sockets[client->getSockNum()]->getConfig( client->getLocation(), client->getHost() );
 	int				fileSize, c_fd = client->getConnectionFD();
     std::string     htmlFileName;
     std::ifstream   htmlFile;
@@ -187,7 +200,7 @@ int	Server::sendResponseToClient( Client *client )
 	if ( ifs.good() )
 		ifs.close();
 	removeResponseFiles();
-	resetPages( client );
+	resetPages();
 	if ( client->bodyTooLarge() == true )
 		closeConnection( client );
 	if ( htmlFileName == "response/responseCGI" )
