@@ -3,7 +3,13 @@
 std::string	Server::methodGET( Client *client, Config *config )
 {
 	int			port = client->getPort();
-	std::string index, location = client->getLocation();
+	std::string query, index, location = client->getLocation();
+
+	if (location.find("?") != std::string::npos)
+	{
+		query = location.substr(location.find("?") + 1, location.size() - (location.find("?") + 1));
+		location = location.substr(0, location.find("?"));
+	}
     std::string page = this->_sockets[port]->getLocationPage( location );
 	std::string redirect_page = this->_sockets[port]->getRedirectPage( location );
     
@@ -39,13 +45,17 @@ std::string	Server::methodGET( Client *client, Config *config )
 	// execute the CGI on the requested file if it has the right extension
 	if ( location.size() > config->extension.size() && location.substr( location.size() - 3, location.size() - 1) == config->extension )
 	{
-		if ( !executeCGI( "/" + config->root + config->cgi + location, client->getPort(), this->_path, config->root, client->getBody(), client->getHeader(), config->uploadDir, "GET" ) )
+		switch ( executeCGI( "/" + config->root + config->cgi + location, client->getPort(), this->_path, config->root, query, client->getHeader(), config->uploadDir, "GET" ) )
 		{
-			_responseHeader = "HTTP/1.1 200 OK";
-			return ( "response/responseCGI.html" );
+			case 0:
+				_responseHeader = "HTTP/1.1 200 OK";
+				return ( "response/responseCGI.html" );
+			case 1:
+				_responseHeader = "HTTP/1.1 500 Error";
+				return ( config->errorPageDir + "500.html" );
+			case -1:
+				return ( "DO NOTHING" );
 		}
-		_responseHeader = "HTTP/1.1 500 Error";
-		return ( config->errorPageDir + "500.html" );
 	}
 	if ( page != "" )
     {
@@ -78,13 +88,17 @@ std::string	Server::methodPOST( Client *client, Config *config )
 	// execute the CGI on the requested file if it has the right extension
 	if ( location.size() > config->extension.size() && location.substr( location.size() - 3, location.size() - 1) == config->extension )
 	{
-		if ( !executeCGI( "/" + config->root + config->cgi + location, client->getPort(), this->_path, config->root, client->getBody(), client->getHeader(), config->uploadDir, "POST" ) )
+		switch ( executeCGI( "/" + config->root + config->cgi + location, client->getPort(), this->_path, config->root, client->getBody(), client->getHeader(), config->uploadDir, "GET" ) )
 		{
-			_responseHeader = "HTTP/1.1 200 OK";
-			return ( "response/responseCGI.html" );
+			case 0:
+				_responseHeader = "HTTP/1.1 200 OK";
+				return ( "response/responseCGI.html" );
+			case 1:
+				_responseHeader = "HTTP/1.1 500 Error";
+				return ( config->errorPageDir + "500.html" );
+			case -1:
+				return ( "DO NOTHING" );
 		}
-		_responseHeader = "HTTP/1.1 403 Forbidden";
-		return ( config->errorPageDir + "403.html" );
 	}
 	if ( page != "" )
     {
