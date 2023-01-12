@@ -15,8 +15,8 @@ std::string	Server::methodGET( Client *client, Config *config )
 		query = location.substr(location.find("?") + 1, location.size() - (location.find("?") + 1));
 		location = location.substr(0, location.find("?"));
 	}
-    std::string page = this->_sockets[sock_num]->getLocationPage( location );
-	std::string redirect_page = this->_sockets[sock_num]->getRedirectPage( location );
+    std::string page = this->_sockets[sock_num]->getLocationPage( location, client->getHost() );
+	std::string redirect_page = this->_sockets[sock_num]->getRedirectPage( location, client->getHost() );
     
 	// check if requested page is a redirection
 	if ( redirect_page != "" )
@@ -36,7 +36,7 @@ std::string	Server::methodGET( Client *client, Config *config )
 		
         // else search for an index
         index = location + "index.html";
-		page = this->_sockets[sock_num]->getLocationPage( index );
+		page = this->_sockets[sock_num]->getLocationPage( index, client->getHost() );
 		if ( page != "" )
 		    return ( page );
 
@@ -75,7 +75,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 {
 	int				sock_num = client->getSockNum(), fileExtension = 0;
 	int				port = this->_sockets[sock_num]->port;
-	std::string		location = client->getLocation(), page = this->_sockets[sock_num]->getLocationPage( location ), body, newFileName, newFileContent, index;
+	std::string		location = client->getLocation(), page = this->_sockets[sock_num]->getLocationPage( location, client->getHost() ), body, newFileName, newFileContent, index;
 	std::ofstream	newFile;
 	std::ifstream	checkIfOpen;
 
@@ -132,7 +132,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 		
         // else search for an index
         index = location + "index.html";
-		page = this->_sockets[sock_num]->getLocationPage( index );
+		page = this->_sockets[sock_num]->getLocationPage( index, client->getHost() );
 		if ( page != "" )
 		    return ( page );
 
@@ -148,7 +148,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 
 std::string	Server::methodDELETE( Client *client, Config *config )
 {
-	std::string		page = this->_sockets[client->getSockNum()]->getLocationPage( client->getLocation() );
+	std::string		page = this->_sockets[client->getSockNum()]->getLocationPage( client->getLocation(), client->getHost() );
     std::ifstream	file;
 
 	// check if the requested file exists and delete it

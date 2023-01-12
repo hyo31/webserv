@@ -27,6 +27,7 @@ class Config
 		std::string					extension;
 		std::string					uploadDir;
 		std::string					errorPageDir;
+		std::string					location;
 
 		std::map< std::string, std::string >	pages; /* name - location */	
 		std::map< std::string, std::string >	redirects; /* name - redirect_location */
@@ -45,6 +46,7 @@ class Config
 		void	setUploadDir( std::string );
 		void	setExtension( std::string );
 		void	setMethods( std::string );
+		void	setLocation( std::string );
 
 };
 

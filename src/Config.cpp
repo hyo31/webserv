@@ -13,6 +13,7 @@ Config::Config( std::string config, std::string path ):	servername( "default" ),
 		config = config.substr( 0, pos - 1 );
 	methods.push_back( "GET" );
 	setConfig( config );
+	location = "";
 	setPages( path + "/" + this->root, "" );
 }
 
@@ -90,11 +91,11 @@ int Config::setPages( std::string path, std::string root )
 //only redirects are done seperately (see setRouteConfigs in Socket.cpp)
 void	Config::setConfig( std::string config )
 {
-	int						n = 10;
+	int						n = 11;
 	std::string				line;
 	std::string::iterator 	start = config.begin(), new_pos = config.begin();
-	std::string 			members[10] = { "server_name", "root", "errorPage", "autoindex", "directoryRequest", "cgi", "maxClientBodySize", "uploadDir", "extension", "methods" };
-	ConfigMemFn				fs[] = {	&Config::setServerName, &Config::setRoot, &Config::setErrorPages, &Config::setAutoIndex, &Config::setDirectoryRequest,
+	std::string 			members[11] = { "location", "server_name", "root", "errorPage", "autoindex", "directoryRequest", "cgi", "maxClientBodySize", "uploadDir", "extension", "methods" };
+	ConfigMemFn				fs[] = {	&Config::setLocation, &Config::setServerName, &Config::setRoot, &Config::setErrorPages, &Config::setAutoIndex, &Config::setDirectoryRequest,
 										&Config::setCGI, &Config::setMaxBodySize, &Config::setUploadDir, &Config::setExtension, &Config::setMethods };
 
 	for ( std::string::iterator it = config.begin(); it != config.end(); ++it ) {
@@ -113,6 +114,14 @@ void	Config::setConfig( std::string config )
 void	Config::setServerName( std::string line )
 {
 	this->servername = line.substr( line.find( " " ) + 1 );
+}
+void	Config::setLocation( std::string line )
+{
+	size_t	start, end;
+
+	start = line.find( " " ) + 1;
+	end = line.find( " ", start );
+	this->location = line.substr( start, end - start );
 }
 
 void	Config::setErrorPages( std::string line )

@@ -81,14 +81,14 @@ Client *Server::findClient( int c_fd )
 // find the right file to answer to the request
 std::string Server::getHtmlFile( Client* client )
 {
-	Config		*config = this->_sockets[client->getSockNum()]->getConfig( client->getLocation() );
+	Config		*config = this->_sockets[client->getSockNum()]->getConfig( client->getLocation(), client->getHost() );
 	std::string	method = client->getMethod();
 
 	// checks if method is allowed for this location
 	if ( std::find( config->methods.begin(), config->methods.end(), method ) == config->methods.end() )
 	{
 		std::string directory = client->getLocation().substr( 0, client->getLocation().find_last_of( "/" ) + 1 );
-		Config *dir_config = this->_sockets[client->getSockNum()]->getConfig( directory );
+		Config *dir_config = this->_sockets[client->getSockNum()]->getConfig( directory, client->getHost() );
 		if ( std::find( dir_config->methods.begin(), dir_config->methods.end(), "DELETE" ) == dir_config->methods.end() && method == "DELETE")
 		{
 			_responseHeader = "HTTP/1.1 405 Method Not Allowed";

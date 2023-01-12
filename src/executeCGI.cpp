@@ -51,7 +51,7 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
     if ( pos == std::string::npos )
     {
         printerror( "request has no Content-Type: " );
-        return ( env);
+        return ( env );
     }
     contentType = header.substr( header.find( " ", pos ) + 1, header.find( "\r\n", pos ) - ( header.find( " ", pos ) + 1 ) );
     // content type is a form

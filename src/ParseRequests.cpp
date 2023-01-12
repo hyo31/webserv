@@ -95,8 +95,7 @@ static void	unchunk( std::string request, size_t start, Client *client, size_t m
 void    Server::parseRequest( std::string request, Client *client )
 {
 	std::string	substr, header;
-    size_t		start, end;
-	size_t		MaxBody = this->_sockets[client->getSockNum()]->getConfig( client->getLocation() )->maxClientBodySize;
+    size_t		start, end, MaxBody;
 
     client->setRequestIsRead( false );
 	/* check if full header is read and store it */
@@ -114,6 +113,7 @@ void    Server::parseRequest( std::string request, Client *client )
 
 	header = client->getHeader();
 	client->setHost( header );
+	MaxBody = this->_sockets[client->getSockNum()]->getConfig( client->getLocation(), client->getHost() )->maxClientBodySize;
 	end = header.find( " ", 0 );
 	client->setMethod( header.substr( 0, end ) );
 	start = end + 1;

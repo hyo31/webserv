@@ -5,8 +5,12 @@
 //Each object creates its own configuration file
 Socket::Socket( std::string config, std::string path ) : bound( false )
 {
-	this->serverConfig = new Config( config, path );
+	std::vector<Config*> configv;
+
+	Config *newConfig = new Config( config, path );
 	this->setPortLogHost( config );
+	configv.push_back( newConfig );
+	this->hostConfigs.insert( std::make_pair( this->hosts[0], configv ) );
 	ipAddr = "localhost";
 	currentFile = "";
 	this->setupSockets();
@@ -20,12 +24,12 @@ Socket &	Socket::operator=( const Socket & ) { return *this; }
 Socket::~Socket()
 {
 	//delete configs
-	std::map< std::string, Config* >::iterator	it;
-	for ( it = this->routes.begin(); it != this->routes.end(); ++it ) {
-		delete (*it).second;
-	}
-	delete this->serverConfig;
-    std::cout << "Socket:" << this->fd << " - bound to port:" << port << " closed\n";
+	// std::map< std::string, Config* >::iterator	it;
+	// for ( it = this->routes.begin(); it != this->routes.end(); ++it ) {
+	// 	delete (*it).second;
+	// }
+	// delete this->serverConfig;
+    // std::cout << "Socket:" << this->fd << " - bound to port:" << port << " closed\n";
     close( fd );
 }
 
@@ -62,55 +66,77 @@ void	Socket::setRouteConfigs( std::string configfile )
 {
 	std::string	location, route;
 	size_t		start = 0, end = 0;
+	std::map< std::string, std::vector< Config* > >::iterator it = this->hostConfigs.find( this->hosts[0] );
 
 	while ( ( start = configfile.find( "location", end ) ) != std::string::npos )
 	{
-		Config	*routeConfig = new Config( *this->serverConfig );
+		Config	*routeConfig = new Config( *it->second[0] );
 		end = configfile.find( "{", start ) - 1;
 		location = configfile.substr( start + 9, end - ( start + 9 ) );
 		end = configfile.find( "}", start );
 		route = configfile.substr( start, ( end - start ) );
 		routeConfig->setConfig( route );
 		routeConfig->setRedirects( route, location );
-		this->routes.insert( std::make_pair( location, routeConfig ) );
+		(*it).second.push_back( routeConfig );
+		// this->hostConfigs.insert( std::make_pair( this->hosts[0], routeConfig ) );
 	}
 }
 
 //finds the correct config corresponding to the (clients) requested location
 //if the client tries to upload, the request will be routed to our .pl script
 //and the location needs to be the root directory , not the name itself
-Config	*Socket::getConfig( std::string location ) const
+Config	*Socket::getConfig( std::string location, std::string host ) const
 {
-	std::map<std::string, Config*>::const_iterator	it;
+	std::map< std::string, std::vector< Config * > >::const_iterator	it;
+	std::vector< Config * >::const_iterator	it2;
 	std::string	new_location = location;
 	size_t		pos;
 
+	it = this->hostConfigs.find( host );
+	if ( it == this->hostConfigs.end() )
+	{
+		std::cout << "Error: couldn't find hostname\n";
+		return it->second[0];
+	}
 	pos = location.find( ".pl" );
 	if ( pos != std::string::npos )
 	{
 		pos = location.find_last_of( "/" ) + 1;
 		new_location = location.substr( 0, pos );
 	}
-	it = this->routes.find( new_location );
-	if ( it != this->routes.end() )
-		return it->second;
+
+	for ( it2 = it->second.begin(); it2 != it->second.end(); it2++ ) {
+		if ( (*it2)->location == new_location )
+			return *it2;
+	}
+
+	// it = this->routes.find( new_location );
+	// if ( it != this->routes.end() )
+	// 	return it->second;
 	pos = location.find( ".html" );
 	if ( pos != std::string::npos )
 	{
 		pos = location.find_last_of( "." );
 		new_location = location.substr( 0, pos );
 	}
-	it = this->routes.find( new_location );
-	if ( it != this->routes.end() )
-		return it->second;
-	return this->serverConfig;
+
+	for ( it2 = it->second.begin(); it2 != it->second.end(); it2++ ) {
+		if ( (*it2)->location == new_location )
+			return *it2;
+	}
+
+
+	// it = this->routes.find( new_location );
+	// if ( it != this->routes.end() )
+	// 	return it->second;
+	return it->second[0];
 }
 
 //find the correct page for the requested location and if root is set in a route it will be replaced
-std::string Socket::getLocationPage( std::string location ) const
+std::string Socket::getLocationPage( std::string location, std::string host ) const
 {
     std::map<std::string, std::string>::iterator    it;
-	Config	*config = this->getConfig( location );
+	Config	*config = this->getConfig( location, host );
 	size_t	pos;
 
     it = config->pages.find( location );
@@ -126,10 +152,10 @@ std::string Socket::getLocationPage( std::string location ) const
 }
 
 //find the correct page to redirect to
-std::string Socket::getRedirectPage( std::string location ) const
+std::string Socket::getRedirectPage( std::string location, std::string host ) const
 {
     std::map<std::string, std::string>::iterator	it;
-	Config	*config = this->getConfig( location );
+	Config	*config = this->getConfig( location, host );
 
     it = config->redirects.find( location );
 	if ( it == config->redirects.end() )
