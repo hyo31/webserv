@@ -10,7 +10,7 @@ In the config file you can set up server blocks. Each block should be within bra
 
 Each block has a general serverconfig where you can configure the following:
 {
-	listen [port] (optional)[servername]  	-> sets the port the server listens to
+	listen [port] [host]  					-> sets the port and host the server listens to
 	errorPages [/some_directory/]			-> location of default error pages
 	maxClientBodySize [some_number]			-> a maximum upload size (bytes)
 	autoindex [on/off]						-> turns on/off directory listing (off by default)

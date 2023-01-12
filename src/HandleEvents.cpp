@@ -94,13 +94,13 @@ void	Server::resetPages( Client *client )
 // create a correct response to the request of the client and send it back
 int	Server::sendResponseToClient( Client *client )
 {
+	Config			*config = this->_sockets[client->getPort()]->getConfig( client->getLocation() );
 	int				fileSize, c_fd = client->getConnectionFD();
     std::string     htmlFileName;
     std::ifstream   htmlFile;
     std::fstream    responseFile;
     std::ofstream 	ofs;
 	ssize_t			bytesSent;
-	Config			*config = this->_sockets[client->getPort()]->getConfig( client->getLocation() );
 
     // clear response file
     ofs.open("response/response.txt", std::ofstream::out | std::ofstream::trunc);
@@ -115,12 +115,13 @@ int	Server::sendResponseToClient( Client *client )
 		return 0;
     if ( !htmlFileName.size() )
         htmlFileName = config->errorPageDir + "500.html";
+	htmlFileName = this->getErrorPage( htmlFileName, config );
     htmlFile.open( htmlFileName, std::ios::in | std::ios::binary );
     if ( !htmlFile.is_open() )
     {
 		std::cout << "cant open filename:" << htmlFileName << std::endl;
-    	this->_responseHeader = "HTTP/1.1 403 Forbidden";
-    	htmlFile.open( config->errorPageDir + "403.html", std::ios::in | std::ios::binary );
+    	this->_responseHeader = "HTTP/1.1 500 Error";
+    	htmlFile.open( config->errorPageDir + "500.html", std::ios::in | std::ios::binary );
 		if ( !htmlFile.is_open() )
 		{
 			htmlFile.open( createResponseHtml() );

@@ -17,7 +17,6 @@ class Config
 		Config( const Config& );
     	Config  &operator=( const Config& );
 
-
 		std::string					servername;
 		std::string                 root;
 		bool						autoindex;
@@ -33,19 +32,19 @@ class Config
 		std::map< std::string, std::string >	redirects; /* name - redirect_location */
 		std::map< std::string, std::string >	errorPages; /* error - page */
 
-		void		setConfig( std::string );
-		void		setRedirects( std::string, std::string );
-		int			setPages( std::string , std::string );
-		void		setServerName( std::string );
-		void		setRoot( std::string );
-		void		setErrorPages( std::string );
-		void		setAutoIndex( std::string );
-		void		setDirectoryRequest( std::string );
-		void		setCGI( std::string );
-		void		setMaxBodySize( std::string );
-		void		setUploadDir( std::string );
-		void		setExtension( std::string );
-		void		setMethods( std::string );
+		void	setConfig( std::string );
+		void	setRedirects( std::string, std::string );
+		int		setPages( std::string , std::string );
+		void	setServerName( std::string );
+		void	setRoot( std::string );
+		void	setErrorPages( std::string );
+		void	setAutoIndex( std::string );
+		void	setDirectoryRequest( std::string );
+		void	setCGI( std::string );
+		void	setMaxBodySize( std::string );
+		void	setUploadDir( std::string );
+		void	setExtension( std::string );
+		void	setMethods( std::string );
 
 };
 

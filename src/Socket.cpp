@@ -5,13 +5,8 @@
 //Each object creates its own configuration file
 Socket::Socket( std::string config, std::string path ) : bound( false )
 {
-    size_t	start, end;
-
 	this->serverConfig = new Config( config, path );
-	start = config.find( "listen" ) + 7;
-	end = config.find( " ", start );
-	port = std::stoi( config.substr( start, end - start ) );
-	logFile = "logs/port" + config.substr( start, end - start ) + ".log";
+	this->setPortLogHost( config );
 	ipAddr = "localhost";
 	currentFile = "";
 	this->setupSockets();
@@ -29,7 +24,7 @@ Socket::~Socket()
 		delete (*it).second;
 	}
 	delete this->serverConfig;
-    std::cout << "Socket:" << this->fd << " - bound to port:" << this->port << " closed\n";
+    std::cout << "Socket:" << this->fd << " - bound to port:" << port << " closed\n";
     close( fd );
 }
 
@@ -45,7 +40,7 @@ int Socket::setupSockets()
     memset( &socketAddr, 0, sizeof( socketAddr ) );
     socketAddr.sin_family = AF_INET;
     socketAddr.sin_addr.s_addr = htonl( INADDR_ANY );
-    socketAddr.sin_port = htons(port);
+    socketAddr.sin_port = htons( port );
     if ( bind( this->fd, ( struct sockaddr* )&socketAddr, sizeof( socketAddr ) ) )
     {
         std::cerr << "bind failed: " << strerror( errno ) << std::endl;
@@ -139,4 +134,21 @@ std::string Socket::getRedirectPage( std::string location ) const
 	if ( it == config->redirects.end() )
         return "";
     return it->second;
+}
+
+void	Socket::setPortLogHost( std::string config )
+{
+	size_t		start, end;
+	std::string	line, host;
+
+	start = config.find( "listen" ) + 7;
+	end = config.find( '\n', start );
+	line = config.substr( start, end - start );
+	this->port = std::stoi( line );
+	this->logFile = "logs/port" + std::to_string( this->port ) + ".log";
+	start = line.find( " " );
+	if ( start != std::string::npos )
+		this->hosts.push_back( line.substr( start ) );
+	else
+		this->hosts.push_back( "localhost" );
 }

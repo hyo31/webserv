@@ -93,7 +93,7 @@ void	Config::setConfig( std::string config )
 	int						n = 10;
 	std::string				line;
 	std::string::iterator 	start = config.begin(), new_pos = config.begin();
-	std::string 			members[10] = { "listen", "root", "errorPage", "autoindex", "directoryRequest", "cgi", "maxClientBodySize", "uploadDir", "extension", "methods" };
+	std::string 			members[10] = { "server_name", "root", "errorPage", "autoindex", "directoryRequest", "cgi", "maxClientBodySize", "uploadDir", "extension", "methods" };
 	ConfigMemFn				fs[] = {	&Config::setServerName, &Config::setRoot, &Config::setErrorPages, &Config::setAutoIndex, &Config::setDirectoryRequest,
 										&Config::setCGI, &Config::setMaxBodySize, &Config::setUploadDir, &Config::setExtension, &Config::setMethods };
 
@@ -101,9 +101,9 @@ void	Config::setConfig( std::string config )
 		if ( *it == '\n' )
 		{
 			line = config.substr( std::distance( start, new_pos ), std::distance( new_pos, it ) );
-			for ( int k = 0; k < n; ++k ) {
-				if ( line.find( members[k] ) != std::string::npos )
-					CALL_MEMBER_FN( fs[k] )( line );
+			for ( int i = 0; i < n; ++i ) {
+				if ( line.find( members[i] ) != std::string::npos )
+					CALL_MEMBER_FN( fs[i] )( line );
 			}
 			new_pos = it + 1;
 		}
@@ -112,10 +112,7 @@ void	Config::setConfig( std::string config )
 
 void	Config::setServerName( std::string line )
 {
-	size_t	pos = line.find( " " ) + 1;
-
-	if ( line.find( " ", pos ) != std::string::npos )
-		this->servername = line.substr( line.find( " ", pos ) + 1 );
+	this->servername = line.substr( line.find( " " ) + 1 );
 }
 
 void	Config::setErrorPages( std::string line )
@@ -185,7 +182,7 @@ void	Config::setMethods( std::string line )
 	}
 }
 
-void	Config::setRedirects(std::string route , std::string location )
+void	Config::setRedirects( std::string route , std::string location )
 {
 	size_t	pos = route.find( "redirect" );
 	size_t	newline;
