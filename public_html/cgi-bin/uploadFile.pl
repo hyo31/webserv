@@ -18,9 +18,7 @@ open(my $fh, ">>", $outfile)
     or die "Can not open file: $!";
 my $content = $ENV{'FILE_BODY'};
 print $fh $content;
-open(my $rf, ">>", $ENV{'RESPONSE_FILE'})
-    or die "Can not open file: $!";
-print $rf <<ENDTAG;
+print <<ENDTAG;
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,4 +32,3 @@ print $rf <<ENDTAG;
 </body>
 </html>
 ENDTAG
-close($rf);
