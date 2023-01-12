@@ -22,7 +22,7 @@ int Server::receiveClientRequest( Client *client, std::string & request )
 {
     ssize_t				bytesRead = 1;
 	int					c_fd = client->getConnectionFD();
-	int					port = client->getPort();
+	int					sock_num = client->getSockNum();
     std::ofstream		ofs;
 	std::vector<char>	buff( 1024 * 1024 );
 
@@ -37,14 +37,14 @@ int Server::receiveClientRequest( Client *client, std::string & request )
 	}
     if ( client->requestIsRead() == true ) //clear content from previous request
     {
-        ofs.open( this->_sockets[port]->logFile, std::ofstream::out | std::ofstream::trunc );
+        ofs.open( this->_sockets[sock_num]->logFile, std::ofstream::out | std::ofstream::trunc );
         ofs.close();
 		client->setHeaderIsSet( false );
 		client->setBody( "" );
 		client->setHeader( "", 0 );
     }
 	//save request in logfile
-    ofs.open( this->_sockets[port]->logFile, std::fstream::out | std::fstream::app );
+    ofs.open( this->_sockets[sock_num]->logFile, std::fstream::out | std::fstream::app );
     ofs << request;
     ofs.close();
     parseRequest( request, client );
@@ -79,11 +79,11 @@ void    removeResponseFiles( void )
 void	Server::resetPages( Client *client )
 {
 	std::map< std::string, Config* >::iterator	it;
-	std::string	path = this->_path + "/" + this->_sockets[client->getPort()]->serverConfig->root;
+	std::string	path = this->_path + "/" + this->_sockets[client->getSockNum()]->serverConfig->root;
 	
-	this->_sockets[client->getPort()]->serverConfig->pages.clear();
-	this->_sockets[client->getPort()]->serverConfig->setPages(path, "");
-	for (it = this->_sockets[client->getPort()]->routes.begin(); it != this->_sockets[client->getPort()]->routes.end(); ++it)
+	this->_sockets[client->getSockNum()]->serverConfig->pages.clear();
+	this->_sockets[client->getSockNum()]->serverConfig->setPages(path, "");
+	for (it = this->_sockets[client->getSockNum()]->routes.begin(); it != this->_sockets[client->getSockNum()]->routes.end(); ++it)
 	{
 		path = this->_path + "/" + (*it).second->root;
 		(*it).second->pages.clear();
@@ -94,7 +94,7 @@ void	Server::resetPages( Client *client )
 // create a correct response to the request of the client and send it back
 int	Server::sendResponseToClient( Client *client )
 {
-	Config			*config = this->_sockets[client->getPort()]->getConfig( client->getLocation() );
+	Config			*config = this->_sockets[client->getSockNum()]->getConfig( client->getLocation() );
 	int				fileSize, c_fd = client->getConnectionFD();
     std::string     htmlFileName;
     std::ifstream   htmlFile;

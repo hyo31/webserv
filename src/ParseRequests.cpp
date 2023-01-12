@@ -96,7 +96,7 @@ void    Server::parseRequest( std::string request, Client *client )
 {
 	std::string	substr, header;
     size_t		start, end;
-	size_t		MaxBody = this->_sockets[client->getPort()]->getConfig( client->getLocation() )->maxClientBodySize;
+	size_t		MaxBody = this->_sockets[client->getSockNum()]->getConfig( client->getLocation() )->maxClientBodySize;
 
     client->setRequestIsRead( false );
 	/* check if full header is read and store it */
@@ -113,6 +113,7 @@ void    Server::parseRequest( std::string request, Client *client )
 		return ;
 
 	header = client->getHeader();
+	client->setHost( header );
 	end = header.find( " ", 0 );
 	client->setMethod( header.substr( 0, end ) );
 	start = end + 1;

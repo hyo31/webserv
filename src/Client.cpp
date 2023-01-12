@@ -1,7 +1,7 @@
 #include "../inc/Client.hpp"
 
 //CONSTRUCTOR + DESTRUCTOR
-Client::Client( int fd, int port ) : _conn_fd( fd ), _port( port )
+Client::Client( int fd, int sock_num ) : _conn_fd( fd ), _sock_num( sock_num )
 { 
     this->_timestamp = std::time(nullptr);
     this->_request_is_read = true;
@@ -20,7 +20,8 @@ Client & Client::operator=( const Client& src )
 {
     this->_conn_fd = src._conn_fd;
     this->_timestamp = src._timestamp;
-    this->_port = src._port;
+	this->_host = src._host;
+    this->_sock_num = src._sock_num;
 	this->_request_is_read = src._request_is_read;
 	this->_requestHeader = src._requestHeader;
 	this->_requestBody = src._requestBody;
@@ -45,8 +46,9 @@ std::string	Client::getLocation()		{ return this->_requestLocation; }
 std::string	Client::getBody()			{ return this->_requestBody; }
 std::string	Client::getHeader()			{ return this->_requestHeader; }
 std::string	Client::getMethod()			{ return this->_requestMethod; }
+std::string	Client::getHost()			{ return this->_host; }
 int			Client::getConnectionFD()	{ return this->_conn_fd; }
-int			Client::getPort()			{ return this->_port; }
+int			Client::getSockNum()		{ return this->_sock_num; }
 bool		Client::requestIsRead()		{ return this->_request_is_read; }
 bool		Client::headerIsSet()		{ return this->_headerSet; }
 bool		Client::bodyTooLarge()		{ return this->_client_body_too_large; }
@@ -62,3 +64,24 @@ void	Client::setHeaderIsSet( bool status )				{ this->_headerSet = status; }
 void	Client::setRequestIsRead( bool status )				{ this->_request_is_read = status; }
 void	Client::setBodyTooLarge( bool status )				{ this->_client_body_too_large = status; }
 void	Client::setIllegalRequest( bool status )			{ this->_illegal_request = status; }
+
+void	Client::setHost( std::string header )
+{
+	size_t		start, end;
+	std::string	line;
+
+	start = header.find( "Host: " );
+	if ( start == std::string::npos )
+		_host = "localhost" ;
+	else
+	{
+		start = start + 6;
+		end = header.find( "\r\n", start );
+		line = header.substr( start, end - start );
+		end = line.find( ":" );
+		if ( end == std::string::npos )
+			_host = line;
+		else
+			_host = line.substr( 0, end );
+	}
+}

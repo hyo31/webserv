@@ -14,6 +14,7 @@ Socket::Socket( std::string config, std::string path ) : bound( false )
 		return ;
 	this->setRouteConfigs( config );
 }
+
 Socket::Socket( const Socket & ) { }
 Socket &	Socket::operator=( const Socket & ) { return *this; }
 Socket::~Socket()

@@ -13,11 +13,12 @@ class Client
     	Client  &operator=( const Client& );
 
 		int			getConnectionFD();
-		int			getPort();
+		int			getSockNum();
 		std::string	getLocation();
 		std::string	getBody();
 		std::string	getHeader();
 		std::string	getMethod();
+		std::string	getHost();
 		std::time_t	getTimeStamp();
 		bool		requestIsRead();
 		bool		headerIsSet();
@@ -32,6 +33,7 @@ class Client
 		void		setBody( std::string );
 		void		setMethod( std::string );
 		void		setLocation( std::string );
+		void		setHost( std::string );
 	    void		update_client_timestamp();
 
 	private:
@@ -40,8 +42,9 @@ class Client
 		std::string _requestBody;
 		std::string	_requestMethod;
 		std::string	_requestLocation;
+		std::string	_host;
     	int			_conn_fd;
-    	int			_port;
+    	int			_sock_num;
 		bool		_headerSet;
     	bool		_request_is_read;
 		bool		_client_body_too_large;

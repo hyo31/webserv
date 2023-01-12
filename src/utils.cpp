@@ -81,14 +81,14 @@ Client *Server::findClient( int c_fd )
 // find the right file to answer to the request
 std::string Server::getHtmlFile( Client* client )
 {
-	Config		*config = this->_sockets[client->getPort()]->getConfig( client->getLocation() );
+	Config		*config = this->_sockets[client->getSockNum()]->getConfig( client->getLocation() );
 	std::string	method = client->getMethod();
 
 	// checks if method is allowed for this location
 	if ( std::find( config->methods.begin(), config->methods.end(), method ) == config->methods.end() )
 	{
 		std::string directory = client->getLocation().substr( 0, client->getLocation().find_last_of( "/" ) + 1 );
-		Config *dir_config = this->_sockets[client->getPort()]->getConfig( directory );
+		Config *dir_config = this->_sockets[client->getSockNum()]->getConfig( directory );
 		if ( std::find( dir_config->methods.begin(), dir_config->methods.end(), "DELETE" ) == dir_config->methods.end() && method == "DELETE")
 		{
 			_responseHeader = "HTTP/1.1 405 Method Not Allowed";
@@ -227,11 +227,17 @@ int	Server::uniqueSocket( std::string config, std::string & host )
 
 void	Server::addHost( int port, std::string host )
 {
-	std::vector<std::string>::iterator	it;
+	std::vector< Socket* >::iterator		it;
+	std::vector< std::string >::iterator	it2;
 
-	for ( it = this->_sockets[port]->hosts.begin(); it != this->_sockets[port]->hosts.end(); it++ ) {
-		if ( *it == host )
-			return ;
+	for ( it = this->_sockets.begin(); it != this->_sockets.end(); it++ ) {
+		if ( (*it)->port == port )
+		{
+			for ( it2 = (*it)->hosts.begin(); it2 != (*it)->hosts.end(); it2++ ) {
+				if ( *it2 == host )
+					return ;
+			}
+			(*it)->hosts.push_back( host );
+		}
 	}
-	this->_sockets[port]->hosts.push_back( host );
 }

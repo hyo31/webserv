@@ -2,16 +2,21 @@
 
 std::string	Server::methodGET( Client *client, Config *config )
 {
-	int			port = client->getPort();
+	int			sock_num = client->getSockNum();
+	int			port = this->_sockets[sock_num]->port;
 	std::string query, index, location = client->getLocation();
+
+	for ( std::vector<std::string>::iterator it = this->_sockets[sock_num]->hosts.begin(); it != this->_sockets[sock_num]->hosts.end(); it++ ) {
+		std::cout << *it << std::endl;
+	}
 
 	if (location.find("?") != std::string::npos)
 	{
 		query = location.substr(location.find("?") + 1, location.size() - (location.find("?") + 1));
 		location = location.substr(0, location.find("?"));
 	}
-    std::string page = this->_sockets[port]->getLocationPage( location );
-	std::string redirect_page = this->_sockets[port]->getRedirectPage( location );
+    std::string page = this->_sockets[sock_num]->getLocationPage( location );
+	std::string redirect_page = this->_sockets[sock_num]->getRedirectPage( location );
     
 	// check if requested page is a redirection
 	if ( redirect_page != "" )
@@ -31,7 +36,7 @@ std::string	Server::methodGET( Client *client, Config *config )
 		
         // else search for an index
         index = location + "index.html";
-		page = this->_sockets[port]->getLocationPage( index );
+		page = this->_sockets[sock_num]->getLocationPage( index );
 		if ( page != "" )
 		    return ( page );
 
@@ -45,7 +50,7 @@ std::string	Server::methodGET( Client *client, Config *config )
 	// execute the CGI on the requested file if it has the right extension
 	if ( location.size() > config->extension.size() && location.substr( location.size() - 3, location.size() - 1) == config->extension )
 	{
-		switch ( executeCGI( "/" + config->root + config->cgi + location, client->getPort(), this->_path, config->root, query, client->getHeader(), config->uploadDir, "GET" ) )
+		switch ( executeCGI( "/" + config->root + config->cgi + location, port, this->_path, config->root, query, client->getHeader(), config->uploadDir, "GET" ) )
 		{
 			case 0:
 				_responseHeader = "HTTP/1.1 200 OK";
@@ -68,8 +73,9 @@ std::string	Server::methodGET( Client *client, Config *config )
 
 std::string	Server::methodPOST( Client *client, Config *config )
 {
-	int				port = client->getPort(), fileExtension = 0;
-	std::string		location = client->getLocation(), page = this->_sockets[port]->getLocationPage( location ), body, newFileName, newFileContent, index;
+	int				sock_num = client->getSockNum(), fileExtension = 0;
+	int				port = this->_sockets[sock_num]->port;
+	std::string		location = client->getLocation(), page = this->_sockets[sock_num]->getLocationPage( location ), body, newFileName, newFileContent, index;
 	std::ofstream	newFile;
 	std::ifstream	checkIfOpen;
 
@@ -88,7 +94,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 	// execute the CGI on the requested file if it has the right extension
 	if ( location.size() > config->extension.size() && location.substr( location.size() - 3, location.size() - 1) == config->extension )
 	{
-		switch ( executeCGI( "/" + config->root + config->cgi + location, client->getPort(), this->_path, config->root, client->getBody(), client->getHeader(), config->uploadDir, "GET" ) )
+		switch ( executeCGI( "/" + config->root + config->cgi + location, port, this->_path, config->root, client->getBody(), client->getHeader(), config->uploadDir, "GET" ) )
 		{
 			case 0:
 				_responseHeader = "HTTP/1.1 200 OK";
@@ -126,7 +132,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 		
         // else search for an index
         index = location + "index.html";
-		page = this->_sockets[port]->getLocationPage( index );
+		page = this->_sockets[sock_num]->getLocationPage( index );
 		if ( page != "" )
 		    return ( page );
 
@@ -142,7 +148,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 
 std::string	Server::methodDELETE( Client *client, Config *config )
 {
-	std::string		page = this->_sockets[client->getPort()]->getLocationPage( client->getLocation() );
+	std::string		page = this->_sockets[client->getSockNum()]->getLocationPage( client->getLocation() );
     std::ifstream	file;
 
 	// check if the requested file exists and delete it
