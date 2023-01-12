@@ -55,6 +55,7 @@ class Server
         void		bounceTimedOutClients();
         void		parseRequest( std::string, Client * );
 		void		closeSockets();
+        void        resetPages( Client* );
 		std::string	methodDELETE( Client*, Config* );
 		std::string	methodGET( Client*, Config* );
 		std::string	methodPOST( Client*, Config* );

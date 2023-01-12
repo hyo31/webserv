@@ -76,6 +76,21 @@ void    removeResponseFiles( void )
 	closedir( directory );
 }
 
+void	Server::resetPages( Client *client )
+{
+	std::map< std::string, Config* >::iterator	it;
+	std::string	path = this->_path + "/" + this->_sockets[client->getPort()]->serverConfig->root;
+	
+	this->_sockets[client->getPort()]->serverConfig->pages.clear();
+	this->_sockets[client->getPort()]->serverConfig->setPages(path, "");
+	for (it = this->_sockets[client->getPort()]->routes.begin(); it != this->_sockets[client->getPort()]->routes.end(); ++it)
+	{
+		path = this->_path + "/" + (*it).second->root;
+		(*it).second->pages.clear();
+		(*it).second->setPages(path, "");
+	}
+}
+
 // create a correct response to the request of the client and send it back
 int	Server::sendResponseToClient( Client *client )
 {
@@ -171,6 +186,7 @@ int	Server::sendResponseToClient( Client *client )
 	if ( ifs.good() )
 		ifs.close();
 	removeResponseFiles();
+	resetPages( client );
 	if ( client->bodyTooLarge() == true )
 		closeConnection( client );
     return 0;
