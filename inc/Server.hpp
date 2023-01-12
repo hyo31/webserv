@@ -74,7 +74,7 @@ class Server
 };
 
 int							printerror( std::string );
-int							executeCGI( std::string, int, std::string, std::string, std::string, std::string, std::string );
+int							executeCGI( std::string, int, std::string, std::string, std::string, std::string, std::string, std::string );
 bool						BinaryFile( std::string );
 void						SaveBinaryFile( std::string, Client *, Config * );
 std::vector<std::string>	readFile( std::string header, std::string body );

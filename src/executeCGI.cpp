@@ -26,12 +26,12 @@ std::vector<std::string>	readFile( std::string header, std::string body )
 }
 
 // set the environment for CGI
-char	**setupEnv( std::string page, int port, std::string path, std::string root, std::string body, std::string header, std::string uploaddir )
+char	**setupEnv( std::string page, int port, std::string path, std::string root, std::string body, std::string header, std::string uploaddir, std::string method )
 {
     std::map<std::string, std::string>	env;
     std::vector<std::string>			vars;
     size_t								pos;
-    std::string							temp;
+    std::string							temp, contentType;
 
     // find the content type and set the environment accordingly
     pos = header.find( "Content-Type: " );
@@ -40,15 +40,27 @@ char	**setupEnv( std::string page, int port, std::string path, std::string root,
         printerror( "request has no Content-Type: " );
         return nullptr;
     }
+    contentType = header.substr( header.find( " ", pos ) + 1, header.find( "\r\n", pos ) - ( header.find( " ", pos ) + 1 ) );
 
     // content type is a form
-    if ( header.substr( header.find( " ", pos ) + 1, header.find( "\r\n", pos ) - ( header.find( " ", pos ) + 1 ) ) == "application/x-www-form-urlencoded" )
+    if ( contentType == "application/x-www-form-urlencoded" )
     {
         env["FILE_NAME"] = "form.log";
         env["QUERY_STRING"] = body;
     }
-
     // content type is a file
+    else if ( contentType == "plain/text" )
+    {
+        env["FILE_NAME"] = body;
+        env["FILE_BODY"] = body;
+        if (body.find("=") != std::string::npos)
+        {
+            env["FILE_NAME"] = page + "/" + body.substr(0, body.find("="));
+            env["FILE_BODY"] = body.substr(body.find("=") + 1, body.size() - (body.find("=") + 1));
+        }
+        env["BODY_LEN"] = std::to_string( env["FILE_BODY"].size() );
+    }
+    //content type is a file with a boundary
     else
     {
         vars = readFile( header, body );
@@ -61,7 +73,7 @@ char	**setupEnv( std::string page, int port, std::string path, std::string root,
     env["HTTP_HOST"] =  "localhost:" + std::to_string( port );
     env["REQUEST_URI"] = page;
     env["REMOTE_PORT"] = std::to_string( port );
-    env["REQUEST_METHOD"] = "POST";
+    env["REQUEST_METHOD"] = method;
     env["SERVER_PORT"] = std::to_string( port );
     env["RESPONSE_FILE"] = "response/responseCGI.html";
     env["UPLOAD_DIR"] = path + "/" + root + uploaddir;
@@ -84,7 +96,7 @@ char	**setupEnv( std::string page, int port, std::string path, std::string root,
 }
 
 // execute the CGI
-int	executeCGI( std::string page, int port, std::string path, std::string root, std::string body, std::string header, std::string uploaddir )
+int	executeCGI( std::string page, int port, std::string path, std::string root, std::string body, std::string header, std::string uploaddir, std::string method )
 {
     pid_t		pid;
     char		**env;
@@ -92,7 +104,7 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
     std::string	pathCGI;
 
     // setup the environmental variables for execve
-	env = setupEnv( page, port, path, root, body, header, uploaddir );
+	env = setupEnv( page, port, path, root, body, header, uploaddir, method );
     pathCGI = path + page;
     if ( !env )
         return printerror( "failed setting up the environment: " );

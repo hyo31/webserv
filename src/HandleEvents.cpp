@@ -126,8 +126,15 @@ int	Server::sendResponseToClient( Client *client )
 	responseFile << this->_responseHeader << std::endl;
 	if ( htmlFileName.substr( htmlFileName.size() - 5, 5 ) == ".html" )
 		responseFile << "Content-Type: text/html" << std::endl;
+	else if ( htmlFileName.substr( htmlFileName.size() - 4, 4 ) == ".ico" )
+	{
+		responseFile << "Content-Type: image/x-icon" << std::endl;
+	}
+	else if ( htmlFileName.substr( htmlFileName.size() - 4, 4 ) == ".png" )
+		responseFile << "Content-Type: image/png" << std::endl;
 	else
 		responseFile << "Content-Type: text/plain" << std::endl;
+	if ( htmlFileName.substr( htmlFileName.size() - 4, 4 ) != ".ico" )
 	responseFile << "Content-Length: " << fileSize << "\r\n\r\n"; //std::endl << std::endl;
 
 	//create char string to read html into, which is then read into responseFile      
