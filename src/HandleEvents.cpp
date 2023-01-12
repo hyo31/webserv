@@ -142,16 +142,16 @@ int	Server::sendResponseToClient( Client *client )
 
 	//read correct headers (first one set in 'findHtmlFile') into responseFile
 	responseFile << this->_responseHeader << std::endl;
-	if ( htmlFileName.substr( htmlFileName.size() - 5, 5 ) == ".html" )
+	char line[16];
+	if (fileSize >= 16)
+		htmlFile.getline(line, 16);
+	htmlFile.close();
+	htmlFile.open( htmlFileName, std::ios::in | std::ios::binary );
+	if ( fileSize >= 16 && std::string(line) == "<!DOCTYPE html>" )
 		responseFile << "Content-Type: text/html" << std::endl;
-	else if ( htmlFileName.substr( htmlFileName.size() - 4, 4 ) == ".ico" )
-		responseFile << "Content-Type: image/x-icon" << std::endl;
-	else if ( htmlFileName.substr( htmlFileName.size() - 4, 4 ) == ".png" )
-		responseFile << "Content-Type: image/png" << std::endl;
 	else
 		responseFile << "Content-Type: text/plain" << std::endl;
-	if ( htmlFileName.substr( htmlFileName.size() - 4, 4 ) != ".ico" )
-		responseFile << "Content-Length: " << fileSize << "\r\n\r\n"; //std::endl << std::endl;
+	responseFile << "Content-Length: " << fileSize << "\r\n\r\n"; //std::endl << std::endl;
 
 	//create char string to read html into, which is then read into responseFile      
 	char    html[fileSize + 1];
@@ -183,14 +183,14 @@ int	Server::sendResponseToClient( Client *client )
 	this->_responseHeader.clear();
 	htmlFile.close();
 	responseFile.close();
-	std::ifstream ifs( "response/responseCGI.html" );
+	std::ifstream ifs( "response/responseCGI" );
 	if ( ifs.good() )
 		ifs.close();
 	removeResponseFiles();
 	resetPages( client );
 	if ( client->bodyTooLarge() == true )
 		closeConnection( client );
-	if ( htmlFileName == "response/responseCGI.html" )
+	if ( htmlFileName == "response/responseCGI" )
 		exit ( 0 );
     return 0;
 }

@@ -38,7 +38,6 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
     env["REMOTE_PORT"] = std::to_string( port );
     env["REQUEST_METHOD"] = method;
     env["SERVER_PORT"] = std::to_string( port );
-    env["RESPONSE_FILE"] = "response/responseCGI.html";
     env["UPLOAD_DIR"] = path + "/" + root + uploaddir;
     
     // find the content type and set the environment accordingly
@@ -90,7 +89,6 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
 {
     pid_t		                        pid, pid2, timeout_pid;
     std::map<std::string, std::string>  env;
-    //int			                        status;
     std::string	                        pathCGI, temp;
 
     // setup the environmental variables for execve
@@ -105,10 +103,11 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
     // execute the script
     if ( !pid )
     {
+        // set a time-out process so that the executed script can't hang indefinitely
         timeout_pid = fork();
         if ( !timeout_pid )
         {
-            sleep ( 5 );
+            sleep( 5 );
             exit( 0 );
         }
         else
@@ -116,6 +115,7 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
             pid2 = fork();
             if ( pid2 == -1 )
                 exit( printerror( "fork failed: " ) );
+            // child process to execute script
             if ( !pid2 )
             {
                 // copy env to a c_str
@@ -132,11 +132,19 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
                     i++;
                 }
                 c_env[i] = NULL;
-                execve( pathCGI.c_str(), NULL, c_env );
+                std::ofstream   ofs;
+                ofs.open("response/responseCGI");
+                ofs.close();
+                int fd = open("response/responseCGI", O_WRONLY);
+                if ( !fd )
+                    exit (printerror("failed to open file: "));
+                dup2(fd, 1);
+                execve(pathCGI.c_str(), NULL, c_env);
                 exit( printerror( "execve failed: " ) );
             }
             else
             {
+                // check which child exits first and terminating the other one
                 pid_t exited_pid = wait(NULL);
                 if (exited_pid == timeout_pid)
                 {

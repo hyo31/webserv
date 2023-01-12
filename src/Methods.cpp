@@ -54,10 +54,10 @@ std::string	Server::methodGET( Client *client, Config *config )
 		{
 			case 0:
 				_responseHeader = "HTTP/1.1 200 OK";
-				return ( "response/responseCGI.html" );
+				return ( "response/responseCGI" );
 			case 1:
 				_responseHeader = "HTTP/1.1 500 Error";
-				return ( config->errorPageDir + "500.html" );
+				return ( config->errorPageDir + "500" );
 			case -1:
 				return ( "DO NOTHING" );
 		}
@@ -88,7 +88,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 	{
 		SaveBinaryFile( this->_path, client, config );
 		_responseHeader = "HTTP/1.1 200 OK";
-		return ( "response/responseCGI.html" );
+		return ( "response/responseCGI" );
 	}
 
 	// execute the CGI on the requested file if it has the right extension
@@ -98,7 +98,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 		{
 			case 0:
 				_responseHeader = "HTTP/1.1 200 OK";
-				return ( "response/responseCGI.html" );
+				return ( "response/responseCGI" );
 			case 1:
 				_responseHeader = "HTTP/1.1 500 Error";
 				return ( config->errorPageDir + "500.html" );

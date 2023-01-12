@@ -125,7 +125,7 @@ void	SaveBinaryFile( std::string path, Client *client, Config *config )
 	outfile << to_upload[1];
 	outfile.close();
 
-	std::ofstream outfile2( "response/responseCGI.html", std::ofstream::out | std::ofstream::trunc );
+	std::ofstream outfile2( "response/responseCGI", std::ofstream::out | std::ofstream::trunc );
 	std::ifstream ifs( config->root + "/uploadresponse.html" );
 	ifs.seekg( 0, std::ios::end );   
 	temp.reserve( ifs.tellg() );
