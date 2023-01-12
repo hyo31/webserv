@@ -76,6 +76,21 @@ void    removeResponseFiles( void )
 	closedir( directory );
 }
 
+void	Server::resetPages( Client *client )
+{
+	std::map< std::string, Config* >::iterator	it;
+	std::string	path = this->_path + "/" + this->_sockets[client->getPort()]->serverConfig->root;
+	
+	this->_sockets[client->getPort()]->serverConfig->pages.clear();
+	this->_sockets[client->getPort()]->serverConfig->setPages(path, "");
+	for (it = this->_sockets[client->getPort()]->routes.begin(); it != this->_sockets[client->getPort()]->routes.end(); ++it)
+	{
+		path = this->_path + "/" + (*it).second->root;
+		(*it).second->pages.clear();
+		(*it).second->setPages(path, "");
+	}
+}
+
 // create a correct response to the request of the client and send it back
 int	Server::sendResponseToClient( Client *client )
 {
@@ -96,6 +111,8 @@ int	Server::sendResponseToClient( Client *client )
     if ( !responseFile.is_open() )
         return printerror( "could not open response file " );
     htmlFileName = this->getHtmlFile( client );
+	if (htmlFileName == "DO NOTHING")
+		return 0;
     if ( !htmlFileName.size() )
         htmlFileName = config->errorPageDir + "500.html";
 	htmlFileName = this->getErrorPage( htmlFileName, config );
@@ -127,8 +144,15 @@ int	Server::sendResponseToClient( Client *client )
 	responseFile << this->_responseHeader << std::endl;
 	if ( htmlFileName.substr( htmlFileName.size() - 5, 5 ) == ".html" )
 		responseFile << "Content-Type: text/html" << std::endl;
+	else if ( htmlFileName.substr( htmlFileName.size() - 4, 4 ) == ".ico" )
+	{
+		responseFile << "Content-Type: image/x-icon" << std::endl;
+	}
+	else if ( htmlFileName.substr( htmlFileName.size() - 4, 4 ) == ".png" )
+		responseFile << "Content-Type: image/png" << std::endl;
 	else
 		responseFile << "Content-Type: text/plain" << std::endl;
+	if ( htmlFileName.substr( htmlFileName.size() - 4, 4 ) != ".ico" )
 	responseFile << "Content-Length: " << fileSize << "\r\n\r\n"; //std::endl << std::endl;
 
 	//create char string to read html into, which is then read into responseFile      
@@ -165,6 +189,7 @@ int	Server::sendResponseToClient( Client *client )
 	if ( ifs.good() )
 		ifs.close();
 	removeResponseFiles();
+	resetPages( client );
 	if ( client->bodyTooLarge() == true )
 		closeConnection( client );
     return 0;

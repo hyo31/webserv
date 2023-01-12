@@ -84,14 +84,25 @@ std::string Server::getHtmlFile( Client* client )
 	Config		*config = this->_sockets[client->getPort()]->getConfig( client->getLocation() );
 	std::string	method = client->getMethod();
 
-    if ( method == "DELETE" )
-	    return methodDELETE( client, config );
+	// checks if method is allowed for this location
 	if ( std::find( config->methods.begin(), config->methods.end(), method ) == config->methods.end() )
 	{
-		_responseHeader = "HTTP/1.1 405 Method Not Allowed";
-		return config->errorPageDir + "405.html";
+		std::string directory = client->getLocation().substr( 0, client->getLocation().find_last_of( "/" ) + 1 );
+		Config *dir_config = this->_sockets[client->getPort()]->getConfig( directory );
+		if ( std::find( dir_config->methods.begin(), dir_config->methods.end(), "DELETE" ) == dir_config->methods.end() && method == "DELETE")
+		{
+			_responseHeader = "HTTP/1.1 405 Method Not Allowed";
+			return config->errorPageDir + "405.html";
+		}
+		if (method != "DELETE")
+		{
+			_responseHeader = "HTTP/1.1 405 Method Not Allowed";
+			return config->errorPageDir + "405.html";
+		}
 	}
-	if ( method == "POST" )
+    if ( method == "DELETE" )
+	    return methodDELETE( client, config );
+	else if ( method == "POST" )
 	    return methodPOST( client, config );
 	return methodGET( client, config );
 }
