@@ -173,3 +173,54 @@ std::string	createResponseHtml( void )
 	ofs.close();
 	return "public_html/error500.html";
 }
+
+std::string	Server::getErrorPage( std::string response, Config *config )
+{
+	std::map<std::string, std::string>::iterator	it;
+	std::string	responseCode;
+	size_t		start, end;
+
+	start = this->_responseHeader.find ( " " ) + 1;
+	end = this->_responseHeader.find ( " ", start );
+	if ( end == std::string::npos )
+		responseCode = this->_responseHeader.substr( start );
+	else
+		responseCode = this->_responseHeader.substr( start, end - start );
+	if ( ( responseCode[0] == '4' || responseCode[0] == '5' ) && responseCode.size() == 3 )
+		if ( ( it = config->errorPages.find( responseCode ) ) != config->errorPages.end() )
+			return config->root + it->second;
+	return response;
+}
+
+int	Server::uniqueSocket( std::string config, std::string & host )
+{
+	size_t		start, end;
+	std::string	line;
+	int			port;
+
+	start = config.find( "listen" ) + 7;
+	end = config.find( '\n', start );
+	line = config.substr( start, end - start );
+	port = std::stoi( line );
+	start = line.find( " " );
+	if ( start != std::string::npos )
+		host = line.substr( start );
+	else
+		host = "localhost";
+	for ( std::vector<Socket *>::iterator it = this->_sockets.begin(); it != this->_sockets.end(); it++ ) {
+		if ( port == (*it)->port )
+			return port;
+	}
+	return 0;
+}
+
+void	Server::addHost( int port, std::string host )
+{
+	std::vector<std::string>::iterator	it;
+
+	for ( it = this->_sockets[port]->hosts.begin(); it != this->_sockets[port]->hosts.end(); it++ ) {
+		if ( *it == host )
+			return ;
+	}
+	this->_sockets[port]->hosts.push_back( host );
+}

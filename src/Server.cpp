@@ -95,8 +95,9 @@ int	Server::monitor_ports()
 int Server::openSockets( std::string configFilePath )
 {
     std::ifstream	configFile;
-    std::string		line;
+    std::string		line, host;
     std::string		socketConfig;
+	int				port;
 
     configFile.open( configFilePath );
     if ( !configFile.is_open() )
@@ -111,11 +112,17 @@ int Server::openSockets( std::string configFilePath )
                     break;
                 socketConfig = socketConfig + line + "\n";
             }
-			Socket *new_sock = new Socket( socketConfig, this->_path );
-			if ( new_sock->bound == true )
-            	this->_sockets.push_back( new_sock );
+			port = uniqueSocket( socketConfig, host );
+			if ( port == 0 )
+			{
+				Socket *new_sock = new Socket( socketConfig, this->_path );
+				if ( new_sock->bound )
+            		this->_sockets.push_back( new_sock );
+				else
+					delete new_sock;
+			}
 			else
-				delete new_sock;
+				addHost( port, host );
 			socketConfig.clear();
         }
     }

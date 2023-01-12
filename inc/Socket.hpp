@@ -1,7 +1,6 @@
 #ifndef SOCKET_HPP
 # define SOCKET_HPP
 
-# include <map>
 # include "Server.hpp"
 # include "dirent.h"
 
@@ -14,8 +13,8 @@ class Socket
 
 		Config			*serverConfig;
         std::string		ipAddr;
-        int				port;
         int				fd;
+		int				port;
         sockaddr_in		socketAddr;
         unsigned int	socketAddrLen;
         std::string		logFile;
@@ -26,7 +25,9 @@ class Socket
 		std::string		getRedirectPage( std::string ) const;
 		Config			*getConfig( std::string ) const;
 		void			setRouteConfigs( std::string );
-		
+		void			setPortLogHost( std::string );
+
+		std::vector< std::string >			hosts;
 		std::map< std::string, Config* >	routes; /* location - config */
 
     private:
