@@ -6,10 +6,6 @@ std::string	Server::methodGET( Client *client, Config *config )
 	int			port = this->_sockets[sock_num]->port;
 	std::string query, index, location = client->getLocation();
 
-	for ( std::vector<std::string>::iterator it = this->_sockets[sock_num]->hosts.begin(); it != this->_sockets[sock_num]->hosts.end(); it++ ) {
-		std::cout << *it << std::endl;
-	}
-
 	if (location.find("?") != std::string::npos)
 	{
 		query = location.substr(location.find("?") + 1, location.size() - (location.find("?") + 1));
@@ -23,6 +19,7 @@ std::string	Server::methodGET( Client *client, Config *config )
 	{
 		_responseHeader = "HTTP/1.1 301 Moved Permanently\r\nLocation: ";
 		_responseHeader.append( redirect_page );
+		std::cout << "errp:" << config->errorPageDir << std::endl;
 		return ( config->errorPageDir + "301.html" );
 	}
 

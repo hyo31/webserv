@@ -27,17 +27,19 @@ Config::Config( const Config& src )
 Config & Config::operator=( const Config& src )
 {
 		this->servername = src.servername;
-		this->errorPages = src.errorPages;
+		this->root = src.root;
 		this->autoindex = src.autoindex;
 		this->methods = src.methods;
-		this->root = src.root;
 		this->directoryRequest = src.directoryRequest;
 		this->cgi = src.cgi;
 		this->maxClientBodySize = src.maxClientBodySize;
 		this->extension = src.extension;
+		this->uploadDir = src.uploadDir;
+		this->errorPageDir = src.errorPageDir;
+		this->location = src.location;
 		this->pages = src.pages;
 		this->redirects = src.redirects;
-		this->uploadDir = src.uploadDir;
+		this->errorPages = src.errorPages;
 		return *this;
 }
 

@@ -215,7 +215,7 @@ int	Server::uniqueSocket( std::string config, std::string & host )
 	port = std::stoi( line );
 	start = line.find( " " );
 	if ( start != std::string::npos )
-		host = line.substr( start );
+		host = line.substr( start + 1 );
 	else
 		host = "localhost";
 	for ( std::vector<Socket *>::iterator it = this->_sockets.begin(); it != this->_sockets.end(); it++ ) {
@@ -225,10 +225,11 @@ int	Server::uniqueSocket( std::string config, std::string & host )
 	return 0;
 }
 
-void	Server::addHost( int port, std::string host )
+void	Server::addHost( int port, std::string host, std::string config, std::string path )
 {
 	std::vector< Socket* >::iterator		it;
 	std::vector< std::string >::iterator	it2;
+	std::vector< Config *> vconfig;
 
 	for ( it = this->_sockets.begin(); it != this->_sockets.end(); it++ ) {
 		if ( (*it)->port == port )
@@ -237,7 +238,13 @@ void	Server::addHost( int port, std::string host )
 				if ( *it2 == host )
 					return ;
 			}
+				
 			(*it)->hosts.push_back( host );
+			Config *new_config = new Config( config, path );
+			vconfig.push_back( new_config );
+			(*it)->hostConfigs.insert( std::make_pair( host, vconfig ) );
+			if ( host == "localhost")
+					(*it)->hostConfigs.insert( std::make_pair( "127.0.0.1", vconfig ) );
 		}
 	}
 }

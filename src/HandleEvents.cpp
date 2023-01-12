@@ -107,6 +107,7 @@ void	Server::resetPages( )
 // create a correct response to the request of the client and send it back
 int	Server::sendResponseToClient( Client *client )
 {
+
 	Config			*config = this->_sockets[client->getSockNum()]->getConfig( client->getLocation(), client->getHost() );
 	int				fileSize, c_fd = client->getConnectionFD();
     std::string     htmlFileName;
@@ -124,6 +125,7 @@ int	Server::sendResponseToClient( Client *client )
     if ( !responseFile.is_open() )
         return printerror( "could not open response file " );
     htmlFileName = this->getHtmlFile( client );
+	std::cout << htmlFileName << std::endl;
 	if (htmlFileName == "DO NOTHING")
 		return 0;
     if ( !htmlFileName.size() )

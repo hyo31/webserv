@@ -122,7 +122,7 @@ int Server::openSockets( std::string configFilePath )
 					delete new_sock;
 			}
 			else
-				addHost( port, host );
+				addHost( port, host, socketConfig, this->_path );
 			socketConfig.clear();
         }
     }

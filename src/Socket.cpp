@@ -11,6 +11,8 @@ Socket::Socket( std::string config, std::string path ) : bound( false )
 	this->setPortLogHost( config );
 	configv.push_back( newConfig );
 	this->hostConfigs.insert( std::make_pair( this->hosts[0], configv ) );
+	if ( this->hosts.size() > 1 )
+		this->hostConfigs.insert( std::make_pair( this->hosts[1], configv ) );
 	ipAddr = "localhost";
 	currentFile = "";
 	this->setupSockets();
@@ -92,6 +94,14 @@ Config	*Socket::getConfig( std::string location, std::string host ) const
 	std::string	new_location = location;
 	size_t		pos;
 
+	std::cout << "location:" << location << "   host:" << host << std::endl;
+
+	// for ( std::vector<std::string>::const_iterator it = this->hosts.begin(); it != this->hosts.end(); it++ ) {
+	// 	std::cout << "host:";
+	// 	std::cout << *it << std::endl;
+	// }
+
+
 	it = this->hostConfigs.find( host );
 	if ( it == this->hostConfigs.end() )
 	{
@@ -106,8 +116,13 @@ Config	*Socket::getConfig( std::string location, std::string host ) const
 	}
 
 	for ( it2 = it->second.begin(); it2 != it->second.end(); it2++ ) {
+		std::cout << "config locations:" << (*it2)->location << std::endl;
 		if ( (*it2)->location == new_location )
+		{
+			std::cout << "return config: " << new_location << std::endl;
+			std::cout << "erp:" << (*it2)->errorPageDir << std::endl;
 			return *it2;
+		}
 	}
 
 	// it = this->routes.find( new_location );
@@ -175,7 +190,10 @@ void	Socket::setPortLogHost( std::string config )
 	this->logFile = "logs/port" + std::to_string( this->port ) + ".log";
 	start = line.find( " " );
 	if ( start != std::string::npos )
-		this->hosts.push_back( line.substr( start ) );
+		this->hosts.push_back( line.substr( start + 1 ) );
 	else
+	{
 		this->hosts.push_back( "localhost" );
+		this->hosts.push_back( "127.0.0.1" );
+	}
 }
