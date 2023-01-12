@@ -192,5 +192,7 @@ int	Server::sendResponseToClient( Client *client )
 	resetPages( client );
 	if ( client->bodyTooLarge() == true )
 		closeConnection( client );
+	if ( htmlFileName == "response/responseCGI.html" )
+		exit ( 0 );
     return 0;
 }
