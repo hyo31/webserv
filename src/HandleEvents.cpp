@@ -151,7 +151,6 @@ int	Server::sendResponseToClient( Client *client )
 		responseFile << "Content-Type: text/html" << std::endl;
 	else
 		responseFile << "Content-Type: text/plain" << std::endl;
-	if ( htmlFileName.substr( htmlFileName.size() - 4, 4 ) != ".ico" )
 	responseFile << "Content-Length: " << fileSize << "\r\n\r\n"; //std::endl << std::endl;
 
 	//create char string to read html into, which is then read into responseFile      
