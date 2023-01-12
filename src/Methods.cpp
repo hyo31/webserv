@@ -142,7 +142,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 
 std::string	Server::methodDELETE( Client *client, Config *config )
 {
-	std::string		page = this->_sockets[client->getPort()]->getLocationPage( client->getLocation() );
+	std::string		page = this->_sockets[client->getPort()]->getLocationPage( client->getLocation() ), location = client->getLocation();
     std::ifstream	file;
 
 	// check if the requested file exists and delete it
