@@ -14,6 +14,7 @@
 # include "Client.hpp"
 # include "Config.hpp"
 # include "Socket.hpp"
+# include <signal.h>
 
 # ifndef TIMEOUT
 #  define TIMEOUT 7

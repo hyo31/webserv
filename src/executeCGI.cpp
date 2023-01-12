@@ -88,9 +88,9 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
 // execute the CGI
 int	executeCGI( std::string page, int port, std::string path, std::string root, std::string body, std::string header, std::string uploaddir, std::string method )
 {
-    pid_t		                        pid, pid2;
+    pid_t		                        pid, pid2, timeout_pid;
     std::map<std::string, std::string>  env;
-    int			                        status;
+    //int			                        status;
     std::string	                        pathCGI, temp;
 
     // setup the environmental variables for execve
@@ -105,40 +105,47 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
     // execute the script
     if ( !pid )
     {
-        pid2 = fork();
-        if ( pid2 == -1 )
-            exit( printerror( "fork failed: " ) );
-        if ( !pid2 )
+        timeout_pid = fork();
+        if ( !timeout_pid )
         {
-            // copy env to a c_str
-            char    **c_env = new char*[env.size() + 1];
-            int     i = 0;
-            for ( std::map<std::string, std::string>::const_iterator it = env.begin(); it != env.end(); it++ )
-            {
-                temp = it->first + "=" + it->second;
-                c_env[i] = new char[temp.size() + 1];
-	        	for ( size_t j = 0; j < temp.size(); ++j ) {
-	        		c_env[i][j] = temp[j];
-	        	}
-	        	c_env[i][temp.size()] = '\0';
-                i++;
-            }
-            c_env[i] = NULL;
-            execve( pathCGI.c_str(), NULL, c_env );
-            exit( printerror( "execve failed: " ) );
+            sleep ( 5 );
+            exit( 0 );
         }
         else
-            waitpid( pid, &status, 0 );
-        // wait for the script to finish, then return
-        if ( WIFEXITED( status ) )
         {
-            // for ( int i = 0; c_env[i] != NULL ; i++ ) {
-	    	//     delete c_env[i];
-	        // }
-	        // delete[] c_env;
-            if (WEXITSTATUS( status ))
-                return ( 1 );
-            return ( 0 );
+            pid2 = fork();
+            if ( pid2 == -1 )
+                exit( printerror( "fork failed: " ) );
+            if ( !pid2 )
+            {
+                // copy env to a c_str
+                char    **c_env = new char*[env.size() + 1];
+                int     i = 0;
+                for ( std::map<std::string, std::string>::const_iterator it = env.begin(); it != env.end(); it++ )
+                {
+                    temp = it->first + "=" + it->second;
+                    c_env[i] = new char[temp.size() + 1];
+	            	for ( size_t j = 0; j < temp.size(); ++j ) {
+	            		c_env[i][j] = temp[j];
+	            	}
+	            	c_env[i][temp.size()] = '\0';
+                    i++;
+                }
+                c_env[i] = NULL;
+                execve( pathCGI.c_str(), NULL, c_env );
+                exit( printerror( "execve failed: " ) );
+            }
+            else
+            {
+                pid_t exited_pid = wait(NULL);
+                if (exited_pid == timeout_pid)
+                {
+                    kill(pid2, SIGKILL);
+                    return ( 1 );
+                }
+                kill(timeout_pid, SIGKILL);
+                return ( 0 );
+            }
         }
     }
     return ( -1 );
