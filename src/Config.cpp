@@ -175,7 +175,7 @@ void	Config::setUploadDir( std::string line )
 
 void	Config::setExtension( std::string line )
 {
-	this->extension = line.substr( line.find( " " ) + 1 );
+	this->extension = line.substr( line.find(" ") + 1 );
 }
 
 void	Config::setMethods( std::string line )

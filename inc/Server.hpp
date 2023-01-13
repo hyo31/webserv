@@ -48,7 +48,8 @@ class Server
         Client*		acceptRequest( int );
         int			monitor_ports();
         int			receiveClientRequest( Client*, std::string& );
-        int			sendResponseToClient( Client* );
+        int			configureResponseToClient( Client* );
+        int         buildHeaderResponse( Client*, std::ifstream&, std::fstream&, std::string );
         int			openSockets( std::string );
         int			findSocket( int );
 		int			uniqueSocket( std::string, std::string& );

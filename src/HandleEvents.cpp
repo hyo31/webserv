@@ -63,7 +63,7 @@ void    removeResponseFiles( void )
 
     directory = opendir( "response" );
     if ( !directory )
-        std::cout << "can not open directory(removeResonseFiles)\n";
+        printerror("can not open directory(removeResonseFiles): ");
     for ( struct dirent *dirEntry = readdir( directory ); dirEntry; dirEntry = readdir( directory ) )
     {
         std::string link = std::string( dirEntry->d_name );
@@ -104,50 +104,10 @@ void	Server::resetPages( )
 	// }
 }
 
-// create a correct response to the request of the client and send it back
-int	Server::sendResponseToClient( Client *client )
+int	Server::buildHeaderResponse(Client *client, std::ifstream &htmlFile, std::fstream &responseFile, std::string htmlFileName)
 {
-
-	Config			*config = this->_sockets[client->getSockNum()]->getConfig( client->getLocation(), client->getHost() );
 	int				fileSize, c_fd = client->getConnectionFD();
-    std::string     htmlFileName;
-    std::ifstream   htmlFile;
-    std::fstream    responseFile;
-    std::ofstream 	ofs;
 	ssize_t			bytesSent;
-
-    // clear response file
-    ofs.open("response/response.txt", std::ofstream::out | std::ofstream::trunc);
-    ofs.close();
-    
-    // open streamfiles
-    responseFile.open( "response/response.txt", std::ios::in | std::ios::out | std::ios::binary );
-    if ( !responseFile.is_open() )
-        return printerror( "could not open response file " );
-    htmlFileName = this->getHtmlFile( client );
-	std::cout << htmlFileName << std::endl;
-	if (htmlFileName == "DO NOTHING")
-		return 0;
-    if ( !htmlFileName.size() )
-        htmlFileName = config->errorPageDir + "500.html";
-	htmlFileName = this->getErrorPage( htmlFileName, config );
-    htmlFile.open( htmlFileName, std::ios::in | std::ios::binary );
-    if ( !htmlFile.is_open() )
-    {
-		std::cout << "cant open filename:" << htmlFileName << std::endl;
-    	this->_responseHeader = "HTTP/1.1 500 Error";
-    	htmlFile.open( config->errorPageDir + "500.html", std::ios::in | std::ios::binary );
-		if ( !htmlFile.is_open() )
-		{
-			htmlFile.open( createResponseHtml() );
-			if ( !htmlFile.is_open() )
-			{
-				std::cout << "couldnt create a response.." << std::endl;
-				closeConnection( client );
-				return 0;
-			}
-		}
-    }
 
 	//get length of htmlFile
 	htmlFile.seekg( 0, std::ios::end );
@@ -187,10 +147,18 @@ int	Server::sendResponseToClient( Client *client )
 	bytesSent = send( c_fd, response, fileSize, 0 );
 	if ( bytesSent == -1 )
 	{
+		this->_responseHeader.clear();
 		htmlFile.close();
 		responseFile.close();
+		std::ifstream ifs( "response/responseCGI" );
+		if ( ifs.good() )
+			ifs.close();
 		closeConnection( client );
+		removeResponseFiles();
+		resetPages();
 		std::cout << "error sending data to client.." << std::endl;
+		if ( htmlFileName == "response/responseCGI" )
+			exit ( 0 );
 		return 0;
 	}
 	client->update_client_timestamp();
@@ -208,4 +176,69 @@ int	Server::sendResponseToClient( Client *client )
 	if ( htmlFileName == "response/responseCGI" )
 		exit ( 0 );
     return 0;
+}
+
+// configure the right response message
+int	Server::configureResponseToClient( Client *client )
+{
+
+	Config			*config = this->_sockets[client->getSockNum()]->getConfig( client->getLocation(), client->getHost() );
+    std::string     htmlFileName;
+    std::ifstream   htmlFile;
+    std::fstream    responseFile;
+    std::ofstream 	ofs;
+
+    // clear response file
+    ofs.open("response/response.txt", std::ofstream::out | std::ofstream::trunc);
+    ofs.close();
+    
+    // open streamfiles
+    responseFile.open( "response/response.txt", std::ios::in | std::ios::out | std::ios::binary );
+    if ( !responseFile.is_open() )
+        return printerror( "could not open response file " );
+	
+	// Can not find the right config file and try to return error 400
+	if (config == nullptr)
+	{
+		htmlFile.open( "public_html/pages/errorpages/400.html", std::ios::in | std::ios::binary );
+		if ( !htmlFile.is_open() )
+		{
+			htmlFile.open( createResponseHtml() );
+			if ( !htmlFile.is_open() )
+			{
+				std::cout << "couldnt create a response.." << std::endl;
+				closeConnection( client );
+				return 0;
+			}
+		}
+		return( this->buildHeaderResponse(client, htmlFile, responseFile, "public_html/pages/errorpages/400.html") );
+	}
+
+	// Get the correct response file
+    htmlFileName = this->getHtmlFile( client );
+	if (htmlFileName == "DO NOTHING")
+		return 0;
+    if ( !htmlFileName.size() )
+        htmlFileName = config->errorPageDir + "500.html";
+	htmlFileName = this->getErrorPage( htmlFileName, config );
+    htmlFile.open( htmlFileName, std::ios::in | std::ios::binary );
+	// Response file doesn't exist
+    if ( !htmlFile.is_open() )
+    {
+		std::cout << "cant open filename:" << htmlFileName << std::endl;
+    	this->_responseHeader = "HTTP/1.1 500 Error";
+    	htmlFile.open( config->errorPageDir + "500.html", std::ios::in | std::ios::binary );
+		// Error file doesn't exist, as a last resort server creates its own 500 error return
+		if ( !htmlFile.is_open() )
+		{
+			htmlFile.open( createResponseHtml() );
+			if ( !htmlFile.is_open() )
+			{
+				std::cout << "couldnt create a response.." << std::endl;
+				closeConnection( client );
+				return 0;
+			}
+		}
+    }
+	return( this->buildHeaderResponse(client, htmlFile, responseFile, htmlFileName) );
 }

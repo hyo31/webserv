@@ -64,7 +64,6 @@ std::string Server::createAutoIndex( std::string root, std::string folder )
             // add a file to the autoindex
 			if ( !tempDir )
                 autoindexFile << "<a href=\"" << folder + link << "\">/" << link << "</a><br>" << std::endl;
-            
             // add a directory to the autoindex
             else
             {

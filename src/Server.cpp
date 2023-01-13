@@ -81,7 +81,7 @@ int	Server::monitor_ports()
                 else if ( tevents[i].filter == EVFILT_WRITE && client != nullptr )
                 {
                     std::cout << "WRITING to:" << fd << std::endl;
-                    if ( this->sendResponseToClient( client ) == ERROR )
+                    if ( this->configureResponseToClient( client ) == ERROR )
 						return ERROR;
                 }
             }

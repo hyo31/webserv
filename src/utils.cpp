@@ -115,7 +115,10 @@ void	SaveBinaryFile( std::string path, Client *client, Config *config )
 	
 	directory = opendir((path + "/" + config->root + config->uploadDir).c_str());
 	if ( !directory )
+	{
+		printerror("Can not open directory(SaveBinaryFile): ");
 		mkdir( (path + "/" + config->root + config->uploadDir).c_str(), 0777 );
+	}
 	else
 		closedir( directory );
 	to_upload = readFile( client->getHeader(), client->getBody() );

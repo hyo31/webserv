@@ -94,7 +94,7 @@ Config	*Socket::getConfig( std::string location, std::string host ) const
 	std::string	new_location = location;
 	size_t		pos;
 
-	std::cout << "location:" << location << "   host:" << host << std::endl;
+	//std::cout << "location:" << location << "   host:" << host << std::endl;
 
 	// for ( std::vector<std::string>::const_iterator it = this->hosts.begin(); it != this->hosts.end(); it++ ) {
 	// 	std::cout << "host:";
@@ -106,9 +106,10 @@ Config	*Socket::getConfig( std::string location, std::string host ) const
 	if ( it == this->hostConfigs.end() )
 	{
 		std::cout << "Error: couldn't find hostname\n";
-		return it->second[0];
+		return nullptr;
+		//return it->second[0];
 	}
-	pos = location.find( ".pl" );
+	pos = location.find( it->second[0]->extension );
 	if ( pos != std::string::npos )
 	{
 		pos = location.find_last_of( "/" ) + 1;
@@ -116,7 +117,7 @@ Config	*Socket::getConfig( std::string location, std::string host ) const
 	}
 
 	for ( it2 = it->second.begin(); it2 != it->second.end(); it2++ ) {
-		std::cout << "config locations:" << (*it2)->location << std::endl;
+		//std::cout << "config locations:" << (*it2)->location << std::endl;
 		if ( (*it2)->location == new_location )
 		{
 			std::cout << "return config: " << new_location << std::endl;

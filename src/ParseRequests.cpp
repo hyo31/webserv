@@ -96,6 +96,7 @@ void    Server::parseRequest( std::string request, Client *client )
 {
 	std::string	substr, header;
     size_t		start, end, MaxBody;
+	errno = 0;
 
     client->setRequestIsRead( false );
 	/* check if full header is read and store it */
@@ -113,6 +114,11 @@ void    Server::parseRequest( std::string request, Client *client )
 
 	header = client->getHeader();
 	client->setHost( header );
+	if ( this->_sockets[client->getSockNum()]->getConfig( client->getLocation(), client->getHost() ) == nullptr)
+	{
+		printerror( "Error: couldn't get configuration (parseRequest): " );
+		return ;
+	}
 	MaxBody = this->_sockets[client->getSockNum()]->getConfig( client->getLocation(), client->getHost() )->maxClientBodySize;
 	end = header.find( " ", 0 );
 	client->setMethod( header.substr( 0, end ) );
