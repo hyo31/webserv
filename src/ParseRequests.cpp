@@ -111,12 +111,13 @@ void    Server::parseRequest( std::string request, Client *client )
     }
 	else
 		return ;
-
 	header = client->getHeader();
 	client->setHost( header );
+	// Can not find the right config file and try to return error 400
 	if ( this->_sockets[client->getSockNum()]->getConfig( client->getLocation(), client->getHost() ) == nullptr)
 	{
 		printerror( "Error: couldn't get configuration (parseRequest): " );
+		this->noConfig(client);
 		return ;
 	}
 	MaxBody = this->_sockets[client->getSockNum()]->getConfig( client->getLocation(), client->getHost() )->maxClientBodySize;

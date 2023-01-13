@@ -90,25 +90,44 @@ void	Server::resetPages( )
 			}
 		}
 	}
-
-	// std::map< std::string, Config* >::iterator	it;
-	// std::string	path = this->_path + "/" + this->_sockets[client->getSockNum()]->serverConfig->root;
-	
-	// this->_sockets[client->getSockNum()]->serverConfig->pages.clear();
-	// this->_sockets[client->getSockNum()]->serverConfig->setPages(path, "");
-	// for (it = this->_sockets[client->getSockNum()]->routes.begin(); it != this->_sockets[client->getSockNum()]->routes.end(); ++it)
-	// {
-	// 	path = this->_path + "/" + (*it).second->root;
-	// 	(*it).second->pages.clear();
-	// 	(*it).second->setPages(path, "");
-	// }
 }
 
+// Send the response to the client
+void	Server::sendResponse(Client *client, int fileSize, std::fstream &responseFile, int c_fd, std::ifstream &htmlFile, std::string htmlFileName)
+{
+	ssize_t			bytesSent;
+
+	//create response which is sent back to client
+	char	response[fileSize + 1];
+	responseFile.read( response, fileSize );
+	response[fileSize] = '\0';
+	bytesSent = send( c_fd, response, fileSize, 0 );
+	if ( bytesSent == -1 )
+	{
+		this->_responseHeader.clear();
+		htmlFile.close();
+		responseFile.close();
+		std::ifstream ifs( "response/responseCGI" );
+		if ( ifs.good() )
+			ifs.close();
+		closeConnection( client );
+		removeResponseFiles();
+		resetPages();
+		std::cout << "error sending data to client.." << std::endl;
+		if ( htmlFileName == "response/responseCGI" )
+			exit ( 0 );
+		return ;
+	}
+	client->update_client_timestamp();
+	std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << response << "\033[0m" << std::endl;
+	return ;
+}
+
+// Build the header for the response file
 int	Server::buildHeaderResponse(Client *client, std::ifstream &htmlFile, std::fstream &responseFile, std::string htmlFileName)
 {
 	int				fileSize, c_fd = client->getConnectionFD();
-	ssize_t			bytesSent;
-
+	
 	//get length of htmlFile
 	htmlFile.seekg( 0, std::ios::end );
 	fileSize = htmlFile.tellg();
@@ -140,29 +159,10 @@ int	Server::buildHeaderResponse(Client *client, std::ifstream &htmlFile, std::fs
 	responseFile.clear();
 	responseFile.seekg( 0, std::ios::beg );
 
-	//create response which is sent back to client
-	char	response[fileSize + 1];
-	responseFile.read( response, fileSize );
-	response[fileSize] = '\0';
-	bytesSent = send( c_fd, response, fileSize, 0 );
-	if ( bytesSent == -1 )
-	{
-		this->_responseHeader.clear();
-		htmlFile.close();
-		responseFile.close();
-		std::ifstream ifs( "response/responseCGI" );
-		if ( ifs.good() )
-			ifs.close();
-		closeConnection( client );
-		removeResponseFiles();
-		resetPages();
-		std::cout << "error sending data to client.." << std::endl;
-		if ( htmlFileName == "response/responseCGI" )
-			exit ( 0 );
-		return 0;
-	}
-	client->update_client_timestamp();
-	std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << response << "\033[0m" << std::endl;
+	//send the response
+	this->sendResponse(client, fileSize, responseFile, c_fd, htmlFile, htmlFileName);
+	
+	//clear and remove header/files
 	this->_responseHeader.clear();
 	htmlFile.close();
 	responseFile.close();
@@ -199,21 +199,7 @@ int	Server::configureResponseToClient( Client *client )
 	
 	// Can not find the right config file and try to return error 400
 	if (config == nullptr)
-	{
-		htmlFile.open( "public_html/pages/errorpages/400.html", std::ios::in | std::ios::binary );
-		if ( !htmlFile.is_open() )
-		{
-			htmlFile.open( createResponseHtml() );
-			if ( !htmlFile.is_open() )
-			{
-				std::cout << "couldnt create a response.." << std::endl;
-				closeConnection( client );
-				return 0;
-			}
-		}
-		return( this->buildHeaderResponse(client, htmlFile, responseFile, "public_html/pages/errorpages/400.html") );
-	}
-
+		return this->noConfig(client);
 	// Get the correct response file
     htmlFileName = this->getHtmlFile( client );
 	if (htmlFileName == "DO NOTHING")
