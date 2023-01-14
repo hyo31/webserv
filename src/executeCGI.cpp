@@ -62,7 +62,10 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
     // content type is a file
     else if ( contentType == "plain/text" )
     {
-        env["FILE_NAME"] = body;
+        if (body.size() > 6)
+            env["FILE_NAME"] = body.substr(0, 6);
+        else
+            env["FILE_NAME"] = body;
         env["FILE_BODY"] = body;
         if (body.find("=") != std::string::npos)
         {

@@ -107,7 +107,11 @@ std::string	Server::methodPOST( Client *client, Config *config )
     {
         _responseHeader = "HTTP/1.1 200 OK";
 		body = client->getBody();
-		newFileName = location + "/" + body.substr(0, body.find("="));
+		if (body.find("=") == std::string::npos && body.size() > 6)
+			newFileName = location + "/" + body.substr(0, 6);
+		else
+			newFileName = location + "/" + body.substr(0, body.find("="));
+		std::cout << newFileName << std::endl;
 		newFileContent = body.substr(body.find("=") + 1, body.size() - (body.find("=") + 1));
 		checkIfOpen.open(config->root + newFileName);
 		while ( checkIfOpen.is_open() )
@@ -136,8 +140,8 @@ std::string	Server::methodPOST( Client *client, Config *config )
         // if there was no index -> create an autoindex (if enabled)
         if ( config->autoindex )
             return ( this->createAutoIndex( config->root, location ) );
-        _responseHeader = "HTTP/1.1 403 Forbidden";
-        return ( config->errorPageDir + "403.html" );
+        _responseHeader = "HTTP/1.1 400 Bad Request";
+        return ( config->errorPageDir + "400.html" );
 	}
 	_responseHeader = "HTTP/1.1 404 Not Found";
     return ( config->errorPageDir + "404.html" );

@@ -143,6 +143,8 @@ int	Server::buildHeaderResponse(Client *client, std::ifstream &htmlFile, std::fs
 	htmlFile.open( htmlFileName, std::ios::in | std::ios::binary );
 	if ( fileSize >= 16 && std::string(line) == "<!DOCTYPE html>" )
 		responseFile << "Content-Type: text/html" << std::endl;
+	else if (htmlFileName.find(".ico") != std::string::npos)
+		responseFile << "Content-Type: image/x-icon" << std::endl;
 	else
 		responseFile << "Content-Type: text/plain" << std::endl;
 	responseFile << "Content-Length: " << fileSize << "\r\n\r\n"; //std::endl << std::endl;
