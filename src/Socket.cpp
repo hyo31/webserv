@@ -26,12 +26,14 @@ Socket &	Socket::operator=( const Socket & ) { return *this; }
 Socket::~Socket()
 {
 	//delete configs
-	// std::map< std::string, Config* >::iterator	it;
-	// for ( it = this->routes.begin(); it != this->routes.end(); ++it ) {
-	// 	delete (*it).second;
-	// }
-	// delete this->serverConfig;
-    // std::cout << "Socket:" << this->fd << " - bound to port:" << port << " closed\n";
+	std::map< std::string, std::vector< Config* > >::iterator	it;
+
+	for ( it = this->hostConfigs.begin(); it != this->hostConfigs.end(); ++it ) {
+		for ( size_t i = 0; i < (*it).second.size(); ++i ) {
+			delete (*it).second[i];
+		}
+	}
+    std::cout << "Socket:" << this->fd << " - bound to port:" << port << " closed\n";
     close( fd );
 }
 
@@ -94,12 +96,12 @@ Config	*Socket::getConfig( std::string location, std::string host ) const
 	std::string	new_location = location;
 	size_t		pos;
 
-	//std::cout << "location:" << location << "   host:" << host << std::endl;
+	std::cout << "location:" << location << "   host:" << host << std::endl;
 
-	// for ( std::vector<std::string>::const_iterator it = this->hosts.begin(); it != this->hosts.end(); it++ ) {
-	// 	std::cout << "host:";
-	// 	std::cout << *it << std::endl;
-	// }
+	for ( std::vector<std::string>::const_iterator it = this->hosts.begin(); it != this->hosts.end(); it++ ) {
+		std::cout << "host:";
+		std::cout << *it << std::endl;
+	}
 
 
 	it = this->hostConfigs.find( host );

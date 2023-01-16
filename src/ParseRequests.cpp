@@ -113,6 +113,7 @@ void    Server::parseRequest( std::string request, Client *client )
 		return ;
 	header = client->getHeader();
 	client->setHost( header );
+
 	// Can not find the right config file and try to return error 400
 	if ( this->_sockets[client->getSockNum()]->getConfig( client->getLocation(), client->getHost() ) == nullptr)
 	{

@@ -51,7 +51,7 @@ class Server
         int			configureResponseToClient( Client* );
         int         buildHeaderResponse( Client*, std::ifstream&, std::fstream&, std::string );
         void	    sendResponse(Client*, int, std::fstream&, int, std::ifstream&, std::string );
-        int         noConfig(Client *);
+        int         noConfig( Client* );
         int			openSockets( std::string );
         int			findSocket( int );
 		int			uniqueSocket( std::string, std::string& );

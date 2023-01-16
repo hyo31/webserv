@@ -188,7 +188,7 @@ std::string	createResponseHtml( void )
 	return "public_html/error500.html";
 }
 
-int			Server::noConfig(Client *client)
+int	Server::noConfig(Client *client)
 {
 	std::ifstream	htmlFile;
 	std::fstream	responseFile;
@@ -210,6 +210,7 @@ int			Server::noConfig(Client *client)
 			return 0;
 		}
 	}
+	_responseHeader = "HTTP/1.1 400 Bad Request";
 	this->buildHeaderResponse(client, htmlFile, responseFile, "public_html/pages/errorpages/400.html");
 	closeConnection( client );
 	return 0;
