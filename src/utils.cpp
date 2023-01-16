@@ -188,12 +188,12 @@ std::string	createResponseHtml( void )
 	return "public_html/error500.html";
 }
 
-// int	Server::noConfig( Client *client )
+// int	Server::noConfig(Client *client)
 // {
 // 	std::ifstream	htmlFile;
 // 	std::fstream	responseFile;
 // 	std::ofstream	ofs;
-
+	
 // 	ofs.open("response/response.txt", std::ofstream::out | std::ofstream::trunc);
 //     ofs.close();
 //     responseFile.open( "response/response.txt", std::ios::in | std::ios::out | std::ios::binary );
@@ -209,8 +209,10 @@ std::string	createResponseHtml( void )
 // 			closeConnection( client );
 // 			return 0;
 // 		}
+// 		_responseHeader = "HTTP/1.1 500 Error";
 // 	}
-// 	_responseHeader = "HTTP/1.1 400 Bad Request";
+// 	else
+// 		_responseHeader = "HTTP/1.1 400 Bad Request";
 // 	this->buildHeaderResponse(client, htmlFile, responseFile, "public_html/pages/errorpages/400.html");
 // 	closeConnection( client );
 // 	return 0;
