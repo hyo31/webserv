@@ -24,11 +24,13 @@ class Client
 		bool		headerIsSet();
 		bool		bodyTooLarge();
 		bool		illegalRequest();
+		bool		unknownHost();
 	
 		void		setIllegalRequest( bool );
 		void		setHeaderIsSet( bool );
 		void		setRequestIsRead( bool );
 		void		setBodyTooLarge( bool );
+		void		setUnknownHost( bool );
 		void		setHeader( std::string, int );
 		void		setBody( std::string );
 		void		setMethod( std::string );
@@ -37,18 +39,19 @@ class Client
 	    void		update_client_timestamp();
 
 	private:
+    	int			_conn_fd;
+    	int			_sock_num;
 	    std::time_t	_timestamp;
 		std::string	_requestHeader;
 		std::string _requestBody;
 		std::string	_requestMethod;
 		std::string	_requestLocation;
-		std::string	_host;
-    	int			_conn_fd;
-    	int			_sock_num;
+		std::string	_requestHost;
 		bool		_headerSet;
     	bool		_request_is_read;
 		bool		_client_body_too_large;
 		bool		_illegal_request;
+		bool		_unknownHost;
     	Client();
 }; 
 

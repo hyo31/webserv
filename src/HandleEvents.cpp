@@ -26,6 +26,8 @@ int Server::receiveClientRequest( Client *client, std::string & request )
     std::ofstream		ofs;
 	std::vector<char>	buff( 1024 * 1024 );
 
+	if ( client->requestIsRead() == true )
+		request.clear();
 	bytesRead = recv( c_fd, &buff[0], buff.size(), 0 );
 	client->update_client_timestamp();
 	if ( bytesRead == 0 )
@@ -126,7 +128,7 @@ void	Server::sendResponse(Client *client, int fileSize, std::fstream &responseFi
 // Build the header for the response file
 int	Server::buildHeaderResponse(Client *client, std::ifstream &htmlFile, std::fstream &responseFile, std::string htmlFileName)
 {
-	int				fileSize, c_fd = client->getConnectionFD();
+	int	fileSize, c_fd = client->getConnectionFD();
 	
 	//get length of htmlFile
 	htmlFile.seekg( 0, std::ios::end );
@@ -184,7 +186,7 @@ int	Server::buildHeaderResponse(Client *client, std::ifstream &htmlFile, std::fs
 int	Server::configureResponseToClient( Client *client )
 {
 
-	Config			*config = this->_sockets[client->getSockNum()]->getConfig( client->getLocation(), client->getHost() );
+	Config			*config = this->_sockets[client->getSockNum()]->getConfig( client->getLocation(), client->getHost(), client );
     std::string     htmlFileName;
     std::ifstream   htmlFile;
     std::fstream    responseFile;
@@ -199,11 +201,16 @@ int	Server::configureResponseToClient( Client *client )
     if ( !responseFile.is_open() )
         return printerror( "could not open response file " );
 	
-	// Can not find the right config file and try to return error 400
-	if (config == nullptr)
-		return this->noConfig(client);
 	// Get the correct response file
-    htmlFileName = this->getHtmlFile( client );
+	// If request is for an unknown host (or missing host) -> return 400
+	if ( client->unknownHost() == true || client->getHost() == "" )
+	{
+		this->_responseHeader = "HTTP/1.1 400 Bad Request";
+		htmlFileName = config->errorPageDir + "400.html";
+		htmlFileName = this->getErrorPage( htmlFileName, config );
+	}
+	else
+    	htmlFileName = this->getHtmlFile( client );
 	if (htmlFileName == "DO NOTHING")
 		return 0;
     if ( !htmlFileName.size() )

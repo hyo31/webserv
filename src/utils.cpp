@@ -81,14 +81,14 @@ Client *Server::findClient( int c_fd )
 // find the right file to answer to the request
 std::string Server::getHtmlFile( Client* client )
 {
-	Config		*config = this->_sockets[client->getSockNum()]->getConfig( client->getLocation(), client->getHost() );
+	Config		*config = this->_sockets[client->getSockNum()]->getConfig( client->getLocation(), client->getHost(), client );
 	std::string	method = client->getMethod();
 
 	// checks if method is allowed for this location
 	if ( std::find( config->methods.begin(), config->methods.end(), method ) == config->methods.end() )
 	{
 		std::string directory = client->getLocation().substr( 0, client->getLocation().find_last_of( "/" ) + 1 );
-		Config *dir_config = this->_sockets[client->getSockNum()]->getConfig( directory, client->getHost() );
+		Config *dir_config = this->_sockets[client->getSockNum()]->getConfig( directory, client->getHost(), client );
 		if ( std::find( dir_config->methods.begin(), dir_config->methods.end(), "DELETE" ) == dir_config->methods.end() && method == "DELETE")
 		{
 			_responseHeader = "HTTP/1.1 405 Method Not Allowed";
@@ -188,33 +188,33 @@ std::string	createResponseHtml( void )
 	return "public_html/error500.html";
 }
 
-int	Server::noConfig(Client *client)
-{
-	std::ifstream	htmlFile;
-	std::fstream	responseFile;
-	std::ofstream	ofs;
-	
-	ofs.open("response/response.txt", std::ofstream::out | std::ofstream::trunc);
-    ofs.close();
-    responseFile.open( "response/response.txt", std::ios::in | std::ios::out | std::ios::binary );
-    if ( !responseFile.is_open() )
-        return printerror( "could not open response file " );
-	htmlFile.open( "public_html/pages/errorpages/400.html", std::ios::in | std::ios::binary );
-	if ( !htmlFile.is_open() )
-	{
-		htmlFile.open( createResponseHtml() );
-		if ( !htmlFile.is_open() )
-		{
-			std::cout << "couldnt create a response.." << std::endl;
-			closeConnection( client );
-			return 0;
-		}
-	}
-	_responseHeader = "HTTP/1.1 400 Bad Request";
-	this->buildHeaderResponse(client, htmlFile, responseFile, "public_html/pages/errorpages/400.html");
-	closeConnection( client );
-	return 0;
-}
+// int	Server::noConfig( Client *client )
+// {
+// 	std::ifstream	htmlFile;
+// 	std::fstream	responseFile;
+// 	std::ofstream	ofs;
+
+// 	ofs.open("response/response.txt", std::ofstream::out | std::ofstream::trunc);
+//     ofs.close();
+//     responseFile.open( "response/response.txt", std::ios::in | std::ios::out | std::ios::binary );
+//     if ( !responseFile.is_open() )
+//         return printerror( "could not open response file " );
+// 	htmlFile.open( "public_html/pages/errorpages/400.html", std::ios::in | std::ios::binary );
+// 	if ( !htmlFile.is_open() )
+// 	{
+// 		htmlFile.open( createResponseHtml() );
+// 		if ( !htmlFile.is_open() )
+// 		{
+// 			std::cout << "couldnt create a response.." << std::endl;
+// 			closeConnection( client );
+// 			return 0;
+// 		}
+// 	}
+// 	_responseHeader = "HTTP/1.1 400 Bad Request";
+// 	this->buildHeaderResponse(client, htmlFile, responseFile, "public_html/pages/errorpages/400.html");
+// 	closeConnection( client );
+// 	return 0;
+// }
 
 std::string	Server::getErrorPage( std::string response, Config *config )
 {

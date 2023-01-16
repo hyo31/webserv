@@ -5,6 +5,7 @@
 # include "dirent.h"
 
 class Config;
+class Client;
 class Socket
 {
     public:
@@ -20,10 +21,11 @@ class Socket
         std::string		logFile;
         std::string		currentFile;
 		bool			bound;
+		std::string		defaultHost;
         int             setupSockets();
-        std::string     getLocationPage( std::string, std::string ) const;
-		std::string		getRedirectPage( std::string, std::string ) const;
-		Config			*getConfig( std::string, std::string ) const;
+        std::string     getLocationPage( std::string, std::string, Client * );
+		std::string		getRedirectPage( std::string, std::string, Client * );
+		Config			*getConfig( std::string, std::string, Client * );
 		void			setRouteConfigs( std::string );
 		void			setPortLogHost( std::string );
 

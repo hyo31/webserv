@@ -4,11 +4,16 @@
 Client::Client( int fd, int sock_num ) : _conn_fd( fd ), _sock_num( sock_num )
 { 
     this->_timestamp = std::time(nullptr);
-    this->_request_is_read = true;
-	this->_client_body_too_large = false;
 	this->_requestHeader = "";
 	this->_requestBody = "";
+	this->_requestMethod = "";
+	this->_requestLocation = "";
+	this->_requestHost = "";
 	this->_headerSet = false;
+    this->_request_is_read = true;
+	this->_client_body_too_large = false;
+	this->_illegal_request = false;
+	this->_unknownHost = false;
 }
 Client::~Client() { std::cout << "Client removed\n"; }
 
@@ -19,17 +24,18 @@ Client::Client( const Client& src ) { *this = src; }
 Client & Client::operator=( const Client& src )
 {
     this->_conn_fd = src._conn_fd;
-    this->_timestamp = src._timestamp;
-	this->_host = src._host;
     this->_sock_num = src._sock_num;
-	this->_request_is_read = src._request_is_read;
+    this->_timestamp = src._timestamp;
 	this->_requestHeader = src._requestHeader;
 	this->_requestBody = src._requestBody;
-	this->_headerSet = src._headerSet;
 	this->_requestMethod = src._requestMethod;
 	this->_requestLocation = src._requestLocation;
+	this->_requestHost = src._requestHost;
+	this->_headerSet = src._headerSet;
+	this->_request_is_read = src._request_is_read;
 	this->_client_body_too_large = src._client_body_too_large;
 	this->_illegal_request = src._illegal_request;
+	this->_unknownHost = src._unknownHost;
     return *this;
 }
 
@@ -46,13 +52,14 @@ std::string	Client::getLocation()		{ return this->_requestLocation; }
 std::string	Client::getBody()			{ return this->_requestBody; }
 std::string	Client::getHeader()			{ return this->_requestHeader; }
 std::string	Client::getMethod()			{ return this->_requestMethod; }
-std::string	Client::getHost()			{ return this->_host; }
+std::string	Client::getHost()			{ return this->_requestHost; }
 int			Client::getConnectionFD()	{ return this->_conn_fd; }
 int			Client::getSockNum()		{ return this->_sock_num; }
 bool		Client::requestIsRead()		{ return this->_request_is_read; }
 bool		Client::headerIsSet()		{ return this->_headerSet; }
 bool		Client::bodyTooLarge()		{ return this->_client_body_too_large; }
 bool		Client::illegalRequest()	{ return this->_illegal_request; }
+bool		Client::unknownHost()		{ return this->_unknownHost; }
 std::time_t	Client::getTimeStamp()		{ return this->_timestamp; }
 
 //SETTERS
@@ -64,6 +71,7 @@ void	Client::setHeaderIsSet( bool status )				{ this->_headerSet = status; }
 void	Client::setRequestIsRead( bool status )				{ this->_request_is_read = status; }
 void	Client::setBodyTooLarge( bool status )				{ this->_client_body_too_large = status; }
 void	Client::setIllegalRequest( bool status )			{ this->_illegal_request = status; }
+void	Client::setUnknownHost( bool status )				{ this->_unknownHost = status; }
 
 void	Client::setHost( std::string header )
 {
@@ -72,7 +80,7 @@ void	Client::setHost( std::string header )
 
 	start = header.find( "Host: " );
 	if ( start == std::string::npos )
-		_host = "localhost" ;
+		_requestHost = "" ;
 	else
 	{
 		start = start + 6;
@@ -80,8 +88,8 @@ void	Client::setHost( std::string header )
 		line = header.substr( start, end - start );
 		end = line.find( ":" );
 		if ( end == std::string::npos )
-			_host = line;
+			_requestHost = line;
 		else
-			_host = line.substr( 0, end );
+			_requestHost = line.substr( 0, end );
 	}
 }

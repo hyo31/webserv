@@ -5,14 +5,18 @@
 //Each object creates its own configuration file
 Socket::Socket( std::string config, std::string path ) : bound( false )
 {
-	std::vector<Config*> configv;
+	std::vector<Config*> configv_1, configv_2;
 
 	Config *newConfig = new Config( config, path );
 	this->setPortLogHost( config );
-	configv.push_back( newConfig );
-	this->hostConfigs.insert( std::make_pair( this->hosts[0], configv ) );
+	configv_1.push_back( newConfig );
+	this->hostConfigs.insert( std::make_pair( this->hosts[0], configv_1 ) );
 	if ( this->hosts.size() > 1 )
-		this->hostConfigs.insert( std::make_pair( this->hosts[1], configv ) );
+	{
+		Config *newConfig_2 = new Config( *newConfig );
+		configv_2.push_back( newConfig_2 );
+		this->hostConfigs.insert( std::make_pair( this->hosts[1], configv_2 ) );
+	}
 	ipAddr = "localhost";
 	currentFile = "";
 	this->setupSockets();
@@ -89,7 +93,7 @@ void	Socket::setRouteConfigs( std::string configfile )
 //finds the correct config corresponding to the (clients) requested location
 //if the client tries to upload, the request will be routed to our .pl script
 //and the location needs to be the root directory , not the name itself
-Config	*Socket::getConfig( std::string location, std::string host ) const
+Config	*Socket::getConfig( std::string location, std::string host, Client *client )
 {
 	std::map< std::string, std::vector< Config * > >::const_iterator	it;
 	std::vector< Config * >::const_iterator	it2;
@@ -103,13 +107,11 @@ Config	*Socket::getConfig( std::string location, std::string host ) const
 		std::cout << *it << std::endl;
 	}
 
-
 	it = this->hostConfigs.find( host );
 	if ( it == this->hostConfigs.end() )
 	{
-		std::cout << "Error: couldn't find hostname\n";
-		return nullptr;
-		//return it->second[0];
+		client->setUnknownHost( true );
+		return this->getConfig( location, this->defaultHost, client );
 	}
 	pos = location.find( it->second[0]->extension );
 	if ( pos != std::string::npos )
@@ -117,7 +119,6 @@ Config	*Socket::getConfig( std::string location, std::string host ) const
 		pos = location.find_last_of( "/" ) + 1;
 		new_location = location.substr( 0, pos );
 	}
-
 	for ( it2 = it->second.begin(); it2 != it->second.end(); it2++ ) {
 		//std::cout << "config locations:" << (*it2)->location << std::endl;
 		if ( (*it2)->location == new_location )
@@ -127,10 +128,6 @@ Config	*Socket::getConfig( std::string location, std::string host ) const
 			return *it2;
 		}
 	}
-
-	// it = this->routes.find( new_location );
-	// if ( it != this->routes.end() )
-	// 	return it->second;
 	pos = location.find( ".html" );
 	if ( pos != std::string::npos )
 	{
@@ -142,19 +139,14 @@ Config	*Socket::getConfig( std::string location, std::string host ) const
 		if ( (*it2)->location == new_location )
 			return *it2;
 	}
-
-
-	// it = this->routes.find( new_location );
-	// if ( it != this->routes.end() )
-	// 	return it->second;
 	return it->second[0];
 }
 
 //find the correct page for the requested location and if root is set in a route it will be replaced
-std::string Socket::getLocationPage( std::string location, std::string host ) const
+std::string Socket::getLocationPage( std::string location, std::string host, Client *client )
 {
     std::map<std::string, std::string>::iterator    it;
-	Config	*config = this->getConfig( location, host );
+	Config	*config = this->getConfig( location, host, client );
 	size_t	pos;
 
     it = config->pages.find( location );
@@ -170,10 +162,10 @@ std::string Socket::getLocationPage( std::string location, std::string host ) co
 }
 
 //find the correct page to redirect to
-std::string Socket::getRedirectPage( std::string location, std::string host ) const
+std::string Socket::getRedirectPage( std::string location, std::string host, Client *client )
 {
     std::map<std::string, std::string>::iterator	it;
-	Config	*config = this->getConfig( location, host );
+	Config	*config = this->getConfig( location, host, client );
 
     it = config->redirects.find( location );
 	if ( it == config->redirects.end() )
@@ -193,9 +185,13 @@ void	Socket::setPortLogHost( std::string config )
 	this->logFile = "logs/port" + std::to_string( this->port ) + ".log";
 	start = line.find( " " );
 	if ( start != std::string::npos )
+	{
+		this->defaultHost = line.substr( start + 1 );
 		this->hosts.push_back( line.substr( start + 1 ) );
+	}
 	else
 	{
+		this->defaultHost = "localhost";
 		this->hosts.push_back( "localhost" );
 		this->hosts.push_back( "127.0.0.1" );
 	}
