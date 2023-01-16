@@ -84,6 +84,13 @@ std::string Server::getHtmlFile( Client* client )
 	Config		*config = this->_sockets[client->getSockNum()]->getConfig( client->getLocation(), client->getHost(), client );
 	std::string	method = client->getMethod();
 
+	//check if host is unknown or not set
+	if ( client->unknownHost() == true || client->getHost() == "" )
+	{
+		this->_responseHeader = "HTTP/1.1 400 Bad Request";
+		return config->errorPageDir + "400.html";
+	}
+
 	// checks if method is allowed for this location
 	if ( std::find( config->methods.begin(), config->methods.end(), method ) == config->methods.end() )
 	{

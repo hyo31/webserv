@@ -202,15 +202,7 @@ int	Server::configureResponseToClient( Client *client )
         return printerror( "could not open response file " );
 	
 	// Get the correct response file
-	// If request is for an unknown host (or missing host) -> return 400
-	if ( client->unknownHost() == true || client->getHost() == "" )
-	{
-		this->_responseHeader = "HTTP/1.1 400 Bad Request";
-		htmlFileName = config->errorPageDir + "400.html";
-		htmlFileName = this->getErrorPage( htmlFileName, config );
-	}
-	else
-    	htmlFileName = this->getHtmlFile( client );
+    htmlFileName = this->getHtmlFile( client );
 	if (htmlFileName == "DO NOTHING")
 		return 0;
     if ( !htmlFileName.size() )
