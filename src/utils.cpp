@@ -209,8 +209,10 @@ int	Server::noConfig(Client *client)
 			closeConnection( client );
 			return 0;
 		}
+		_responseHeader = "HTTP/1.1 500 Error";
 	}
-	_responseHeader = "HTTP/1.1 400 Bad Request";
+	else
+		_responseHeader = "HTTP/1.1 400 Bad Request";
 	this->buildHeaderResponse(client, htmlFile, responseFile, "public_html/pages/errorpages/400.html");
 	closeConnection( client );
 	return 0;
