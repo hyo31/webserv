@@ -33,6 +33,8 @@ std::string	Server::methodGET( Client *client, Config *config )
 		
         // else search for an index
         index = location + "index.html";
+		if ( location.back() != '/' )
+			index = location + "/index.html";
 		page = this->_sockets[sock_num]->getLocationPage( index, client->getHost(), client );
 		if ( page != "" )
 		    return ( page );
