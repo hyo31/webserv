@@ -119,9 +119,9 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
 	env = setupEnv( page, port, path, root, body, header, uploaddir, method );
     if ( !env.size() )
         return printerror( "failed setting up the environment: " );
-	it = env.find( "FILE_BODY" );
-	if ( it == env.end() )
-		return 2;
+	it = env.find( "FILE_NAME" );
+	if ( it == env.end() && method == "POST" )
+		return NO_FILE;
     pathCGI = path + page;
     pid = fork();
     if ( pid == -1 )

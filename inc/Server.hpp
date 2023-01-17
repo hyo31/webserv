@@ -31,7 +31,8 @@
 enum {
 	ERROR = -1,
 	STOP_READ = 1,
-	CONT_READ = 2
+	CONT_READ = 2,
+	NO_FILE = 2
 };
 
 class Config;

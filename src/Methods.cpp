@@ -57,9 +57,6 @@ std::string	Server::methodGET( Client *client, Config *config )
 			case 1:
 				_responseHeader = "HTTP/1.1 500 Error";
 				return ( config->errorPageDir + "500.html" );
-			case 2:
-    			_responseHeader = "HTTP/1.1 404 Not Found";
-				return ( config->errorPageDir + "404.html" );
 			case -1:
 				return ( "DO NOTHING" );
 		}
@@ -104,15 +101,18 @@ std::string	Server::methodPOST( Client *client, Config *config )
 			case 1:
 				_responseHeader = "HTTP/1.1 500 Error";
 				return ( config->errorPageDir + "500.html" );
+			case NO_FILE:
+    			_responseHeader = "HTTP/1.1 404 Not Found";
+				return ( config->errorPageDir + "404.html" );
 			case -1:
 				return ( "DO NOTHING" );
 		}
 	}
 	if ( page != "" )
     {
-        _responseHeader = "HTTP/1.1 200 OK";
 		body = client->getBody();
-		if (body.find("=") == std::string::npos && body.size() > 6)
+        _responseHeader = "HTTP/1.1 200 OK";
+		if ( body.find("=") == std::string::npos && body.size() > 6 )
 			newFileName = location + "/" + body.substr(0, 6);
 		else
 			newFileName = location + "/" + body.substr(0, body.find("="));
