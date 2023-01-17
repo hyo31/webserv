@@ -20,7 +20,7 @@ Client *Server::acceptRequest( int sock_num )
 
 int Server::receiveClientRequest( Client *client, std::string & request )
 {
-    ssize_t				bytesRead = 1;
+    ssize_t				bytesRead;
 	int					c_fd = client->getConnectionFD();
 	int					sock_num = client->getSockNum();
     std::ofstream		ofs;
@@ -29,11 +29,11 @@ int Server::receiveClientRequest( Client *client, std::string & request )
 	if ( client->requestIsRead() == true )
 		request.clear();
 	bytesRead = recv( c_fd, &buff[0], buff.size(), 0 );
-	client->update_client_timestamp();
 	if ( bytesRead == 0 )
 		return STOP_READ;
 	if ( bytesRead == -1 )
 		return CONT_READ;
+	client->update_client_timestamp();
 	for ( int i = 0; i < bytesRead; ++i ) {
 		request.push_back( buff[i] );
 	}
@@ -120,6 +120,8 @@ void	Server::sendResponse(Client *client, int fileSize, std::fstream &responseFi
 			exit ( 0 );
 		return ;
 	}
+	if ( bytesSent == 0 )
+		std::cout << "sent nothing?\n";
 	client->update_client_timestamp();
 	std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << response << "\033[0m" << std::endl;
 	return ;

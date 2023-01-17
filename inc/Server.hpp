@@ -25,7 +25,7 @@
 # endif
 
 # ifndef MAX_BODY
-#  define MAX_BODY MAX_ARGLEN_EXECVE
+#  define MAX_BODY INT_MAX
 # endif
 
 enum {

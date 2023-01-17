@@ -87,7 +87,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 	{
 		SaveBinaryFile( this->_path, client, config );
 		_responseHeader = "HTTP/1.1 200 OK";
-		return ( "response/responseCGI" );
+		return ( "response/responseBinaryUpload" );
 	}
 
 	// execute the CGI on the requested file if it has the right extension

@@ -120,10 +120,10 @@ void	SaveBinaryFile( std::string path, Client *client, Config *config )
 	std::string					temp, dest;
 	DIR							*directory;
 	
-	directory = opendir((path + "/" + config->root + config->uploadDir).c_str());
+	directory = opendir( ( path + "/" + config->root + config->uploadDir).c_str() );
 	if ( !directory )
 	{
-		printerror("Can not open directory(SaveBinaryFile): ");
+		printerror( "Can not open directory(SaveBinaryFile): " );
 		mkdir( (path + "/" + config->root + config->uploadDir).c_str(), 0777 );
 	}
 	else
@@ -135,7 +135,7 @@ void	SaveBinaryFile( std::string path, Client *client, Config *config )
 	outfile << to_upload[1];
 	outfile.close();
 
-	std::ofstream outfile2( "response/responseCGI", std::ofstream::out | std::ofstream::trunc );
+	std::ofstream outfile2( "response/responseBinaryUpload", std::ofstream::out | std::ofstream::trunc );
 	std::ifstream ifs( config->root + "/uploadresponse.html" );
 	ifs.seekg( 0, std::ios::end );   
 	temp.reserve( ifs.tellg() );

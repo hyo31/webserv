@@ -1,5 +1,24 @@
 #include "../inc/Server.hpp"
 
+static void	removeBoundaries( std::string & body, std::string boundary, size_t begin )
+{
+	size_t	start, end;
+
+	start = body.find( "--" + boundary, begin );
+	while ( start != std::string::npos )
+	{
+		end = body.find( "\r\n\r\n", start ) + 4;
+		std::string substr = body.substr( start, end - start );
+		if ( substr.find( "Content-Type: " ) != std::string::npos )
+		{
+			body.erase( start, end - start );
+			start = body.find( "--" + boundary, start );
+		}
+		else
+			start = body.find( "--" + boundary, start + 1 );
+	}
+}
+
 std::vector<std::string>	readFile( std::string header, std::string body )
 {
     size_t                      pos;
@@ -17,9 +36,10 @@ std::vector<std::string>	readFile( std::string header, std::string body )
     pos = body.find( "filename=", pos ) + 10;
     filename = body.substr( pos, body.find( "\r\n", pos ) - ( pos + 1 ) );
 	if ( filename.empty() )
-		return (vars);
-    pos = body.find( "\r\n\r\n", pos );
-    fileContent = body.substr( pos + 4, body.find( "--" + boundary, pos ) - ( pos + 6) );
+		return ( vars );
+    pos = body.find( "\r\n\r\n", pos ) + 4;
+	removeBoundaries( body, boundary, pos );	
+    fileContent = body.substr( pos, body.find( "--" + boundary, pos ) - ( pos + 2 ) );
     vars.push_back( filename );
     vars.push_back( fileContent );
     return ( vars );
