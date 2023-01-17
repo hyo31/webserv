@@ -100,12 +100,12 @@ Config	*Socket::getConfig( std::string location, std::string host, Client *clien
 	std::string	new_location = location;
 	size_t		pos;
 
-	std::cout << "location:" << location << "   host:" << host << std::endl;
+	// std::cout << "location:" << location << "   host:" << host << std::endl;
 
-	for ( std::vector<std::string>::const_iterator it = this->hosts.begin(); it != this->hosts.end(); it++ ) {
-		std::cout << "host:";
-		std::cout << *it << std::endl;
-	}
+	// for ( std::vector<std::string>::const_iterator it = this->hosts.begin(); it != this->hosts.end(); it++ ) {
+	// 	std::cout << "host:";
+	// 	std::cout << *it << std::endl;
+	// }
 
 	it = this->hostConfigs.find( host );
 	if ( it == this->hostConfigs.end() )

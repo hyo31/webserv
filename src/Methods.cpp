@@ -57,6 +57,9 @@ std::string	Server::methodGET( Client *client, Config *config )
 			case 1:
 				_responseHeader = "HTTP/1.1 500 Error";
 				return ( config->errorPageDir + "500.html" );
+			case 2:
+    			_responseHeader = "HTTP/1.1 404 Not Found";
+				return ( config->errorPageDir + "404.html" );
 			case -1:
 				return ( "DO NOTHING" );
 		}

@@ -98,7 +98,7 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
     else
     {
         vars = readFile( header, body );
-        if (vars.empty())
+        if ( vars.empty() )
             return ( env );
         env["FILE_NAME"] = vars[0];
         env["FILE_BODY"] = vars[1];
@@ -110,14 +110,18 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
 // execute the CGI
 int	executeCGI( std::string page, int port, std::string path, std::string root, std::string body, std::string header, std::string uploaddir, std::string method )
 {
-    pid_t		                        pid, pid2, timeout_pid;
+	std::map<std::string, std::string>::iterator it;
     std::map<std::string, std::string>  env;
+    pid_t		                        pid, pid2, timeout_pid;
     std::string	                        pathCGI, temp;
-
+	std::ofstream						ofs;
     // setup the environmental variables for execve
 	env = setupEnv( page, port, path, root, body, header, uploaddir, method );
     if ( !env.size() )
         return printerror( "failed setting up the environment: " );
+	it = env.find( "FILE_BODY" );
+	if ( it == env.end() )
+		return 2;
     pathCGI = path + page;
     pid = fork();
     if ( pid == -1 )
@@ -155,7 +159,6 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
                     i++;
                 }
                 c_env[i] = NULL;
-                std::ofstream   ofs;
                 ofs.open("response/responseCGI");
                 ofs.close();
                 int fd = open("response/responseCGI", O_WRONLY);
