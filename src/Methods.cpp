@@ -36,27 +36,26 @@ std::string	Server::methodGET( Client *client, Config *config )
         _responseHeader = "HTTP/1.1 403 Forbidden";
         return ( config->errorPageDir + "403.html" );
 	}
-
-	// execute the CGI on the requested file if it has the right extension
-	if ( location.size() > config->extension.size() && location.substr( location.size() - config->extension.size(), location.size() - 1) == config->extension )
-	{
-		switch ( executeCGI( "/" + config->root + location, port, this->_path, config->root, client->getBody(), client->getHeader(), config->uploadDir, "GET" ) )
-		{
-			case 0:
-				_responseHeader = "HTTP/1.1 200 OK";
-				return ( "response/responseCGI" );
-			case 1:
-				_responseHeader = "HTTP/1.1 500 Error";
-				return ( config->errorPageDir + "500.html" );
-			case -1:
-				return ( "DO NOTHING" );
-		}
-	}
 	if ( page != "" )
     {
-        _responseHeader = "HTTP/1.1 200 OK";
-        return ( page );
-    }
+		// execute the CGI on the requested file if it has the right extension
+		if ( location.size() > config->extension.size() && location.substr( location.size() - config->extension.size(), location.size() - 1) == config->extension )
+		{
+			switch ( executeCGI( "/" + config->root + location, port, this->_path, config->root, query, client->getHeader(), config->uploadDir, "GET" ) )
+			{
+				case 0:
+					_responseHeader = "HTTP/1.1 200 OK";
+					return ( "response/responseCGI" );
+				case 1:
+					_responseHeader = "HTTP/1.1 500 Error";
+					return ( config->errorPageDir + "500.html" );
+				case -1:
+					return ( "DO NOTHING" );
+			}
+		}
+    	    _responseHeader = "HTTP/1.1 200 OK";
+    	    return ( page );
+    	}
     _responseHeader = "HTTP/1.1 404 Not Found";
     return ( config->errorPageDir + "404.html" );
 }
