@@ -59,7 +59,7 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
     env["REQUEST_METHOD"] = method;
     env["SERVER_PORT"] = std::to_string( port );
     env["UPLOAD_DIR"] = path + "/" + root + uploaddir;
-    
+
     // find the content type and set the environment accordingly
     if ( method == "GET" )
     {
