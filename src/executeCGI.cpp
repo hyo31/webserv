@@ -115,8 +115,9 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
     pid_t		                        pid, pid2, timeout_pid;
     std::string	                        pathCGI, temp;
 	std::ofstream						ofs;
+    int                                 status;
 
-    
+
     // setup the environmental variables for execve
 	env = setupEnv( page, port, path, root, body, header, uploaddir, method );
     if ( !env.size() )
@@ -174,14 +175,14 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
             else
             {
                 // check which child exits first and terminating the other one
-                pid_t exited_pid = wait(NULL);
+                pid_t exited_pid = wait(&status);
                 if (exited_pid == timeout_pid)
                 {
                     kill(pid2, SIGKILL);
                     return ( 1 );
                 }
                 kill(timeout_pid, SIGKILL);
-                return ( 0 );
+                return ( WEXITSTATUS(status) );
             }
         }
     }
