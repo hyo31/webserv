@@ -110,7 +110,7 @@ Config	*Socket::getConfig( std::string location, std::string host, Client *clien
 	it = this->hostConfigs.find( host );
 	if ( it == this->hostConfigs.end() )
 	{
-		client->setUnknownHost( true );
+		client->setBadRequest( true );
 		return this->getConfig( location, this->defaultHost, client );
 	}
 	pos = location.find( it->second[0]->extension );

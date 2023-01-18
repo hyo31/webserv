@@ -32,7 +32,10 @@ int Server::receiveClientRequest( Client *client, std::string & request )
 	if ( bytesRead == 0 )
 		return STOP_READ;
 	if ( bytesRead == -1 )
-		return CONT_READ;
+	{
+		closeConnection( client );
+		return STOP_READ;
+	}
 	client->update_client_timestamp();
 	for ( int i = 0; i < bytesRead; ++i ) {
 		request.push_back( buff[i] );
@@ -53,7 +56,7 @@ int Server::receiveClientRequest( Client *client, std::string & request )
 	if ( client->requestIsRead() == false && client->bodyTooLarge() == false )
 		return CONT_READ;
 	request.clear();
-	if ( client->bodyTooLarge() == true || client->illegalRequest() == true )
+	if ( client->bodyTooLarge() == true || client->badRequest() == true )
 		return STOP_READ;
     return 0;
 }
@@ -97,7 +100,7 @@ void	Server::resetPages( )
 // Send the response to the client
 void	Server::sendResponse(Client *client, int fileSize, std::fstream &responseFile, int c_fd, std::ifstream &htmlFile, std::string htmlFileName)
 {
-	ssize_t			bytesSent;
+	ssize_t	bytesSent;
 
 	//create response which is sent back to client
 	char	response[fileSize + 1];
@@ -120,8 +123,8 @@ void	Server::sendResponse(Client *client, int fileSize, std::fstream &responseFi
 			exit ( 0 );
 		return ;
 	}
-	if ( bytesSent == 0 )
-		std::cout << "sent nothing?\n";
+	if ( bytesSent < fileSize )
+		client->setSendAgain( true );
 	client->update_client_timestamp();
 	std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << response << "\033[0m" << std::endl;
 	return ;
@@ -216,6 +219,7 @@ int	Server::configureResponseToClient( Client *client )
     {
 		std::cout << "cant open filename:" << htmlFileName << std::endl;
     	this->_responseHeader = "HTTP/1.1 500 Error";
+		htmlFileName = config->errorPageDir + "500.html";
     	htmlFile.open( config->errorPageDir + "500.html", std::ios::in | std::ios::binary );
 		// Error file doesn't exist, as a last resort server creates its own 500 error return
 		if ( !htmlFile.is_open() )

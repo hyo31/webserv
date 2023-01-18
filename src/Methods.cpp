@@ -4,7 +4,7 @@ std::string	Server::methodGET( Client *client, Config *config )
 {
 	int			sock_num = client->getSockNum();
 	int			port = this->_sockets[sock_num]->port;
-	std::string query, index, location = client->getLocation();
+	std::string	query, index, location = client->getLocation();
 
 	if (location.find("?") != std::string::npos)
 	{
@@ -74,7 +74,8 @@ std::string	Server::methodPOST( Client *client, Config *config )
 {
 	int				sock_num = client->getSockNum(), fileExtension = 0;
 	int				port = this->_sockets[sock_num]->port;
-	std::string		location = client->getLocation(), page = this->_sockets[sock_num]->getLocationPage( location, client->getHost(), client ), body, newFileName, newFileContent, index;
+	std::string		location = client->getLocation(), page = this->_sockets[sock_num]->getLocationPage( location, client->getHost(), client );
+	std::string		header = client->getHeader(), body = client->getBody(), newFileName, newFileContent, index;
 	std::ofstream	newFile;
 	std::ifstream	checkIfOpen;
 
@@ -110,12 +111,15 @@ std::string	Server::methodPOST( Client *client, Config *config )
 	}
 	if ( page != "" )
     {
-		body = client->getBody();
         _responseHeader = "HTTP/1.1 200 OK";
 		if ( body.find("=") == std::string::npos && body.size() > 6 )
 			newFileName = location + "/" + body.substr(0, 6);
 		else
 			newFileName = location + "/" + body.substr(0, body.find("="));
+		// if ( header.find( "filename=" ) != std::string::npos )
+		// {
+		// 	newFileName = header.substr
+		// }
 		std::cout << newFileName << std::endl;
 		newFileContent = body.substr(body.find("=") + 1, body.size() - (body.find("=") + 1));
 		checkIfOpen.open(config->root + newFileName);

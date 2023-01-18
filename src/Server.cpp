@@ -50,8 +50,8 @@ int	Server::monitor_ports()
 				if ( tevents[i].flags & EV_ERROR )
 				{
                 	closeConnection( client );
-					std::cout << "system error:" << data << std::endl;
-                    return printerror( "kevent failed: \n" );
+					std::cout << "kevent error:" << data << std::endl;
+                    continue ;
 				}
                 /* EV_EOF is set if the client has disconnected */
 				if ( tevents[i].flags & EV_EOF )
@@ -83,6 +83,8 @@ int	Server::monitor_ports()
                     std::cout << "WRITING to:" << fd << std::endl;
                     if ( this->configureResponseToClient( client ) == ERROR )
 						return ERROR;
+					if ( client->sendAgain() == true )
+						set_chlist( chlist, fd, EVFILT_WRITE, EV_ADD | EV_ONESHOT, data, 0, nullptr );
                 }
             }
         }

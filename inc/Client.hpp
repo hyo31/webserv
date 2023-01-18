@@ -23,14 +23,14 @@ class Client
 		bool		requestIsRead();
 		bool		headerIsSet();
 		bool		bodyTooLarge();
-		bool		illegalRequest();
-		bool		unknownHost();
-	
-		void		setIllegalRequest( bool );
+		bool		badRequest();
+		bool		sendAgain();
+
 		void		setHeaderIsSet( bool );
 		void		setRequestIsRead( bool );
 		void		setBodyTooLarge( bool );
-		void		setUnknownHost( bool );
+		void		setBadRequest( bool );
+		void		setSendAgain( bool );
 		void		setHeader( std::string, int );
 		void		setBody( std::string );
 		void		setMethod( std::string );
@@ -50,8 +50,8 @@ class Client
 		bool		_headerSet;
     	bool		_request_is_read;
 		bool		_client_body_too_large;
-		bool		_illegal_request;
-		bool		_unknownHost;
+		bool		_badRequest;
+		bool		_sendAgain;
     	Client();
 }; 
 

@@ -12,8 +12,8 @@ Client::Client( int fd, int sock_num ) : _conn_fd( fd ), _sock_num( sock_num )
 	this->_headerSet = false;
     this->_request_is_read = true;
 	this->_client_body_too_large = false;
-	this->_illegal_request = false;
-	this->_unknownHost = false;
+	this->_badRequest = false;
+	this->_sendAgain = false;
 }
 Client::~Client() { std::cout << "Client removed\n"; }
 
@@ -34,8 +34,8 @@ Client & Client::operator=( const Client& src )
 	this->_headerSet = src._headerSet;
 	this->_request_is_read = src._request_is_read;
 	this->_client_body_too_large = src._client_body_too_large;
-	this->_illegal_request = src._illegal_request;
-	this->_unknownHost = src._unknownHost;
+	this->_badRequest = src._badRequest;
+	this->_sendAgain = src._sendAgain;
     return *this;
 }
 
@@ -58,8 +58,8 @@ int			Client::getSockNum()		{ return this->_sock_num; }
 bool		Client::requestIsRead()		{ return this->_request_is_read; }
 bool		Client::headerIsSet()		{ return this->_headerSet; }
 bool		Client::bodyTooLarge()		{ return this->_client_body_too_large; }
-bool		Client::illegalRequest()	{ return this->_illegal_request; }
-bool		Client::unknownHost()		{ return this->_unknownHost; }
+bool		Client::badRequest()		{ return this->_badRequest; }
+bool		Client::sendAgain()			{ return this->_sendAgain; }
 std::time_t	Client::getTimeStamp()		{ return this->_timestamp; }
 
 //SETTERS
@@ -70,8 +70,8 @@ void	Client::setLocation( std::string location )			{ this->_requestLocation = lo
 void	Client::setHeaderIsSet( bool status )				{ this->_headerSet = status; }
 void	Client::setRequestIsRead( bool status )				{ this->_request_is_read = status; }
 void	Client::setBodyTooLarge( bool status )				{ this->_client_body_too_large = status; }
-void	Client::setIllegalRequest( bool status )			{ this->_illegal_request = status; }
-void	Client::setUnknownHost( bool status )				{ this->_unknownHost = status; }
+void	Client::setBadRequest( bool status )				{ this->_badRequest = status; }
+void	Client::setSendAgain( bool status )					{ this->_sendAgain = status; }
 
 void	Client::setHost( std::string header )
 {

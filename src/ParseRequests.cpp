@@ -13,18 +13,14 @@ static size_t	getUploadBodySize( std::string body, std::string header )
 	return body.size();
 }
 
-// static bool checkIfWholeBodyRead( std::string request )
+// void	Server::setHeaderInfo( Client *client )
 // {
-// 	size_t		start, end;
-// 	std::string	last_boundary;
+// 	std::string	header = client->getHeader();
 
-// 	start = request.find( "boundary=" ) + 9;
-// 	end = request.find( "\r\n", start );
-// 	last_boundary = "--" + request.substr( start, end - start ) + "--";
-// 	if ( request.find( last_boundary ) == std::string::npos )
-// 		return false ;
-// 	return true ;
+// 	if ( header.find( "filename=" ) )
+
 // }
+
 
 static void	buildBodyForContentLength( std::string request, size_t start, Client *client, size_t maxBodySize )
 {
@@ -47,7 +43,7 @@ static void	buildBodyForContentLength( std::string request, size_t start, Client
 	if ( end - start != content_len )
 	{
 		if ( end - start > content_len )
-			client->setIllegalRequest( true );
+			client->setBadRequest( true );
 		return ;
 	}
 	client->setRequestIsRead( true );
@@ -108,26 +104,20 @@ void    Server::parseRequest( std::string request, Client *client )
 			client->setHeader( request.substr( 0, end ), end );
 			client->setHeaderIsSet( true );
 		}
+		// setHeaderInfo( client );
     }
 	else
 		return ;
 	header = client->getHeader();
 	client->setHost( header );
-	// Can not find the right config file and try to return error 400
-	// if ( this->_sockets[client->getSockNum()]->getConfig( client->getLocation(), client->getHost() ) == nullptr)
-	// {
-	// 	std::cout << "requested host:" << client->getHost() << std::endl;
-	// 	printerror( "Error: couldn't get configuration (parseRequest): " );
-	// 	client->setIllegalRequest( true );
-	// 	return ;
-	// }
+	if ( client->getHost() == "" )
+		client->setBadRequest( true );
 	MaxBody = this->_sockets[client->getSockNum()]->getConfig( client->getLocation(), client->getHost(), client )->maxClientBodySize;
 	end = header.find( " ", 0 );
 	client->setMethod( header.substr( 0, end ) );
 	start = end + 1;
 	end = header.find( " ", start );
 	client->setLocation( header.substr( start, end - start ) );
-
     if ( ( start = header.find( "Content-Length:" ) ) != std::string::npos )
 		return buildBodyForContentLength( request, start, client, MaxBody );
     else if ( ( start = header.find( "Transfer-Encoding:" ) ) != std::string::npos )
