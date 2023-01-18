@@ -100,12 +100,35 @@ std::string	Server::methodPOST( Client *client, Config *config )
 					return ( "DO NOTHING" );
 			}
 		}
-        _responseHeader = "HTTP/1.1 200 OK";
+		// POST request is a form
+		if (client->getHeader().substr(client->getHeader().find("Content-Type: ") + 14, client->getHeader().find("\r\n", client->getHeader().find("Content-Type: ") + 14) - (client->getHeader().find("Content-Type: ") + 14)) == "application/x-www-form-urlencoded")
+		{
+			int	posMid = body.find("="), posStart = 0;
+			time_t rawtime;
+  			struct tm *timeinfo;
+
+  			time(&rawtime);
+  			timeinfo = localtime(&rawtime);
+			newFile.open("forms/form.log", std::ios_base::app);
+  			newFile << "Local date and time " <<  asctime(timeinfo);
+			newFile << body.substr(posStart, posMid) << " = " << body.substr(posMid + 1, body.find("&") - (posMid + 1)) << "\n";
+			
+			posStart = body.find("&");
+			posMid = body.find("=", posStart);
+			newFile << body.substr(posStart + 1, posMid - (posStart + 1)) << " = " << body.substr(posMid + 1, body.find("&", posMid) - (posMid + 1)) << "\n";
+			
+			posStart = body.find("&", posMid);
+			posMid = body.find("=", posStart);
+			newFile << body.substr(posStart + 1, posMid - (posStart + 1)) << " = " << body.substr(posMid + 1, body.size() - (posMid + 1)) << "\n\n";
+			free(timeinfo);
+			_responseHeader = "HTTP/1.1 201 Created";
+			return ( config->errorPageDir + "201.html" );
+		}
 		newFileName = location + "/" + body.substr(0, 6);
 		if (location.back() == '/')
 			newFileName = location + body.substr(0, 6);
 		std::cout << newFileName << std::endl;
-		newFileContent = body.substr(body.find("=") + 1, body.size() - (body.find("=") + 1));
+		newFileContent = body;
 		checkIfOpen.open(config->root + newFileName);
 		while ( checkIfOpen.is_open() )
 		{
