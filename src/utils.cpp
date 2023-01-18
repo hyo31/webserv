@@ -15,10 +15,10 @@ void Server::set_chlist( std::vector<struct kevent>& change_list, uintptr_t iden
     change_list.push_back( temp_evt );
 }
 
-void	Server::closeConnection( Client *client )
+int	Server::closeConnection( Client *client )
 {
 	if ( client == nullptr )
-		return ;
+		return 0;
     std::vector<Client*>::iterator	it;
     std::vector<Client*>::iterator	end = this->_clients.end();
 	int	fd = client->getConnectionFD();
@@ -27,28 +27,31 @@ void	Server::closeConnection( Client *client )
     {
         if ( *it == client )
         {
-            delete client;
             this->_clients.erase( it );
+            delete client;
+			client = nullptr;
 			break ;
         }
     }
-    close( fd );
+    if ( close( fd ) == -1 )
+		return errno; 
     std::cout << "disconnected client from socket:" << fd << std::endl;
-    return ;
+    return 0;
 }
 
 void    Server::bounceTimedOutClients()
 {
     std::vector<Client*>::iterator client = this->_clients.begin();
     std::vector<Client*>::iterator end = this->_clients.end();
-    time_t current_time = std::time(nullptr);
+    time_t current_time = std::time( nullptr );
 
     while ( client != end )
     {
         if ( ( *client )->getTimeStamp() + TIMEOUT <=  current_time )
         {
             std::cout << "Bouncing client from:" << ( *client )->getConnectionFD() << std::endl;
-			closeConnection( *client );
+			if ( closeConnection( *client ) == EBADF )
+				return ;
 			client = _clients.begin();
 			if ( client == _clients.end() )
 				return ;

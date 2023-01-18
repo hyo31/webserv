@@ -132,13 +132,8 @@ Config	*Socket::getConfig( std::string location, std::string host, Client *clien
 		new_location = location.substr( 0, pos );
 	}
 	for ( it2 = it->second.begin(); it2 != it->second.end(); it2++ ) {
-		//std::cout << "config locations:" << (*it2)->location << std::endl;
 		if ( (*it2)->location == new_location )
-		{
-			std::cout << "return config: " << new_location << std::endl;
-			std::cout << "erp:" << (*it2)->errorPageDir << std::endl;
 			return *it2;
-		}
 	}
 	pos = location.find( ".html" );
 	if ( pos != std::string::npos )

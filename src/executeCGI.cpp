@@ -63,7 +63,7 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
     // find the content type and set the environment accordingly
     if ( method == "GET" )
     {
-        std::cout << body << std::endl;
+        // std::cout << body << std::endl;
         env["FILE_NAME"] = "form.log";
         env["QUERY_STRING"] = body;
     }
@@ -125,10 +125,7 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
         return printerror( "failed setting up the environment: " );
 	it = env.find( "FILE_NAME" );
 	if ( it == env.end() && method == "POST" )
-	{
-		std::cout << "kek\n";
 		return NO_FILE;
-	}
     pathCGI = path + page;
     pid = fork();
     if ( pid == -1 )
@@ -171,7 +168,7 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
                 int fd = open("response/responseCGI", O_WRONLY);
                 if ( !fd )
                     exit (printerror("failed to open file: "));
-                std::cout << pathCGI << std::endl;
+                // std::cout << pathCGI << std::endl;
                 dup2(fd, 1);
                 execve(pathCGI.c_str(), NULL, c_env);
                 exit( printerror( "execve failed: " ) );

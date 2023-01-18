@@ -98,20 +98,28 @@ void	Server::resetPages( )
 }
 
 // Send the response to the client
-void	Server::sendResponse(Client *client, int fileSize, std::fstream &responseFile, int c_fd, std::ifstream &htmlFile, std::string htmlFileName)
+void	Server::sendResponse(Client *client, std::string response, int c_fd, std::string htmlFileName )
 {
-	ssize_t	bytesSent;
+	int	bytesSent, toSend, alreadySent = 0, totalSent = 0;
+
+	//if a part of respone is already sent, send from that point
+	if ( client->sendAgain() == true )
+	{
+		alreadySent = client->getBytesSent();
+		totalSent = alreadySent;
+		client->setSendAgain( false );
+	}
+	toSend = response.size() - alreadySent;
 
 	//create response which is sent back to client
-	char	response[fileSize + 1];
-	responseFile.read( response, fileSize );
-	response[fileSize] = '\0';
-	bytesSent = send( c_fd, response, fileSize, 0 );
+	char	response_cstr[toSend];
+	for ( int i = 0; i < toSend; i++, alreadySent++ ) {
+		response_cstr[i] = response[alreadySent];
+	}
+	bytesSent = send( c_fd, response_cstr, toSend, 0 );
 	if ( bytesSent == -1 )
 	{
 		this->_responseHeader.clear();
-		htmlFile.close();
-		responseFile.close();
 		std::ifstream ifs( "response/responseCGI" );
 		if ( ifs.good() )
 			ifs.close();
@@ -123,58 +131,47 @@ void	Server::sendResponse(Client *client, int fileSize, std::fstream &responseFi
 			exit ( 0 );
 		return ;
 	}
-	if ( bytesSent < fileSize )
+	totalSent = totalSent + bytesSent;
+	if ( bytesSent < toSend )
+	{
 		client->setSendAgain( true );
+		client->setBytesSent( totalSent );
+	}
 	client->update_client_timestamp();
-	std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << response << "\033[0m" << std::endl;
+	// std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << response << "\033[0m" << std::endl;
 	return ;
 }
 
 // Build the header for the response file
-int	Server::buildHeaderResponse(Client *client, std::ifstream &htmlFile, std::fstream &responseFile, std::string htmlFileName)
+int	Server::buildHeaderResponse( Client *client, std::ifstream &htmlFile, std::string htmlFileName )
 {
-	int	fileSize, c_fd = client->getConnectionFD();
-	
-	//get length of htmlFile
-	htmlFile.seekg( 0, std::ios::end );
-	fileSize = htmlFile.tellg();
+	int	c_fd = client->getConnectionFD();
+
+	std::string str;
+	htmlFile.seekg( 0, std::ios::end );   
+	str.reserve( htmlFile.tellg() );
 	htmlFile.clear();
 	htmlFile.seekg( 0, std::ios::beg );
+	str.assign( ( std::istreambuf_iterator<char> ( htmlFile ) ), std::istreambuf_iterator<char>() );
 
-	//read correct headers (first one set in 'findHtmlFile') into responseFile
-	responseFile << this->_responseHeader << std::endl;
-	char line[16];
-	if (fileSize >= 16)
-		htmlFile.getline(line, 16);
-	htmlFile.close();
-	htmlFile.open( htmlFileName, std::ios::in | std::ios::binary );
-	if ( fileSize >= 16 && std::string(line) == "<!DOCTYPE html>" )
-		responseFile << "Content-Type: text/html" << std::endl;
+	std::string len = std::to_string( str.size() );
+	if ( BinaryFile( str ) == true )
+		str = "Content-Type: application/octet-stream\r\n\r\n" + str;
+	else if ( str.size() >= 16 && str.substr( 0, 16 ).find( "<!DOCTYPE html>") != std::string::npos )
+		str = "Content-Type: text/html\r\n\r\n" + str;
 	else if (htmlFileName.find(".ico") != std::string::npos)
-		responseFile << "Content-Type: image/x-icon" << std::endl;
+		str = "Content-Type: image/x-icon\r\n\r\n" + str;
 	else
-		responseFile << "Content-Type: text/plain" << std::endl;
-	responseFile << "Content-Length: " << fileSize << "\r\n\r\n"; //std::endl << std::endl;
-
-	//create char string to read html into, which is then read into responseFile      
-	char    html[fileSize + 1];
-	htmlFile.read( html, fileSize );
-	html[fileSize] = '\0';
-	responseFile << html << std::endl;
-
-	//get length of full responseFile
-	responseFile.seekg( 0, std::ios::end );
-	fileSize = responseFile.tellg();
-	responseFile.clear();
-	responseFile.seekg( 0, std::ios::beg );
+		str = "Content-Type: text/plain\r\n\r\n" + str;
+	str = "Content-Length: " + len + "\r\n" + str;
+	str =  this->_responseHeader + "\r\n" + str;
 
 	//send the response
-	this->sendResponse(client, fileSize, responseFile, c_fd, htmlFile, htmlFileName);
+	this->sendResponse(client, str, c_fd, htmlFileName );
 	
 	//clear and remove header/files
 	this->_responseHeader.clear();
 	htmlFile.close();
-	responseFile.close();
 	std::ifstream ifs( "response/responseCGI" );
 	if ( ifs.good() )
 		ifs.close();
@@ -194,18 +191,8 @@ int	Server::configureResponseToClient( Client *client )
 	Config			*config = this->_sockets[client->getSockNum()]->getConfig( client->getLocation(), client->getHost(), client );
     std::string     htmlFileName;
     std::ifstream   htmlFile;
-    std::fstream    responseFile;
     std::ofstream 	ofs;
 
-    // clear response file
-    ofs.open("response/response.txt", std::ofstream::out | std::ofstream::trunc);
-    ofs.close();
-    
-    // open streamfiles
-    responseFile.open( "response/response.txt", std::ios::in | std::ios::out | std::ios::binary );
-    if ( !responseFile.is_open() )
-        return printerror( "could not open response file " );
-	
 	// Get the correct response file
     htmlFileName = this->getHtmlFile( client );
 	if (htmlFileName == "DO NOTHING")
@@ -233,5 +220,5 @@ int	Server::configureResponseToClient( Client *client )
 			}
 		}
     }
-	return( this->buildHeaderResponse(client, htmlFile, responseFile, htmlFileName) );
+	return this->buildHeaderResponse( client, htmlFile, htmlFileName );
 }
