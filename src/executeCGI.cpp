@@ -118,7 +118,8 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
 	std::ofstream						ofs;
     int                                 status;
 
-
+    if (body.size() > MAX_ARGLEN_EXECVE)
+        return -1;
     // setup the environmental variables for execve
 	env = setupEnv( page, port, path, root, body, header, uploaddir, method );
     if ( !env.size() )

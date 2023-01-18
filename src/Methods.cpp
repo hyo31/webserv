@@ -112,11 +112,9 @@ std::string	Server::methodPOST( Client *client, Config *config )
 			newFile.open("forms/form.log", std::ios_base::app);
   			newFile << "Local date and time " <<  asctime(timeinfo);
 			newFile << body.substr(posStart, posMid) << " = " << body.substr(posMid + 1, body.find("&") - (posMid + 1)) << "\n";
-			
 			posStart = body.find("&");
 			posMid = body.find("=", posStart);
 			newFile << body.substr(posStart + 1, posMid - (posStart + 1)) << " = " << body.substr(posMid + 1, body.find("&", posMid) - (posMid + 1)) << "\n";
-			
 			posStart = body.find("&", posMid);
 			posMid = body.find("=", posStart);
 			newFile << body.substr(posStart + 1, posMid - (posStart + 1)) << " = " << body.substr(posMid + 1, body.size() - (posMid + 1)) << "\n\n";
