@@ -63,6 +63,7 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
     // find the content type and set the environment accordingly
     if ( method == "GET" )
     {
+        std::cout << body << std::endl;
         env["FILE_NAME"] = "form.log";
         env["QUERY_STRING"] = body;
     }
