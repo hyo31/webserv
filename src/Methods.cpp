@@ -90,27 +90,26 @@ std::string	Server::methodPOST( Client *client, Config *config )
 		_responseHeader = "HTTP/1.1 200 OK";
 		return ( "response/responseBinaryUpload" );
 	}
-
-	// execute the CGI on the requested file if it has the right extension
-	if ( location.size() > config->extension.size() && location.substr( location.size() - config->extension.size(), location.size() - 1) == config->extension )
-	{
-		switch ( executeCGI( "/" + config->root + location, port, this->_path, config->root, client->getBody(), client->getHeader(), config->uploadDir, "POST" ) )
-		{
-			case 0:
-				_responseHeader = "HTTP/1.1 200 OK";
-				return ( "response/responseCGI" );
-			case 1:
-				_responseHeader = "HTTP/1.1 500 Error";
-				return ( config->errorPageDir + "500.html" );
-			case NO_FILE:
-    			_responseHeader = "HTTP/1.1 404 Not Found";
-				return ( config->errorPageDir + "404.html" );
-			case -1:
-				return ( "DO NOTHING" );
-		}
-	}
 	if ( page != "" )
     {
+		// execute the CGI on the requested file if it has the right extension
+		if ( location.size() > config->extension.size() && location.substr( location.size() - config->extension.size(), location.size() - 1) == config->extension )
+		{
+			switch ( executeCGI( "/" + config->root + location, port, this->_path, config->root, client->getBody(), client->getHeader(), config->uploadDir, "POST" ) )
+			{
+				case 0:
+					_responseHeader = "HTTP/1.1 200 OK";
+					return ( "response/responseCGI" );
+				case 1:
+					_responseHeader = "HTTP/1.1 500 Error";
+					return ( config->errorPageDir + "500.html" );
+				case NO_FILE:
+    				_responseHeader = "HTTP/1.1 404 Not Found";
+					return ( config->errorPageDir + "404.html" );
+				case -1:
+					return ( "DO NOTHING" );
+			}
+		}
         _responseHeader = "HTTP/1.1 200 OK";
 		newFileName = location + "/" + body.substr(0, 6);
 		if (location.back() == '/')
@@ -129,25 +128,8 @@ std::string	Server::methodPOST( Client *client, Config *config )
 		newFile.open(config->root + newFileName);
 		newFile << newFileContent;
 		newFile.close();
-
 		_responseHeader = "HTTP/1.1 201 Created";
 		return ( config->errorPageDir + "201.html" );
-
-        // responds the (if set) directoryrequest
-		if ( config->directoryRequest != "" )
-			return ( config->root + config->directoryRequest );
-		
-        // else search for an index
-        index = location + "index.html";
-		page = this->_sockets[sock_num]->getLocationPage( index, client->getHost(), client );
-		if ( page != "" )
-		    return ( page );
-
-        // if there was no index -> create an autoindex (if enabled)
-        if ( config->autoindex )
-            return ( this->createAutoIndex( config->root, location ) );
-        _responseHeader = "HTTP/1.1 403 Bad Request";
-        return ( config->errorPageDir + "403.html" );
 	}
 	_responseHeader = "HTTP/1.1 404 Not Found";
     return ( config->errorPageDir + "404.html" );
