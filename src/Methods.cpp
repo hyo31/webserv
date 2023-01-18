@@ -4,24 +4,15 @@ std::string	Server::methodGET( Client *client, Config *config )
 {
 	int			sock_num = client->getSockNum();
 	int			port = this->_sockets[sock_num]->port;
-	std::string	query, index, location = client->getLocation();
+	std::string	page, query, index, location;
 
+	location = client->getLocation();
 	if (location.find("?") != std::string::npos)
 	{
 		query = location.substr(location.find("?") + 1, location.size() - (location.find("?") + 1));
 		location = location.substr(0, location.find("?"));
 	}
-    std::string page = this->_sockets[sock_num]->getLocationPage( location, client->getHost(), client );
-	std::string redirect_page = this->_sockets[sock_num]->getRedirectPage( location, client->getHost(), client );
-
-	// check if requested page is a redirection
-	if ( redirect_page != "" )
-	{
-		_responseHeader = "HTTP/1.1 301 Moved Permanently\r\nLocation: ";
-		_responseHeader.append( redirect_page );
-		std::cout << "errp:" << config->errorPageDir << std::endl;
-		return ( config->errorPageDir + "301.html" );
-	}
+    page = this->_sockets[sock_num]->getLocationPage( location, client->getHost(), client );
 
     // respond to a GET request that requests a directory
 	if ( page == "Directory" )

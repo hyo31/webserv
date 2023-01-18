@@ -91,6 +91,15 @@ std::string Server::getHtmlFile( Client* client )
 		return config->errorPageDir + "400.html";
 	}
 
+	//check redirection
+	std::string redirect_page = this->_sockets[client->getSockNum()]->getRedirectPage( client->getLocation(), client->getHost(), client );
+	if ( redirect_page != "" )
+	{
+		_responseHeader = "HTTP/1.1 301 Moved Permanently\r\nLocation: ";
+		_responseHeader.append( redirect_page );
+		return ( config->errorPageDir + "301.html" );
+	}
+
 	// checks if method is allowed for this location
 	if ( std::find( config->methods.begin(), config->methods.end(), method ) == config->methods.end() )
 	{
