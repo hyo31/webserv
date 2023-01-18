@@ -115,6 +115,8 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
     pid_t		                        pid, pid2, timeout_pid;
     std::string	                        pathCGI, temp;
 	std::ofstream						ofs;
+
+    
     // setup the environmental variables for execve
 	env = setupEnv( page, port, path, root, body, header, uploaddir, method );
     if ( !env.size() )
@@ -164,6 +166,7 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
                 int fd = open("response/responseCGI", O_WRONLY);
                 if ( !fd )
                     exit (printerror("failed to open file: "));
+                std::cout << pathCGI << std::endl;
                 dup2(fd, 1);
                 execve(pathCGI.c_str(), NULL, c_env);
                 exit( printerror( "execve failed: " ) );

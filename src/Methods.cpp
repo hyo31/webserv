@@ -49,7 +49,7 @@ std::string	Server::methodGET( Client *client, Config *config )
 	// execute the CGI on the requested file if it has the right extension
 	if ( location.size() > config->extension.size() && location.substr( location.size() - config->extension.size(), location.size() - 1) == config->extension )
 	{
-		switch ( executeCGI( "/" + config->root + config->cgi + location, port, this->_path, config->root, client->getBody(), client->getHeader(), config->uploadDir, "GET" ) )
+		switch ( executeCGI( "/" + config->root + location, port, this->_path, config->root, client->getBody(), client->getHeader(), config->uploadDir, "GET" ) )
 		{
 			case 0:
 				_responseHeader = "HTTP/1.1 200 OK";
@@ -94,7 +94,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 	// execute the CGI on the requested file if it has the right extension
 	if ( location.size() > config->extension.size() && location.substr( location.size() - config->extension.size(), location.size() - 1) == config->extension )
 	{
-		switch ( executeCGI( "/" + config->root + config->cgi + location, port, this->_path, config->root, client->getBody(), client->getHeader(), config->uploadDir, "POST" ) )
+		switch ( executeCGI( "/" + config->root + location, port, this->_path, config->root, client->getBody(), client->getHeader(), config->uploadDir, "POST" ) )
 		{
 			case 0:
 				_responseHeader = "HTTP/1.1 200 OK";
@@ -112,10 +112,9 @@ std::string	Server::methodPOST( Client *client, Config *config )
 	if ( page != "" )
     {
         _responseHeader = "HTTP/1.1 200 OK";
-		if ( body.find("=") == std::string::npos && body.size() > 6 )
-			newFileName = location + "/" + body.substr(0, 6);
-		else
-			newFileName = location + "/" + body.substr(0, body.find("="));
+		newFileName = location + "/" + body.substr(0, 6);
+		if (location.back() == '/')
+			newFileName = location + body.substr(0, 6);
 		std::cout << newFileName << std::endl;
 		newFileContent = body.substr(body.find("=") + 1, body.size() - (body.find("=") + 1));
 		checkIfOpen.open(config->root + newFileName);
@@ -130,6 +129,9 @@ std::string	Server::methodPOST( Client *client, Config *config )
 		newFile.open(config->root + newFileName);
 		newFile << newFileContent;
 		newFile.close();
+
+		_responseHeader = "HTTP/1.1 201 Created";
+		return ( config->errorPageDir + "201.html" );
 
         // responds the (if set) directoryrequest
 		if ( config->directoryRequest != "" )
