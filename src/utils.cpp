@@ -195,36 +195,6 @@ std::string	createResponseHtml( void )
 	return "public_html/error500.html";
 }
 
-// int	Server::noConfig(Client *client)
-// {
-// 	std::ifstream	htmlFile;
-// 	std::fstream	responseFile;
-// 	std::ofstream	ofs;
-	
-// 	ofs.open("response/response.txt", std::ofstream::out | std::ofstream::trunc);
-//     ofs.close();
-//     responseFile.open( "response/response.txt", std::ios::in | std::ios::out | std::ios::binary );
-//     if ( !responseFile.is_open() )
-//         return printerror( "could not open response file " );
-// 	htmlFile.open( "public_html/pages/errorpages/400.html", std::ios::in | std::ios::binary );
-// 	if ( !htmlFile.is_open() )
-// 	{
-// 		htmlFile.open( createResponseHtml() );
-// 		if ( !htmlFile.is_open() )
-// 		{
-// 			std::cout << "couldnt create a response.." << std::endl;
-// 			closeConnection( client );
-// 			return 0;
-// 		}
-// 		_responseHeader = "HTTP/1.1 500 Error";
-// 	}
-// 	else
-// 		_responseHeader = "HTTP/1.1 400 Bad Request";
-// 	this->buildHeaderResponse(client, htmlFile, responseFile, "public_html/pages/errorpages/400.html");
-// 	closeConnection( client );
-// 	return 0;
-// }
-
 std::string	Server::getErrorPage( std::string response, Config *config )
 {
 	std::map<std::string, std::string>::iterator	it;
@@ -269,7 +239,7 @@ void	Server::addHost( int port, std::string host, std::string config, std::strin
 {
 	std::vector< Socket* >::iterator		it;
 	std::vector< std::string >::iterator	it2;
-	std::vector< Config *> vconfig;
+	std::vector< Config *>					vconfig, vconfig2;
 
 	for ( it = this->_sockets.begin(); it != this->_sockets.end(); it++ ) {
 		if ( (*it)->port == port )
@@ -278,13 +248,23 @@ void	Server::addHost( int port, std::string host, std::string config, std::strin
 				if ( *it2 == host )
 					return ;
 			}
-				
 			(*it)->hosts.push_back( host );
 			Config *new_config = new Config( config, path );
 			vconfig.push_back( new_config );
 			(*it)->hostConfigs.insert( std::make_pair( host, vconfig ) );
 			if ( host == "localhost")
-					(*it)->hostConfigs.insert( std::make_pair( "127.0.0.1", vconfig ) );
+			{
+				Config *new_config2 = new Config( config, path );
+				vconfig2.push_back( new_config2 );
+				(*it)->hostConfigs.insert( std::make_pair( "127.0.0.1", vconfig2 ) );
+			}
+			else if ( host == "127.0.0.1" )
+			{
+				Config *new_config2 = new Config( config, path );
+				vconfig2.push_back( new_config2 );
+				(*it)->hostConfigs.insert( std::make_pair( "localhost", vconfig2 ) );
+			}
+			(*it)->setRouteConfigs( config, host );
 		}
 	}
 }

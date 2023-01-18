@@ -13,7 +13,7 @@ std::string	Server::methodGET( Client *client, Config *config )
 	}
     std::string page = this->_sockets[sock_num]->getLocationPage( location, client->getHost(), client );
 	std::string redirect_page = this->_sockets[sock_num]->getRedirectPage( location, client->getHost(), client );
-    
+
 	// check if requested page is a redirection
 	if ( redirect_page != "" )
 	{
@@ -116,10 +116,6 @@ std::string	Server::methodPOST( Client *client, Config *config )
 			newFileName = location + "/" + body.substr(0, 6);
 		else
 			newFileName = location + "/" + body.substr(0, body.find("="));
-		// if ( header.find( "filename=" ) != std::string::npos )
-		// {
-		// 	newFileName = header.substr
-		// }
 		std::cout << newFileName << std::endl;
 		newFileContent = body.substr(body.find("=") + 1, body.size() - (body.find("=") + 1));
 		checkIfOpen.open(config->root + newFileName);
@@ -136,7 +132,6 @@ std::string	Server::methodPOST( Client *client, Config *config )
 		newFile.close();
 
         // responds the (if set) directoryrequest
-		_responseHeader = "HTTP/1.1 200 OK";
 		if ( config->directoryRequest != "" )
 			return ( config->root + config->directoryRequest );
 		
@@ -149,8 +144,8 @@ std::string	Server::methodPOST( Client *client, Config *config )
         // if there was no index -> create an autoindex (if enabled)
         if ( config->autoindex )
             return ( this->createAutoIndex( config->root, location ) );
-        _responseHeader = "HTTP/1.1 400 Bad Request";
-        return ( config->errorPageDir + "400.html" );
+        _responseHeader = "HTTP/1.1 403 Bad Request";
+        return ( config->errorPageDir + "403.html" );
 	}
 	_responseHeader = "HTTP/1.1 404 Not Found";
     return ( config->errorPageDir + "404.html" );
