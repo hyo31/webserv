@@ -124,7 +124,10 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
         return printerror( "failed setting up the environment: " );
 	it = env.find( "FILE_NAME" );
 	if ( it == env.end() && method == "POST" )
+	{
+		std::cout << "kek\n";
 		return NO_FILE;
+	}
     pathCGI = path + page;
     pid = fork();
     if ( pid == -1 )

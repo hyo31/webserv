@@ -40,7 +40,7 @@ std::string	Server::methodGET( Client *client, Config *config )
 	// execute the CGI on the requested file if it has the right extension
 	if ( location.size() > config->extension.size() && location.substr( location.size() - config->extension.size(), location.size() - 1) == config->extension )
 	{
-		switch ( executeCGI( "/" + config->root + location, port, this->_path, config->root, client->getBody(), client->getHeader(), config->uploadDir, "GET" ) )
+		switch ( executeCGI( "/" + config->root + location, port, this->_path, config->root, query, client->getHeader(), config->uploadDir, "GET" ) )
 		{
 			case 0:
 				_responseHeader = "HTTP/1.1 200 OK";
