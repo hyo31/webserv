@@ -19,14 +19,13 @@ class Socket
         sockaddr_in		socketAddr;
         unsigned int	socketAddrLen;
         std::string		logFile;
-        std::string		currentFile;
 		bool			bound;
 		std::string		defaultHost;
         int             setupSockets();
         std::string     getLocationPage( std::string, std::string, Client * );
 		std::string		getRedirectPage( std::string, std::string, Client * );
 		Config			*getConfig( std::string, std::string, Client * );
-		void			setRouteConfigs( std::string );
+		void			setRouteConfigs( std::string, std::string );
 		void			setPortLogHost( std::string );
 
 		std::map< std::string, std::vector< Config* > >	hostConfigs;/* host - configs */

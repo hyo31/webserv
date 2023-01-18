@@ -13,7 +13,7 @@ std::string	Server::methodGET( Client *client, Config *config )
 	}
     std::string page = this->_sockets[sock_num]->getLocationPage( location, client->getHost(), client );
 	std::string redirect_page = this->_sockets[sock_num]->getRedirectPage( location, client->getHost(), client );
-    
+
 	// check if requested page is a redirection
 	if ( redirect_page != "" )
 	{
@@ -134,7 +134,6 @@ std::string	Server::methodPOST( Client *client, Config *config )
 		return ( config->errorPageDir + "201.html" );
 
         // responds the (if set) directoryrequest
-		_responseHeader = "HTTP/1.1 200 OK";
 		if ( config->directoryRequest != "" )
 			return ( config->root + config->directoryRequest );
 		

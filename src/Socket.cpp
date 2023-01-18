@@ -18,11 +18,10 @@ Socket::Socket( std::string config, std::string path ) : bound( false )
 		this->hostConfigs.insert( std::make_pair( this->hosts[1], configv_2 ) );
 	}
 	ipAddr = "localhost";
-	currentFile = "";
 	this->setupSockets();
 	if ( this->bound == false )
 		return ;
-	this->setRouteConfigs( config );
+	this->setRouteConfigs( config, this->hosts[0] );
 }
 
 Socket::Socket( const Socket & ) { }
@@ -70,12 +69,21 @@ int Socket::setupSockets()
 
 //sets up a map with all the info for all the routes
 //key = location, value = pointer to the config
-void	Socket::setRouteConfigs( std::string configfile )
+void	Socket::setRouteConfigs( std::string configfile, std::string host )
 {
-	std::string	location, route;
+	std::map< std::string, std::vector< Config* > >::iterator it, it2;
+	std::string	location, route, host_2 = "";
 	size_t		start = 0, end = 0;
-	std::map< std::string, std::vector< Config* > >::iterator it = this->hostConfigs.find( this->hosts[0] );
 
+	if ( host == "localhost" )
+		host_2 = "127.0.0.1";
+	if ( host == "127.0.0.1" )
+		host_2 = "localhost";
+	if ( host_2 != "" )
+		it2 = this->hostConfigs.find( host_2 );
+	it = this->hostConfigs.find( host );
+	if ( it == this->hostConfigs.end() || ( host_2 != "" && it2 == this->hostConfigs.end() ) )
+		printerror( "couldnt find host(setRouteConfigs)");
 	while ( ( start = configfile.find( "location", end ) ) != std::string::npos )
 	{
 		Config	*routeConfig = new Config( *it->second[0] );
@@ -85,8 +93,12 @@ void	Socket::setRouteConfigs( std::string configfile )
 		route = configfile.substr( start, ( end - start ) );
 		routeConfig->setConfig( route );
 		routeConfig->setRedirects( route, location );
+		if ( host_2 != "" )
+		{
+			Config	*routeConfig2 = new Config( *routeConfig );
+			(*it2).second.push_back( routeConfig2 );
+		}
 		(*it).second.push_back( routeConfig );
-		// this->hostConfigs.insert( std::make_pair( this->hosts[0], routeConfig ) );
 	}
 }
 
@@ -188,6 +200,10 @@ void	Socket::setPortLogHost( std::string config )
 	{
 		this->defaultHost = line.substr( start + 1 );
 		this->hosts.push_back( line.substr( start + 1 ) );
+		if ( this->defaultHost == "localhost" )
+			this->hosts.push_back( "127.0.0.1" );
+		if ( this->defaultHost == "127.0.0.1" )
+			this->hosts.push_back( "localhost" );
 	}
 	else
 	{
