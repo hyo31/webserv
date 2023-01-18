@@ -14,6 +14,7 @@ class Client
 
 		int			getConnectionFD();
 		int			getSockNum();
+		int			getBytesSent();
 		std::string	getLocation();
 		std::string	getBody();
 		std::string	getHeader();
@@ -32,6 +33,7 @@ class Client
 		void		setBadRequest( bool );
 		void		setSendAgain( bool );
 		void		setHeader( std::string, int );
+		void		setBytesSent( int );
 		void		setBody( std::string );
 		void		setMethod( std::string );
 		void		setLocation( std::string );
@@ -41,6 +43,7 @@ class Client
 	private:
     	int			_conn_fd;
     	int			_sock_num;
+		int			_bytesSent;
 	    std::time_t	_timestamp;
 		std::string	_requestHeader;
 		std::string _requestBody;
@@ -52,6 +55,7 @@ class Client
 		bool		_client_body_too_large;
 		bool		_badRequest;
 		bool		_sendAgain;
+
     	Client();
 }; 
 

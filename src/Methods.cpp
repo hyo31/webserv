@@ -29,7 +29,6 @@ std::string	Server::methodGET( Client *client, Config *config )
 		page = this->_sockets[sock_num]->getLocationPage( index, client->getHost(), client );
 		if ( page != "" )
 		    return ( page );
-
         // if there was no index -> create an autoindex (if enabled)
         if ( config->autoindex )
             return ( this->createAutoIndex( config->root, location ) );
@@ -125,7 +124,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 		newFileName = location + "/" + body.substr(0, 6);
 		if (location.back() == '/')
 			newFileName = location + body.substr(0, 6);
-		std::cout << newFileName << std::endl;
+		// std::cout << newFileName << std::endl;
 		newFileContent = body;
 		checkIfOpen.open(config->root + newFileName);
 		while ( checkIfOpen.is_open() )

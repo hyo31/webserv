@@ -50,13 +50,12 @@ class Server
         int			monitor_ports();
         int			receiveClientRequest( Client*, std::string& );
         int			configureResponseToClient( Client* );
-        int         buildHeaderResponse( Client*, std::ifstream&, std::fstream&, std::string );
-        void	    sendResponse(Client*, int, std::fstream&, int, std::ifstream&, std::string );
-		void		setHeaderInfo( Client* );
+        int         buildHeaderResponse( Client*, std::ifstream&, std::string );
+        void	    sendResponse(Client*, std::string, int, std::string );
 		int			openSockets( std::string );
         int			findSocket( int );
 		int			uniqueSocket( std::string, std::string& );
-        void		closeConnection( Client* );
+        int			closeConnection( Client* );
         void		set_chlist( std::vector< struct kevent >&, uintptr_t, int16_t, uint16_t, uint32_t, intptr_t, void * );
         void		bounceTimedOutClients();
         void		parseRequest( std::string, Client* );

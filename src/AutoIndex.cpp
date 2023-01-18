@@ -6,7 +6,7 @@ std::string Server::createAutoIndex( std::string root, std::string folder )
     std::ofstream   autoindexFile;
     DIR             *directory;
 
-    std::cout << folder[folder.size() - 1] << std::endl;
+    // std::cout << folder[folder.size() - 1] << std::endl;
     if (folder[folder.size() - 1] != '/')
         folder += "/";
 	std::string		page = root + folder;
