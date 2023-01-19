@@ -53,24 +53,23 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
     size_t								pos;
     std::string							contentType;
 
+    pos = header.find( "Content-Type: " );
+    if ( pos == std::string::npos && method != "GET")
+    {
+        printerror( "request has no Content-Type: " );
+        return ( env );
+    }
     env["HTTP_HOST"] =  "localhost:" + std::to_string( port );
     env["REQUEST_URI"] = page;
     env["REMOTE_PORT"] = std::to_string( port );
     env["REQUEST_METHOD"] = method;
     env["SERVER_PORT"] = std::to_string( port );
     env["UPLOAD_DIR"] = path + "/" + root + uploaddir;
-
     // find the content type and set the environment accordingly
     if ( method == "GET" )
     {
         env["FILE_NAME"] = "form.log";
         env["QUERY_STRING"] = body;
-    }
-    pos = header.find( "Content-Type: " );
-    if ( pos == std::string::npos )
-    {
-        printerror( "request has no Content-Type: " );
-        return ( env );
     }
     contentType = header.substr( header.find( " ", pos ) + 1, header.find( "\r\n", pos ) - ( header.find( " ", pos ) + 1 ) );
     // content type is a form
