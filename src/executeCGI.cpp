@@ -53,37 +53,36 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
     size_t								pos;
     std::string							contentType;
 
+    pos = header.find( "Content-Type: " );
+    if ( pos == std::string::npos && method != "GET")
+    {
+        printerror( "request has no Content-Type: " );
+        return ( env );
+    }
     env["HTTP_HOST"] =  "localhost:" + std::to_string( port );
     env["REQUEST_URI"] = page;
     env["REMOTE_PORT"] = std::to_string( port );
     env["REQUEST_METHOD"] = method;
     env["SERVER_PORT"] = std::to_string( port );
     env["UPLOAD_DIR"] = path + "/" + root + uploaddir;
-
     // find the content type and set the environment accordingly
     if ( method == "GET" )
     {
         env["FILE_NAME"] = "form.log";
         env["QUERY_STRING"] = body;
     }
-    pos = header.find( "Content-Type: " );
-    if ( pos == std::string::npos )
-    {
-        printerror( "request has no Content-Type: " );
-        return ( env );
-    }
     contentType = header.substr( header.find( " ", pos ) + 1, header.find( "\r\n", pos ) - ( header.find( " ", pos ) + 1 ) );
     // content type is a form
     if ( contentType == "application/x-www-form-urlencoded" )
     {
         env["FILE_NAME"] = "form.log";
-        env["QUERY_STRING"] = body;
+        env["FILE_BODY"] = body;
     }
     // content type is a file
     else if ( contentType == "plain/text" )
     {
-        if (body.size() > 6)
-            env["FILE_NAME"] = body.substr(0, 6);
+        if (body.size() > 10)
+            env["FILE_NAME"] = body.substr(0, 10);
         else
             env["FILE_NAME"] = body;
         env["FILE_BODY"] = body;
@@ -92,6 +91,7 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
             env["FILE_NAME"] = page + "/" + body.substr(0, body.find("="));
             env["FILE_BODY"] = body.substr(body.find("=") + 1, body.size() - (body.find("=") + 1));
         }
+        std::cout << env["FILE_NAME"] << "\n";
         env["BODY_LEN"] = std::to_string( env["FILE_BODY"].size() );
     }
     //content type is a file with a boundary
