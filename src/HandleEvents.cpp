@@ -159,8 +159,6 @@ int	Server::buildHeaderResponse( Client *client, std::ifstream &htmlFile, std::s
 		str = "Content-Type: application/octet-stream\r\n\r\n" + str;
 	else if ( str.size() >= 16 && str.substr( 0, 16 ).find( "<!DOCTYPE html>") != std::string::npos )
 		str = "Content-Type: text/html\r\n\r\n" + str;
-	else if (htmlFileName.find(".ico") != std::string::npos)
-		str = "Content-Type: image/x-icon\r\n\r\n" + str;
 	else
 		str = "Content-Type: text/plain\r\n\r\n" + str;
 	str = "Content-Length: " + len + "\r\n" + str;
