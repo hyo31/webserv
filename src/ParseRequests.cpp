@@ -18,6 +18,11 @@ static void	buildBodyForContentLength( std::string request, size_t start, Client
 	size_t		end, content_len;
 	std::string	body, header = client->getHeader();
 
+	std::ofstream output;
+
+	output.open("outputofzo");
+	output << request;
+	output.close();
 	//find the number behind Content Length (start is at this line)
 	start = request.find( " ", start ) + 1;
 	end = request.find( "\r\n", start );
@@ -40,7 +45,7 @@ static void	buildBodyForContentLength( std::string request, size_t start, Client
 	client->setRequestIsRead( true );
 	if ( getUploadBodySize( body, header ) > maxBodySize )
 		client->setBodyTooLarge( true );
-    std::cout << "\n\033[33m\033[1m" << "RECEIVED:\n\033[0m\033[33m" << request << "\033[0m" << std::endl;
+    //std::cout << "\n\033[33m\033[1m" << "RECEIVED:\n\033[0m\033[33m" << request << "\033[0m" << std::endl;
 	return ;
 }
 
@@ -108,7 +113,7 @@ void    Server::parseRequest( std::string request, Client *client )
 	start = end + 1;
 	end = header.find( " ", start );
 	client->setLocation( header.substr( start, end - start ) );
-    if ( ( start = header.find( "Content-Length:" ) ) != std::string::npos )
+    if ( ( start = header.find( "Content-Length: " ) ) != std::string::npos )
 		return buildBodyForContentLength( request, start, client, MaxBody );
     else if ( ( start = header.find( "Transfer-Encoding:" ) ) != std::string::npos )
     {

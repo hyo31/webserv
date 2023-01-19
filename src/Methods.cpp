@@ -139,8 +139,6 @@ std::string	Server::methodPOST( Client *client, Config *config )
 			if (location.back() == '/')
 				newFileName = location.substr(0, location.size() - 1) + config->uploadDir + vars[0];
 			newFileContent = vars[1];
-			std::cout << newFileName << "\n";
-			std::cout << newFileContent << "\n";
 		}
 		checkIfOpen.open(config->root + newFileName);
 		while ( checkIfOpen.is_open() )
