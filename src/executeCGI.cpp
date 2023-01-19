@@ -72,7 +72,10 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
         printerror( "no Content-Type: " );
         return ( env );
     }
-    contentType = header.substr( header.find( " ", pos ) + 1, header.find( "\r\n", pos ) - ( header.find( " ", pos ) + 1 ) );
+    if (header.find( "\r\n", pos ) < header.find( ";", pos ))
+        contentType = header.substr( header.find( " ", pos ) + 1, header.find( "\r\n", pos ) - ( header.find( " ", pos ) + 1 ) );
+    else
+        contentType = header.substr( header.find( " ", pos ) + 1, header.find( ";", pos ) - ( header.find( " ", pos ) + 1 ) );
     // content type is a form
     if ( contentType == "application/x-www-form-urlencoded" )
     {
@@ -95,7 +98,7 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
         env["BODY_LEN"] = std::to_string( env["FILE_BODY"].size() );
     }
     //content type is a file with a boundary
-    else if ( contentType == "multipart/form-data; boundary=----WebKitFormBoundaryA10jf38SJHLPhMUn")
+    else if ( contentType == "multipart/form-data")
     {
         vars = readFile( header, body );
         if ( vars.empty() )
