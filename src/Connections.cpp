@@ -107,14 +107,13 @@ void    Server::bounceTimedOutClients()
 
     while ( client != end )
     {
-		if ( this->_clients.size() == 0 )
-			return ;
         if ( ( *client )->getTimeStamp() + TIMEOUT <=  current_time )
         {
             std::cout << "Bouncing client from:" << ( *client )->getConnectionFD() << std::endl;
 			if ( closeConnection( *client ) == EBADF )
 				return ;
-			client = _clients.begin();
+			client = this->_clients.begin();
+			end = this->_clients.end();
         }
 		else
 			client++;

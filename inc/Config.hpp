@@ -21,7 +21,7 @@ class Config
 		std::string                 root;
 		bool						autoindex;
 		std::vector<std::string>	methods;
-		std::string					directoryRequest;
+		std::string					index;
 		std::string					cgi;
 		size_t						maxClientBodySize;
 		std::string					extension;
@@ -40,7 +40,7 @@ class Config
 		void	setRoot( std::string );
 		void	setErrorPages( std::string );
 		void	setAutoIndex( std::string );
-		void	setDirectoryRequest( std::string );
+		void	setIndex( std::string );
 		void	setCGI( std::string );
 		void	setMaxBodySize( std::string );
 		void	setUploadDir( std::string );

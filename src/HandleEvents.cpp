@@ -132,6 +132,7 @@ void	Server::sendResponse(Client *client, std::string response, int c_fd, std::s
 		return ;
 	}
 	totalSent = totalSent + bytesSent;
+	std::cout << "total sent:" << totalSent << std::endl;
 	if ( bytesSent < toSend )
 	{
 		client->setSendAgain( true );
