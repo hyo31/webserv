@@ -138,7 +138,7 @@ void	Server::sendResponse(Client *client, std::string response, int c_fd, std::s
 		client->setBytesSent( totalSent );
 	}
 	client->update_client_timestamp();
-	// std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << response << "\033[0m" << std::endl;
+	std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << response << "\033[0m" << std::endl;
 	return ;
 }
 
@@ -177,10 +177,13 @@ int	Server::buildHeaderResponse( Client *client, std::ifstream &htmlFile, std::s
 		ifs.close();
 	removeResponseFiles();
 	resetPages();
-	if ( client->bodyTooLarge() == true )
-		closeConnection( client );
 	if ( htmlFileName == "response/responseCGI" )
 		exit ( 0 );
+	if ( client->bodyTooLarge() == true )
+	{
+		closeConnection( client );
+		return CLIENT_REMOVED;
+	}
     return 0;
 }
 

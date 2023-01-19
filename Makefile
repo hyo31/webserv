@@ -2,7 +2,7 @@ NAME = webserver
 
 CC = g++
 
-CFLAGS = -Wall -Werror -Wextra -std=c++98 #-fsanitize=address
+CFLAGS = -Wall -Werror -Wextra -std=c++98 -fsanitize=address
 
 SRC_DIR =	src/
 DIRS = obj/ response/ forms/ logs/
@@ -24,6 +24,7 @@ SRC =	src/webserv.cpp\
 		src/AutoIndex.cpp\
 		src/Methods.cpp\
 		src/executeCGI.cpp\
+		src/Connections.cpp\
 
 OBJ = $(SRC:$(SRC_DIR)%.cpp=$(OBJ_DIR)%.o)
 

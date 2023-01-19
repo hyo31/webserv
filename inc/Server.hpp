@@ -31,6 +31,7 @@
 enum {
 	ERROR = -1,
 	STOP_READ = 1,
+	CLIENT_REMOVED = 1,
 	CONT_READ = 2,
 	NO_FILE = 2
 };
@@ -44,18 +45,20 @@ class Server
         Server( const Server & );
         Server &	operator=( const Server & );
 
+        int			getSocket( int );
+		Client*		getClient( int);
+		std::string	getHtmlFile( Client* );
+		std::string	getErrorPage( std::string, Config* );
 		std::string createAutoIndex( std::string, std::string );
-		Client*		findClient( int);
         Client*		acceptRequest( int );
         int			monitor_ports();
         int			receiveClientRequest( Client*, std::string& );
         int			configureResponseToClient( Client* );
         int         buildHeaderResponse( Client*, std::ifstream&, std::string );
-        void	    sendResponse(Client*, std::string, int, std::string );
 		int			openSockets( std::string );
-        int			findSocket( int );
 		int			uniqueSocket( std::string, std::string& );
         int			closeConnection( Client* );
+        void	    sendResponse(Client*, std::string, int, std::string );
         void		set_chlist( std::vector< struct kevent >&, uintptr_t, int16_t, uint16_t, uint32_t, intptr_t, void * );
         void		bounceTimedOutClients();
         void		parseRequest( std::string, Client* );
@@ -65,8 +68,6 @@ class Server
 		std::string	methodDELETE( Client*, Config* );
 		std::string	methodGET( Client*, Config* );
 		std::string	methodPOST( Client*, Config* );
-		std::string	getHtmlFile( Client* );
-		std::string	getErrorPage( std::string, Config* );
 
 		std::vector< Socket* >	_sockets;
         std::vector< Client* >	_clients;
