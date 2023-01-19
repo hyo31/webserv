@@ -139,6 +139,11 @@ std::string	Server::methodPOST( Client *client, Config *config )
 		if (fileExtension)
 			newFileName += std::to_string(fileExtension);
 		newFile.open(config->root + newFileName);
+		while ( !newFile.is_open() )
+		{
+			_responseHeader = "HTTP/1.1 405 Method Not Allowed";
+    		return ( config->errorPageDir + "405.html" );
+		}
 		newFile << newFileContent;
 		newFile.close();
 		_responseHeader = "HTTP/1.1 201 Created";
