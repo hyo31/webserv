@@ -53,25 +53,29 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
     size_t								pos;
     std::string							contentType;
 
-    pos = header.find( "Content-Type: " );
-    if ( pos == std::string::npos && method != "GET")
-    {
-        printerror( "request has no Content-Type: " );
-        return ( env );
-    }
-    env["HTTP_HOST"] =  "localhost:" + std::to_string( port );
-    env["REQUEST_URI"] = page;
-    env["REMOTE_PORT"] = std::to_string( port );
-    env["REQUEST_METHOD"] = method;
-    env["SERVER_PORT"] = std::to_string( port );
-    env["UPLOAD_DIR"] = path + "/" + root + uploaddir;
     // find the content type and set the environment accordingly
     if ( method == "GET" )
     {
         env["FILE_NAME"] = "form.log";
-        env["QUERY_STRING"] = body;
+        env["FILE_BODY"] = body;
+        env["HTTP_HOST"] =  "localhost:" + std::to_string( port );
+        env["REQUEST_URI"] = page;
+        env["REMOTE_PORT"] = std::to_string( port );
+        env["REQUEST_METHOD"] = method;
+        env["SERVER_PORT"] = std::to_string( port );
+        env["UPLOAD_DIR"] = path + "/" + root + uploaddir;
+        return (env);
     }
-    contentType = header.substr( header.find( " ", pos ) + 1, header.find( "\r\n", pos ) - ( header.find( " ", pos ) + 1 ) );
+    pos = header.find( "Content-Type: " );
+    if ( pos == std::string::npos)
+    {
+        printerror( "no Content-Type: " );
+        return ( env );
+    }
+    if (header.find( "\r\n", pos ) < header.find( ";", pos ))
+        contentType = header.substr( header.find( " ", pos ) + 1, header.find( "\r\n", pos ) - ( header.find( " ", pos ) + 1 ) );
+    else
+        contentType = header.substr( header.find( " ", pos ) + 1, header.find( ";", pos ) - ( header.find( " ", pos ) + 1 ) );
     // content type is a form
     if ( contentType == "application/x-www-form-urlencoded" )
     {
@@ -79,7 +83,7 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
         env["FILE_BODY"] = body;
     }
     // content type is a file
-    else if ( contentType == "plain/text" )
+    else if ( contentType == "text/plain" )
     {
         if (body.size() > 10)
             env["FILE_NAME"] = body.substr(0, 10);
@@ -94,7 +98,7 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
         env["BODY_LEN"] = std::to_string( env["FILE_BODY"].size() );
     }
     //content type is a file with a boundary
-    else
+    else if ( contentType == "multipart/form-data")
     {
         vars = readFile( header, body );
         if ( vars.empty() )
@@ -103,6 +107,17 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
         env["FILE_BODY"] = vars[1];
 		env["BODY_LEN"] = std::to_string( vars[1].size() );
     }
+    else
+    {
+        printerror( "invalid Content-Type: " );
+        return ( env );
+    }
+    env["HTTP_HOST"] =  "localhost:" + std::to_string( port );
+    env["REQUEST_URI"] = page;
+    env["REMOTE_PORT"] = std::to_string( port );
+    env["REQUEST_METHOD"] = method;
+    env["SERVER_PORT"] = std::to_string( port );
+    env["UPLOAD_DIR"] = path + "/" + root + uploaddir;
     return ( env );
 }
 
