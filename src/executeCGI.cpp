@@ -38,7 +38,7 @@ std::vector<std::string>	readFile( std::string header, std::string body )
 	if ( filename.empty() )
 		return ( vars );
     pos = body.find( "\r\n\r\n", pos ) + 4;
-	removeBoundaries( body, boundary, pos );	
+	removeBoundaries( body, boundary, pos );
     fileContent = body.substr( pos, body.find( "--" + boundary, pos ) - ( pos + 2 ) );
     vars.push_back( filename );
     vars.push_back( fileContent );
@@ -165,12 +165,18 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
             pid_t exited_pid = wait(&status);
             if (exited_pid == timeout_pid)              // child 2 exits first, so child 1 terminates child 3 and returns 1
             {
+				std::cout << "script timed out: possible infinite loop\n";
                 kill(pid2, SIGKILL);
-                return ( 1 );
+                return 1;
             }
             kill(timeout_pid, SIGKILL);                 // child 3 exits first, script executed successfully, child 1 terminates child 2 and returns exitstatus of child 3
-            return ( WEXITSTATUS(status) );
+			if ( status == 65280 )
+			{
+				std::cout << "error in script\n";
+				return 1;
+			}
+			return ( WEXITSTATUS(status) );
         }
     }
-    return ( -1 );
+    return -1;
 }

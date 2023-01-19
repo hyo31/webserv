@@ -142,6 +142,20 @@ int Server::openSockets( std::string configFilePath )
     return 0;
 }
 
+void	Server::closeAll( void )
+{
+	while ( !_sockets.empty() )
+	{
+		delete _sockets.back();
+		_sockets.pop_back();
+	}
+	while ( !_clients.empty() )
+	{
+		delete _clients.back();
+		_clients.pop_back();
+	}
+}
+
 // start the server
 int	Server::startServer( std::string configFilePath, std::string path )
 {
@@ -157,17 +171,9 @@ int	Server::startServer( std::string configFilePath, std::string path )
         std::cout << this->_sockets[i]->port << " ";
     std::cout << std::endl << std::endl;;
 	status = this->monitor_ports();
-	closeSockets();
+	closeAll();
 	if (status == -1)
 		return printerror( "monitor failed: " );
 	return 0;
 }
 
-void	Server::closeSockets( void )
-{
-	while ( !_sockets.empty() )
-	{
-		delete _sockets.back();
-		_sockets.pop_back();
-	}
-}

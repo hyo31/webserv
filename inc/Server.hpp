@@ -61,7 +61,7 @@ class Server
         void		set_chlist( std::vector< struct kevent >&, uintptr_t, int16_t, uint16_t, uint32_t, intptr_t, void * );
         void		bounceTimedOutClients();
         void		parseRequest( std::string, Client* );
-		void		closeSockets();
+		void		closeAll();
 		void		addHost( int, std::string, std::string, std::string );
         void        resetPages( );
 		std::string	methodDELETE( Client*, Config* );
