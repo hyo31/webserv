@@ -59,12 +59,13 @@ std::string	Server::methodGET( Client *client, Config *config )
 
 std::string	Server::methodPOST( Client *client, Config *config )
 {
-	int				sock_num = client->getSockNum(), fileExtension = 0;
-	int				port = this->_sockets[sock_num]->port;
-	std::string		location = client->getLocation(), page = this->_sockets[sock_num]->getLocationPage( location, client->getHost(), client );
-	std::string		header = client->getHeader(), body = client->getBody(), newFileName, newFileContent, index;
-	std::ofstream	newFile;
-	std::ifstream	checkIfOpen;
+	int							sock_num = client->getSockNum(), fileExtension = 0;
+	int							port = this->_sockets[sock_num]->port;
+	std::string					location = client->getLocation(), page = this->_sockets[sock_num]->getLocationPage( location, client->getHost(), client );
+	std::string					header = client->getHeader(), body = client->getBody(), newFileName, newFileContent, index, contentType;
+	std::ofstream				newFile;
+	std::ifstream				checkIfOpen;
+	std::vector<std::string>	vars;
 
 	if ( client->bodyTooLarge() == true )
 	{
@@ -94,8 +95,12 @@ std::string	Server::methodPOST( Client *client, Config *config )
 					return ( "DO NOTHING" );
 			}
 		}
+		if (client->getHeader().find("\r\n", client->getHeader().find("Content-Type: ") + 14) < client->getHeader().find(";", client->getHeader().find("Content-Type: ") + 14))
+        	contentType = client->getHeader().substr(client->getHeader().find("Content-Type: ") + 14, client->getHeader().find("\r\n", client->getHeader().find("Content-Type: ") + 14) - (client->getHeader().find("Content-Type: ") + 14));
+    	else
+        	contentType = client->getHeader().substr(client->getHeader().find("Content-Type: ") + 14, client->getHeader().find(";", client->getHeader().find("Content-Type: ") + 14) - (client->getHeader().find("Content-Type: ") + 14));
 		// POST request is a form
-		if (client->getHeader().substr(client->getHeader().find("Content-Type: ") + 14, client->getHeader().find("\r\n", client->getHeader().find("Content-Type: ") + 14) - (client->getHeader().find("Content-Type: ") + 14)) == "application/x-www-form-urlencoded")
+		if (contentType == "application/x-www-form-urlencoded")
 		{
 			size_t	posMid = body.find("="), posStart = 0;
 
@@ -127,6 +132,16 @@ std::string	Server::methodPOST( Client *client, Config *config )
 		if (location.back() == '/')
 			newFileName = location + body.substr(0, 10);
 		newFileContent = body;
+		if (contentType == "multipart/form-data")
+		{
+			vars = readFile(client->getHeader(), body);
+			newFileName = location + config->uploadDir + vars[0];
+			if (location.back() == '/')
+				newFileName = location.substr(0, location.size() - 1) + config->uploadDir + vars[0];
+			newFileContent = vars[1];
+			std::cout << newFileName << "\n";
+			std::cout << newFileContent << "\n";
+		}
 		checkIfOpen.open(config->root + newFileName);
 		while ( checkIfOpen.is_open() )
 		{
