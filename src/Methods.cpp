@@ -102,7 +102,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 			_responseHeader = "HTTP/1.1 201 Created";
 			// put the content of the form in the form.log
 			newFile.open("forms/form.log", std::ios_base::app);
-  			newFile << "Local date and time \n";
+  			newFile << "Local date and time ...?\n";
 			if (posMid == std::string::npos)
 			{
 				newFile << body << "\n\n";
@@ -113,10 +113,8 @@ std::string	Server::methodPOST( Client *client, Config *config )
 				newFile << body.substr(0, posMid) << " = " << body.substr(posMid + 1, body.find("&") - (posMid + 1)) << "\n";
 			while (body.find("&", body.find("&", posMid) + 1) != std::string::npos)
 			{
-				std::cout << posStart << " " << posMid << "\n";
 				posStart = body.find("&", posMid) + 1;
 				posMid = body.find("=", posStart);
-				std::cout << "2: " << posStart << " " << posMid << "\n";
 				newFile << body.substr(posStart, posMid - posStart) << " = " << body.substr(posMid + 1, body.find("&", posMid) - (posMid + 1)) << "\n";
 			}
 			posStart = body.find("&", posMid) + 1;
@@ -139,7 +137,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 		if (fileExtension)
 			newFileName += std::to_string(fileExtension);
 		newFile.open(config->root + newFileName);
-		while ( !newFile.is_open() )
+		if ( !newFile.is_open() )
 		{
 			_responseHeader = "HTTP/1.1 405 Method Not Allowed";
     		return ( config->errorPageDir + "405.html" );

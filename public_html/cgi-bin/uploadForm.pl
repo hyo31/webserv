@@ -14,7 +14,12 @@ my $datestring = localtime();
 print $fh "Local date and time $datestring\n";
 foreach my $i (@values) {
     my($fieldname, $data) = split(/=/, $i);
-    print $fh "$fieldname = $data\n";
+    if (defined($data)){
+        print $fh "$fieldname = $data\n";
+    }
+    else{
+        print $fh "$fieldname\n";
+    }
 }
 print $fh "\n";
 close($fh);
