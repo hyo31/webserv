@@ -2,7 +2,7 @@
 
 //Constructor that creates a config object for each serverblock
 Config::Config( std::string config, std::string path ):	servername( "default" ), root( "public_html" ), autoindex( false ),
-														directoryRequest( "" ), cgi( "/cgi-bin" ), maxClientBodySize( MAX_BODY ),
+														index( "" ), cgi( "/cgi-bin" ), maxClientBodySize( MAX_BODY ),
 														extension( ".pl" ), uploadDir( "/uploads/")
 {
 	size_t	pos;
@@ -30,7 +30,7 @@ Config & Config::operator=( const Config& src )
 		this->root = src.root;
 		this->autoindex = src.autoindex;
 		this->methods = src.methods;
-		this->directoryRequest = src.directoryRequest;
+		this->index = src.index;
 		this->cgi = src.cgi;
 		this->maxClientBodySize = src.maxClientBodySize;
 		this->extension = src.extension;
@@ -96,8 +96,8 @@ void	Config::setConfig( std::string config )
 	int						n = 11;
 	std::string				line;
 	std::string::iterator 	start = config.begin(), new_pos = config.begin();
-	std::string 			members[11] = { "location", "server_name", "root", "errorPage", "autoindex", "directoryRequest", "cgi", "maxClientBodySize", "uploadDir", "extension", "methods" };
-	ConfigMemFn				fs[] = {	&Config::setLocation, &Config::setServerName, &Config::setRoot, &Config::setErrorPages, &Config::setAutoIndex, &Config::setDirectoryRequest,
+	std::string 			members[11] = { "location", "server_name", "root", "errorPage", "autoindex", "indexPage", "cgi", "maxClientBodySize", "uploadDir", "extension", "methods" };
+	ConfigMemFn				fs[] = {	&Config::setLocation, &Config::setServerName, &Config::setRoot, &Config::setErrorPages, &Config::setAutoIndex, &Config::setIndex,
 										&Config::setCGI, &Config::setMaxBodySize, &Config::setUploadDir, &Config::setExtension, &Config::setMethods };
 
 	for ( std::string::iterator it = config.begin(); it != config.end(); ++it ) {
@@ -151,9 +151,9 @@ void	Config::setRoot( std::string line )
 	this->root = line.substr( line.find( " " ) + 1 );
 }
 
-void	Config::setDirectoryRequest( std::string line )
+void	Config::setIndex( std::string line )
 {
-	this->directoryRequest = line.substr( line.find( " " ) + 1 );
+	this->index = line.substr( line.find( " " ) + 1 );
 }
 
 void	Config::setCGI( std::string line )

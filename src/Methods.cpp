@@ -16,11 +16,11 @@ std::string	Server::methodGET( Client *client, Config *config )
     // respond to a GET request that requests a directory
 	if ( page == "Directory" )
 	{
-        // responds the (if set) directoryrequest
+        // responds the (if set) index page
 		_responseHeader = "HTTP/1.1 200 OK";
-		if ( config->directoryRequest != "" )
-			return ( config->root + config->directoryRequest );
-        // else search for an index
+		if ( config->index != "" )
+			return ( config->root + config->index );
+        // else search for existing index
         index = location + "index.html";
 		if ( location.back() != '/' )
 			index = location + "/index.html";
