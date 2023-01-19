@@ -13,15 +13,6 @@ static size_t	getUploadBodySize( std::string body, std::string header )
 	return body.size();
 }
 
-// void	Server::setHeaderInfo( Client *client )
-// {
-// 	std::string	header = client->getHeader();
-
-// 	if ( header.find( "filename=" ) )
-
-// }
-
-
 static void	buildBodyForContentLength( std::string request, size_t start, Client *client, size_t maxBodySize )
 {
 	size_t		end, content_len;
