@@ -63,7 +63,6 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
     // find the content type and set the environment accordingly
     if ( method == "GET" )
     {
-        // std::cout << body << std::endl;
         env["FILE_NAME"] = "form.log";
         env["QUERY_STRING"] = body;
     }
@@ -111,81 +110,67 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
 // execute the CGI
 int	executeCGI( std::string page, int port, std::string path, std::string root, std::string body, std::string header, std::string uploaddir, std::string method )
 {
-	std::map<std::string, std::string>::iterator it;
     std::map<std::string, std::string>  env;
     pid_t		                        pid, pid2, timeout_pid;
     std::string	                        pathCGI, temp;
 	std::ofstream						ofs;
     int                                 status;
 
-    if (body.size() > MAX_ARGLEN_EXECVE)
-        return -1;
+    if (body.size() >= MAX_ARGLEN_EXECVE)               // returns when the body size is too large for execve to handle
+        return 1;
     // setup the environmental variables for execve
 	env = setupEnv( page, port, path, root, body, header, uploaddir, method );
     if ( !env.size() )
         return printerror( "failed setting up the environment: " );
-	it = env.find( "FILE_NAME" );
-	if ( it == env.end() && method == "POST" )
-		return NO_FILE;
     pathCGI = path + page;
     pid = fork();
     if ( pid == -1 )
         return printerror( "fork failed: " );
-    
-    // execute the script
-    if ( !pid )
+    if ( !pid )                                         // (child 1) executes the script while the server continues
     {
-        // set a time-out process so that the executed script can't hang indefinitely
         timeout_pid = fork();
-        if ( !timeout_pid )
+        if ( !timeout_pid )                             // (child 2) exits after ~5seconds
         {
             sleep( 5 );
             exit( 0 );
         }
-        else
+        pid2 = fork();
+        if ( pid2 == -1 )
+            exit( printerror( "fork failed: " ) );
+        if ( !pid2 )                                    // (child 3) executes the script
         {
-            pid2 = fork();
-            if ( pid2 == -1 )
-                exit( printerror( "fork failed: " ) );
-            // child process to execute script
-            if ( !pid2 )
+            char    **c_env = new char*[env.size() + 1];
+            int     i = 0;
+            for ( std::map<std::string, std::string>::const_iterator it = env.begin(); it != env.end(); it++ )
             {
-                // copy env to a c_str
-                char    **c_env = new char*[env.size() + 1];
-                int     i = 0;
-                for ( std::map<std::string, std::string>::const_iterator it = env.begin(); it != env.end(); it++ )
-                {
-                    temp = it->first + "=" + it->second;
-                    c_env[i] = new char[temp.size() + 1];
-	            	for ( size_t j = 0; j < temp.size(); ++j ) {
-	            		c_env[i][j] = temp[j];
-	            	}
-	            	c_env[i][temp.size()] = '\0';
-                    i++;
-                }
-                c_env[i] = NULL;
-                ofs.open("response/responseCGI");
-                ofs.close();
-                int fd = open("response/responseCGI", O_WRONLY);
-                if ( !fd )
-                    exit (printerror("failed to open file: "));
-                // std::cout << pathCGI << std::endl;
-                dup2(fd, 1);
-                execve(pathCGI.c_str(), NULL, c_env);
-                exit( printerror( "execve failed: " ) );
+                temp = it->first + "=" + it->second;
+                c_env[i] = new char[temp.size() + 1];
+	        	for ( size_t j = 0; j < temp.size(); ++j ) {
+	        		c_env[i][j] = temp[j];
+	        	}
+	        	c_env[i][temp.size()] = '\0';
+                i++;
             }
-            else
+            c_env[i] = NULL;
+            ofs.open("response/responseCGI");
+            ofs.close();
+            int fd = open("response/responseCGI", O_WRONLY);
+            if ( !fd )
+                exit (printerror("failed to open file: "));
+            dup2(fd, 1);
+            execve(pathCGI.c_str(), NULL, c_env);
+            exit( printerror( "execve failed: " ) );
+        }
+        else                                            // (child 1) waits for child 2 or 3 to exit
+        {
+            pid_t exited_pid = wait(&status);
+            if (exited_pid == timeout_pid)              // child 2 exits first, so child 1 terminates child 3 and returns 1
             {
-                // check which child exits first and terminating the other one
-                pid_t exited_pid = wait(&status);
-                if (exited_pid == timeout_pid)
-                {
-                    kill(pid2, SIGKILL);
-                    return ( 1 );
-                }
-                kill(timeout_pid, SIGKILL);
-                return ( WEXITSTATUS(status) );
+                kill(pid2, SIGKILL);
+                return ( 1 );
             }
+            kill(timeout_pid, SIGKILL);                 // child 3 exits first, script executed successfully, child 1 terminates child 2 and returns exitstatus of child 3
+            return ( WEXITSTATUS(status) );
         }
     }
     return ( -1 );

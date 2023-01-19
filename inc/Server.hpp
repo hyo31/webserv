@@ -17,7 +17,7 @@
 # include <signal.h>
 
 # ifndef TIMEOUT
-#  define TIMEOUT 7
+#  define TIMEOUT 9000
 # endif
 
 # ifndef MAX_ARGLEN_EXECVE
@@ -32,7 +32,6 @@ enum {
 	ERROR = -1,
 	STOP_READ = 1,
 	CONT_READ = 2,
-	NO_FILE = 2
 };
 
 class Config;

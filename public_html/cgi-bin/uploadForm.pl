@@ -23,7 +23,7 @@ print <<ENDTAG;
 <html lang="en">
 <head>
     <title>Webserv</title>
-    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <link rel="icon" href="/images/favicon-32x32.ico">
 </head>
 <body style="background-color:rgb(67, 67, 67);">
     <h1 style="text-align:center;font-size: 52px"><a href="/index" style="text-decoration: none;color: white">WEBSERV</a></h1><br><br>

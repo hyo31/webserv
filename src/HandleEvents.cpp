@@ -138,7 +138,7 @@ void	Server::sendResponse(Client *client, std::string response, int c_fd, std::s
 		client->setBytesSent( totalSent );
 	}
 	client->update_client_timestamp();
-	// std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << response << "\033[0m" << std::endl;
+	std::cout << "\n\033[32m\033[1m" << "RESPONDED:\n\033[0m\033[32m" << std::endl << response << "\033[0m" << std::endl;
 	return ;
 }
 
@@ -159,8 +159,6 @@ int	Server::buildHeaderResponse( Client *client, std::ifstream &htmlFile, std::s
 		str = "Content-Type: application/octet-stream\r\n\r\n" + str;
 	else if ( str.size() >= 16 && str.substr( 0, 16 ).find( "<!DOCTYPE html>") != std::string::npos )
 		str = "Content-Type: text/html\r\n\r\n" + str;
-	else if (htmlFileName.find(".ico") != std::string::npos)
-		str = "Content-Type: image/x-icon\r\n\r\n" + str;
 	else
 		str = "Content-Type: text/plain\r\n\r\n" + str;
 	str = "Content-Length: " + len + "\r\n" + str;

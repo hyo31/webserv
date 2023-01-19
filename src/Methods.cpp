@@ -13,7 +13,6 @@ std::string	Server::methodGET( Client *client, Config *config )
 		location = location.substr(0, location.find("?"));
 	}
     page = this->_sockets[sock_num]->getLocationPage( location, client->getHost(), client );
-
     // respond to a GET request that requests a directory
 	if ( page == "Directory" )
 	{
@@ -21,7 +20,6 @@ std::string	Server::methodGET( Client *client, Config *config )
 		_responseHeader = "HTTP/1.1 200 OK";
 		if ( config->directoryRequest != "" )
 			return ( config->root + config->directoryRequest );
-		
         // else search for an index
         index = location + "index.html";
 		if ( location.back() != '/' )
@@ -52,9 +50,9 @@ std::string	Server::methodGET( Client *client, Config *config )
 					return ( "DO NOTHING" );
 			}
 		}
-    	    _responseHeader = "HTTP/1.1 200 OK";
-    	    return ( page );
-    	}
+    	_responseHeader = "HTTP/1.1 200 OK";
+    	return ( page );
+    }
     _responseHeader = "HTTP/1.1 404 Not Found";
     return ( config->errorPageDir + "404.html" );
 }
@@ -92,9 +90,6 @@ std::string	Server::methodPOST( Client *client, Config *config )
 				case 1:
 					_responseHeader = "HTTP/1.1 500 Error";
 					return ( config->errorPageDir + "500.html" );
-				case NO_FILE:
-    				_responseHeader = "HTTP/1.1 404 Not Found";
-					return ( config->errorPageDir + "404.html" );
 				case -1:
 					return ( "DO NOTHING" );
 			}
@@ -105,7 +100,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 			int	posMid = body.find("="), posStart = 0;
 			time_t rawtime;
   			struct tm *timeinfo;
-
+			// put the content of the form in the form.log
   			time(&rawtime);
   			timeinfo = localtime(&rawtime);
 			newFile.open("forms/form.log", std::ios_base::app);
@@ -121,10 +116,10 @@ std::string	Server::methodPOST( Client *client, Config *config )
 			_responseHeader = "HTTP/1.1 201 Created";
 			return ( config->errorPageDir + "201.html" );
 		}
+		// create a new file with the uploaded content
 		newFileName = location + "/" + body.substr(0, 6);
 		if (location.back() == '/')
 			newFileName = location + body.substr(0, 6);
-		// std::cout << newFileName << std::endl;
 		newFileContent = body;
 		checkIfOpen.open(config->root + newFileName);
 		while ( checkIfOpen.is_open() )

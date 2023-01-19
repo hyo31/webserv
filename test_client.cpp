@@ -16,7 +16,7 @@ int main(int argc, char const *argv[])
         return 0;
     int sock = 0, n1 = fork(), n2 = fork(), n3 = fork(), n4 = fork(), totalRequests = 0;
     struct sockaddr_in serv_addr;
-	char hello[500] = "GET /cgi-bin/hallo.pl HTTP/1.1\r\nHost: localhost\r\n\r\n";
+	char hello[500] = "POST / HTTP/1.1\r\nHost: localhost\r\n\r\n";
     time_t start, now;
     float runTime = std::stof(argv[1]), elapsedTime = 0;
 
@@ -29,13 +29,9 @@ int main(int argc, char const *argv[])
             printf("\n Socket creation error \n");
             return -1;
         }
-
         memset(&serv_addr, '0', sizeof(serv_addr));
-
         serv_addr.sin_family = AF_INET;
         serv_addr.sin_port = htons(PORT);
-
-        // Convert IPv4 and IPv6 addresses from text to binary form
         if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0)
         {
             printf("\nInvalid address/ Address not supported \n");
