@@ -16,7 +16,7 @@ int main(int argc, char const *argv[])
         return 0;
     int sock = 0, n1 = fork(), n2 = fork(), n3 = fork(), n4 = fork(), totalRequests = 0;
     struct sockaddr_in serv_addr;
-	char hello[500] = "DELETE /cgi-bin/uploadFile.pl HTTP/1.1\r\nHost: localhost\r\n\r\n";
+	char hello[500] = "GET / HTTP/1.1\r\nHost: localhost\r\n\r\n";
     time_t start, now;
     float runTime = std::stof(argv[1]), elapsedTime = 0;
 

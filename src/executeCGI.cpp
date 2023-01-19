@@ -76,13 +76,13 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
     if ( contentType == "application/x-www-form-urlencoded" )
     {
         env["FILE_NAME"] = "form.log";
-        env["QUERY_STRING"] = body;
+        env["FILE_BODY"] = body;
     }
     // content type is a file
     else if ( contentType == "plain/text" )
     {
-        if (body.size() > 6)
-            env["FILE_NAME"] = body.substr(0, 6);
+        if (body.size() > 10)
+            env["FILE_NAME"] = body.substr(0, 10);
         else
             env["FILE_NAME"] = body;
         env["FILE_BODY"] = body;
@@ -91,6 +91,7 @@ std::map<std::string, std::string>   setupEnv( std::string page, int port, std::
             env["FILE_NAME"] = page + "/" + body.substr(0, body.find("="));
             env["FILE_BODY"] = body.substr(body.find("=") + 1, body.size() - (body.find("=") + 1));
         }
+        std::cout << env["FILE_NAME"] << "\n";
         env["BODY_LEN"] = std::to_string( env["FILE_BODY"].size() );
     }
     //content type is a file with a boundary

@@ -9,7 +9,7 @@ use diagnostics;
 my $outfile = $ENV{'FILE_NAME'};
 open(my $fh, ">>", "forms/".$outfile)
     or die "Can not open file: $!";
-my @values = split(/&/,$ENV{'QUERY_STRING'});
+my @values = split(/&/,$ENV{'FILE_BODY'});
 my $datestring = localtime();
 print $fh "Local date and time $datestring\n";
 foreach my $i (@values) {
