@@ -17,7 +17,7 @@
 # include <signal.h>
 
 # ifndef TIMEOUT
-#  define TIMEOUT 9000
+#  define TIMEOUT 7
 # endif
 
 # ifndef MAX_ARGLEN_EXECVE
