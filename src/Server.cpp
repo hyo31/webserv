@@ -13,7 +13,7 @@ Server::~Server() { std::cout << "Closing server...\n"; }
 //then accepts this with socket::acceptSocket() when a client sends a request
 int	Server::monitor_ports()
 {
-    int							i, sock_num, new_event, kq, fd, conn_fd, ret;
+    int							i, sock_num, new_event, kq, fd, conn_fd;
 	Client						*client;
 	std::vector<struct  kevent> chlist;         /* list of events to monitor */
 	struct  kevent              tevents[42];	/* list of triggered events */
