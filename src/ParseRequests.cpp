@@ -92,7 +92,6 @@ void    Server::parseRequest( std::string request, Client *client )
 {
 	std::string	substr, header;
     size_t		start, end, MaxBody;
-	errno = 0;
 
     client->setRequestIsRead( false );
 	/* check if full header is read and store it */
