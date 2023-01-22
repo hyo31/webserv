@@ -22,7 +22,7 @@ static void	buildBodyForContentLength( std::string request, size_t start, Client
 		return ;
 	}
 	client->setRequestIsRead( true );
-	if ( body.size() > maxBodySize )
+	if ( client->getBody().size() > maxBodySize )
 		client->setBodyTooLarge( true );
     std::cout << "\n\033[33m\033[1m" << "RECEIVED:\n\033[0m\033[33m" << request << "\033[0m" << std::endl;
 	return ;

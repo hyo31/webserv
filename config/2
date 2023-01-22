@@ -1,24 +1,14 @@
 {
-	listen 8004 c.com
-	autoindex on
+	listen 8003
+	
+	location / {
+		redirect https://google.com
+	}
 }
 {
 	listen 8004
-}
-{
-	listen 8004
-	autoindex on
-}
+	location / {
+		redirect https://bing.com
+	}
 
-
-{
-	listen 8005 c.com
-	autoindex on
-}
-{
-	listen 8005
-}
-{
-	listen 8005
-	autoindex on
 }
