@@ -76,7 +76,6 @@ void	SaveBinaryFile( std::string path, Client *client, Config *config )
 		closedir( directory );
 	to_upload = readFile( client->getHeader(), client->getBody() );
 	dest = path + "/" + config->root + config->uploadDir + to_upload[0];
-
 	std::ofstream	outfile( config->root + config->uploadDir + to_upload[0], std::ofstream::out | std::ofstream::trunc );
 	outfile << to_upload[1];
 	outfile.close();
@@ -141,4 +140,21 @@ std::string	Server::getErrorPage( std::string response, Config *config )
 		if ( ( it = config->errorPages.find( responseCode ) ) != config->errorPages.end() )
 			return config->root + it->second;
 	return response;
+}
+
+//clear content from previous request
+void	Server::clearRequest( Client *client )
+{
+	std::ofstream	ofs;
+
+	if ( client->requestIsRead() == true )
+	{
+	    ofs.open( this->_sockets[client->getSockNum()]->logFile, std::ofstream::out | std::ofstream::trunc );
+        ofs.close();
+		client->setRequestIsRead( false );
+		client->setHeaderIsSet( false );
+		client->setBody( "" );
+		client->setHeader( "", 0 );
+		client->setRequest( "" );
+	}
 }

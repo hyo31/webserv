@@ -15,6 +15,7 @@ Client::Client( int fd, int sock_num ) : _conn_fd( fd ), _sock_num( sock_num )
 	this->_badRequest = false;
 	this->_sendAgain = false;
 	this->_bytesSent = 0;
+	this->_request = "";
 }
 Client::~Client() { std::cout << "Client removed\n"; }
 
@@ -38,6 +39,7 @@ Client & Client::operator=( const Client& src )
 	this->_badRequest = src._badRequest;
 	this->_sendAgain = src._sendAgain;
 	this->_bytesSent = src._bytesSent;
+	this->_request = src._request;
     return *this;
 }
 
@@ -55,6 +57,7 @@ std::string	Client::getBody()			{ return this->_requestBody; }
 std::string	Client::getHeader()			{ return this->_requestHeader; }
 std::string	Client::getMethod()			{ return this->_requestMethod; }
 std::string	Client::getHost()			{ return this->_requestHost; }
+std::string	Client::getRequest()		{ return this->_request; }
 int			Client::getConnectionFD()	{ return this->_conn_fd; }
 int			Client::getSockNum()		{ return this->_sock_num; }
 int			Client::getBytesSent()		{ return this->_bytesSent; }
@@ -71,6 +74,7 @@ void	Client::setBytesSent( int bytesSent )				{ this->_bytesSent = bytesSent; }
 void	Client::setHeader( std::string header, int end )	{ this->_requestHeader = header; this->_requestHeader[end] = '\0'; }
 void	Client::setMethod( std::string method )				{ this->_requestMethod = method; }
 void	Client::setLocation( std::string location )			{ this->_requestLocation = location; }
+void	Client::setRequest( std::string request )			{ this->_request = request; }
 void	Client::setHeaderIsSet( bool status )				{ this->_headerSet = status; }
 void	Client::setRequestIsRead( bool status )				{ this->_request_is_read = status; }
 void	Client::setBodyTooLarge( bool status )				{ this->_client_body_too_large = status; }

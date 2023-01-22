@@ -51,7 +51,7 @@ class Server
 		std::string createAutoIndex( std::string, std::string );
         Client*		acceptRequest( int );
         int			monitor_ports();
-        int			receiveClientRequest( Client*, std::string& );
+        int			receiveClientRequest( Client* );
         int			configureResponseToClient( Client* );
         int         buildHeaderResponse( Client*, std::ifstream&, std::string );
 		int			openSockets( std::string );
@@ -60,8 +60,9 @@ class Server
         void	    sendResponse(Client*, std::string, int, std::string );
         void		set_chlist( std::vector< struct kevent >&, uintptr_t, int16_t, uint16_t, uint32_t, intptr_t, void * );
         void		bounceTimedOutClients();
-        void		parseRequest( std::string, Client* );
+        void		parseRequest( Client* );
 		void		closeAll();
+		void		clearRequest( Client * );
 		void		addHost( int, std::string, std::string, std::string );
         void        resetPages( );
 		std::string	methodDELETE( Client*, Config* );

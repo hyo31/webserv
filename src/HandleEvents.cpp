@@ -18,16 +18,16 @@ Client *Server::acceptRequest( int sock_num )
     return this->_clients.back();
 }
 
-int Server::receiveClientRequest( Client *client, std::string & request )
+int Server::receiveClientRequest( Client *client )
 {
     ssize_t				bytesRead;
 	int					c_fd = client->getConnectionFD();
 	int					sock_num = client->getSockNum();
     std::ofstream		ofs;
 	std::vector<char>	buff( 1024 * 1024 );
+	std::string			request;
 
-	if ( client->requestIsRead() == true )
-		request.clear();
+	clearRequest( client );
 	bytesRead = recv( c_fd, &buff[0], buff.size(), 0 );
 	if ( bytesRead == 0 )
 		return STOP_READ;
@@ -37,25 +37,18 @@ int Server::receiveClientRequest( Client *client, std::string & request )
 		return STOP_READ;
 	}
 	client->update_client_timestamp();
+	request = client->getRequest();
 	for ( int i = 0; i < bytesRead; ++i ) {
 		request.push_back( buff[i] );
 	}
-    if ( client->requestIsRead() == true ) //clear content from previous request
-    {
-        ofs.open( this->_sockets[sock_num]->logFile, std::ofstream::out | std::ofstream::trunc );
-        ofs.close();
-		client->setHeaderIsSet( false );
-		client->setBody( "" );
-		client->setHeader( "", 0 );
-    }
+	client->setRequest( request );
 	//save request in logfile
     ofs.open( this->_sockets[sock_num]->logFile, std::fstream::out | std::fstream::app );
     ofs << request;
     ofs.close();
-    parseRequest( request, client );
+    parseRequest( client );
 	if ( client->requestIsRead() == false && client->bodyTooLarge() == false )
 		return CONT_READ;
-	request.clear();
 	if ( client->bodyTooLarge() == true || client->badRequest() == true )
 		return STOP_READ;
     return 0;

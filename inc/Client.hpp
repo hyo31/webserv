@@ -20,6 +20,7 @@ class Client
 		std::string	getHeader();
 		std::string	getMethod();
 		std::string	getHost();
+		std::string	getRequest();
 		std::time_t	getTimeStamp();
 		bool		requestIsRead();
 		bool		headerIsSet();
@@ -38,6 +39,7 @@ class Client
 		void		setMethod( std::string );
 		void		setLocation( std::string );
 		void		setHost( std::string );
+		void		setRequest( std::string );
 	    void		update_client_timestamp();
 
 	private:
@@ -45,6 +47,7 @@ class Client
     	int			_sock_num;
 		int			_bytesSent;
 	    std::time_t	_timestamp;
+		std::string	_request;
 		std::string	_requestHeader;
 		std::string _requestBody;
 		std::string	_requestMethod;

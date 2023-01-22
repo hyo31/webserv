@@ -17,7 +17,6 @@ int	Server::monitor_ports()
 	Client						*client;
 	std::vector<struct  kevent> chlist;         /* list of events to monitor */
 	struct  kevent              tevents[42];	/* list of triggered events */
-	std::string					request = "";
 	intptr_t					data = 0;
 
     /* create the queue */
@@ -69,7 +68,7 @@ int	Server::monitor_ports()
                 else if ( tevents[i].filter == EVFILT_READ && client != nullptr )
                 {
                     std::cout << "READING from:" << fd << std::endl;
-					switch  ( this->receiveClientRequest( client, request ) )
+					switch  ( this->receiveClientRequest( client ) )
 					{
 						case ERROR:
 							return ERROR;

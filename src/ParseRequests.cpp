@@ -1,40 +1,19 @@
 #include "../inc/Server.hpp"
 
-static size_t	getUploadBodySize( std::string body, std::string header )
-{
-	size_t	start, end;
-
-	if ( header.find( "Content-Type: multipart/form-data" ) != std::string::npos )
-	{
-		start = body.find( "\r\n\r\n" ) + 4;
-		end = body.find( "\r\n", start );
-		return end - start;
-	}
-	return body.size();
-}
-
 static void	buildBodyForContentLength( std::string request, size_t start, Client *client, size_t maxBodySize )
 {
 	size_t		end, content_len;
 	std::string	body, header = client->getHeader();
 
-	std::ofstream output;
 
-	output.open("outputofzo");
-	output << request;
-	output.close();
 	//find the number behind Content Length (start is at this line)
 	start = request.find( " ", start ) + 1;
 	end = request.find( "\r\n", start );
 	content_len = std::stoi( request.substr( start, end - start ) );
-	
-	//add new body to existing body
-	start = request.find( "\r\n\r\n" ) + 4;
-	body = client->getBody();
-	body.append( request.substr( start, content_len ) );
-	client->setBody( body );
 
-	//check if the whole body is read
+	//set body and check if the whole body is read
+	start = request.find( "\r\n\r\n" ) + 4;
+	client->setBody( request.substr( start ) );
 	for ( end = start; end != request.size(); ++end );
 	if ( end - start != content_len )
 	{
@@ -43,9 +22,9 @@ static void	buildBodyForContentLength( std::string request, size_t start, Client
 		return ;
 	}
 	client->setRequestIsRead( true );
-	if ( getUploadBodySize( body, header ) > maxBodySize )
+	if ( body.size() > maxBodySize )
 		client->setBodyTooLarge( true );
-    //std::cout << "\n\033[33m\033[1m" << "RECEIVED:\n\033[0m\033[33m" << request << "\033[0m" << std::endl;
+    std::cout << "\n\033[33m\033[1m" << "RECEIVED:\n\033[0m\033[33m" << request << "\033[0m" << std::endl;
 	return ;
 }
 
@@ -84,12 +63,11 @@ static void	unchunk( std::string request, size_t start, Client *client, size_t m
 	return ;
 }
 
-void    Server::parseRequest( std::string request, Client *client )
+void    Server::parseRequest( Client *client )
 {
-	std::string	substr, header;
+	std::string	substr, header, request = client->getRequest();
     size_t		start, end, MaxBody;
 
-    client->setRequestIsRead( false );
 	/* check if full header is read and store it */
     if ( request.find( "\r\n\r\n" ) != std::string::npos )
     {
@@ -99,7 +77,6 @@ void    Server::parseRequest( std::string request, Client *client )
 			client->setHeader( request.substr( 0, end ), end );
 			client->setHeaderIsSet( true );
 		}
-		// setHeaderInfo( client );
     }
 	else
 		return ;
