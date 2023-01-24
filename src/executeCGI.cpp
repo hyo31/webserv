@@ -193,5 +193,5 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
 			return ( WEXITSTATUS(status) );
         }
     }
-    return -1;
+    return -2;
 }
