@@ -181,7 +181,6 @@ int	Server::buildHeaderResponse( Client *client, std::ifstream &htmlFile, std::s
 // configure the right response message
 int	Server::configureResponseToClient( Client *client )
 {
-
 	Config			*config = this->_sockets[client->getSockNum()]->getConfig( client->getLocation(), client->getHost(), client );
     std::string     htmlFileName;
     std::ifstream   htmlFile;
@@ -189,8 +188,6 @@ int	Server::configureResponseToClient( Client *client )
 
 	// Get the correct response file
     htmlFileName = this->getHtmlFile( client );
-	if (htmlFileName == "DO NOTHING")
-		return 0;
     if ( !htmlFileName.size() )
         htmlFileName = config->errorPageDir + "500.html";
 	htmlFileName = this->getErrorPage( htmlFileName, config );
