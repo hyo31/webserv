@@ -85,6 +85,7 @@ std::string	Server::methodPOST( Client *client, Config *config )
 		{
 			switch ( executeCGI( "/" + config->root + location, port, this->_path, config->root, client->getBody(), client->getHeader(), config->uploadDir, "POST" ) )
 			{
+				std::cout << "asdasd\n";
 				case 0:
 					_responseHeader = "HTTP/1.1 200 OK";
 					return ( "response/responseCGI" );
@@ -92,7 +93,8 @@ std::string	Server::methodPOST( Client *client, Config *config )
 					_responseHeader = "HTTP/1.1 500 Error";
 					return ( config->errorPageDir + "500.html" );
 				case -1:
-					return ( "DO NOTHING" );
+					_responseHeader = "HTTP/1.1 400 Bad Request";
+					return ( config->errorPageDir + "400.html" );
 			}
 		}
 		if (client->getHeader().find("\r\n", client->getHeader().find("Content-Type: ") + 14) < client->getHeader().find(";", client->getHeader().find("Content-Type: ") + 14))
@@ -135,6 +137,11 @@ std::string	Server::methodPOST( Client *client, Config *config )
 		if (contentType == "multipart/form-data")
 		{
 			vars = readFile(client->getHeader(), body);
+			if ( vars.empty() )
+			{
+				_responseHeader = "HTTP/1.1 400 Bad Request";
+				return ( config->errorPageDir + "400.html" );
+			}
 			newFileName = location + config->uploadDir + vars[0];
 			if (location.back() == '/')
 				newFileName = location.substr(0, location.size() - 1) + config->uploadDir + vars[0];
