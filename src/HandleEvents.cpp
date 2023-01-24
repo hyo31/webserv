@@ -188,6 +188,8 @@ int	Server::configureResponseToClient( Client *client )
 
 	// Get the correct response file
     htmlFileName = this->getHtmlFile( client );
+	if ( htmlFileName == "DO NOTHING" )
+		return 0;
     if ( !htmlFileName.size() )
         htmlFileName = config->errorPageDir + "500.html";
 	htmlFileName = this->getErrorPage( htmlFileName, config );
