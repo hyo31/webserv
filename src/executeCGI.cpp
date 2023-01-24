@@ -190,6 +190,7 @@ int	executeCGI( std::string page, int port, std::string path, std::string root, 
 				std::cout << "error in script\n";
 				return 1;
 			}
+            std::cout << WEXITSTATUS(status) << "ASDHAHSKGH\n";
 			return ( WEXITSTATUS(status) );
         }
     }
