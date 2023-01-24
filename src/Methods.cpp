@@ -47,6 +47,9 @@ std::string	Server::methodGET( Client *client, Config *config )
 					_responseHeader = "HTTP/1.1 500 Error";
 					return ( config->errorPageDir + "500.html" );
 				case -1:
+					_responseHeader = "HTTP/1.1 400 Bad Request";
+					return ( config->errorPageDir + "400.html" );
+				case -2:
 					return ( "DO NOTHING" );
 			}
 		}
@@ -95,6 +98,8 @@ std::string	Server::methodPOST( Client *client, Config *config )
 				case -1:
 					_responseHeader = "HTTP/1.1 400 Bad Request";
 					return ( config->errorPageDir + "400.html" );
+				case -2:
+					return ( "DO NOTHING" );
 			}
 		}
 		if (client->getHeader().find("\r\n", client->getHeader().find("Content-Type: ") + 14) < client->getHeader().find(";", client->getHeader().find("Content-Type: ") + 14))

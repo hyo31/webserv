@@ -190,6 +190,8 @@ int	Server::configureResponseToClient( Client *client )
     htmlFileName = this->getHtmlFile( client );
     if ( !htmlFileName.size() )
         htmlFileName = config->errorPageDir + "500.html";
+	if (htmlFileName == "DO NOTHING")
+		return 0;
 	htmlFileName = this->getErrorPage( htmlFileName, config );
     htmlFile.open( htmlFileName, std::ios::in | std::ios::binary );
 	// Response file doesn't exist
